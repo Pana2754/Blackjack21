@@ -12,6 +12,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import java.sql.SQLException;
+
 @PageTitle("Login")
 @Route("login")
 public class LoginView extends VerticalLayout {
@@ -36,11 +38,17 @@ public class LoginView extends VerticalLayout {
         loginButton.addClickListener(event -> {
             String username = usernameField.getValue();
             String password = passwordField.getValue();
-            
-            if (authenticate(username, password)) {
-                Notification.show("Login successful");
-            } else {
-                Notification.show("Invalid credentials");
+
+            try {
+                if (authenticate(username, password)) {
+                    Notification.show("Login successful");
+                } else {
+                    Notification.show("Invalid credentials");
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
             }
         });
 
@@ -53,8 +61,13 @@ public class LoginView extends VerticalLayout {
         add(image, heading, usernameField, passwordField, loginButton, registerButton);
     }
 
-    private boolean authenticate(String username, String password) {
+    private boolean authenticate(String username, String password) throws SQLException, ClassNotFoundException {
         // PRÜFUNG PASSWORT UND USERNAME
+        DatabaseLogic db = new DatabaseLogic();
+        db.connectToDb();
+        db.closeConnection();
+
+
         return username.equals("admin") && password.equals("admin");
     }
 
@@ -76,8 +89,20 @@ public class LoginView extends VerticalLayout {
 
             if (password.equals(confirmPassword)) {
             	// REGISTRIERLOGIK
-            	Notification.show("Registration successful");
-                dialog.close();
+                DatabaseLogic dbLogic = new DatabaseLogic();
+                try {
+                    dbLogic.connectToDb();
+                    dbLogic.addUser(username, password);
+                    dbLogic.closeConnection();
+                    Notification.show("Registration successful");
+                    dialog.close();
+
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+
             } else {
                 Notification.show("Passwords do not match");
             }
