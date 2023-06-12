@@ -1,0 +1,21 @@
+.login-view {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+}
+
+.login-heading {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.login-field {
+    width: 300px;
+    margin-bottom: 10px;
+}
+
+.login-button {
+    width: 100px;
+}
