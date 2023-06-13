@@ -1,9 +1,6 @@
 package com.blackjack.database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class DatabaseLogic {
 
@@ -42,17 +39,32 @@ public class DatabaseLogic {
 
     }
 
-    public void checkLoginData(String user_name, String user_password) throws SQLException {
+    public boolean checkLoginData(String user_name, String user_password) throws SQLException {
 
         if (connection == null) {
             /*error*/
-            return;
+            return false;
         }
-        String sql = String.format("SELECT EXISTS * FROM blackjack_user WHERE user_name = '%s' AND password = '%s';", user_name, user_password);
+        String sql = String.format("SELECT user_password FROM blackjack_user WHERE user_name = '%S';", user_name);
         try (Statement statement = connection.createStatement()){
-            statement.executeUpdate(sql); // vergleich muss noch stattfinden
+            ResultSet result = statement.executeQuery(sql);
+
+            if(result.next()){
+
+                String db_password = result.getString("user_password");
+
+                if (db_password.equals(user_password)){
+                    return true;
+                }
+            }
+
+            // vergleich muss noch stattfinden
             //throw ERROR
         }
+        catch (Exception ex){
+            System.out.println(ex);
+        }
+        return false;
     }
 
     // When you are done with the connection, it's a good practice to close it.

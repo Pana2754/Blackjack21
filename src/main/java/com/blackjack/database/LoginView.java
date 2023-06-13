@@ -65,10 +65,9 @@ public class LoginView extends VerticalLayout {
         // PRÜFUNG PASSWORT UND USERNAME
         DatabaseLogic db = new DatabaseLogic();
         db.connectToDb();
+        boolean result = db.checkLoginData(username, password);
         db.closeConnection();
-
-
-        return username.equals("admin") && password.equals("admin");
+        return result;
     }
 
     private void showRegistrationForm() {
