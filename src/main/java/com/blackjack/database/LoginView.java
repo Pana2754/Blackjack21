@@ -49,8 +49,6 @@ public class LoginView extends VerticalLayout {
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
             }
         });
 
@@ -63,7 +61,7 @@ public class LoginView extends VerticalLayout {
         add(image, heading, usernameField, passwordField, loginButton, registerButton);
     }
 
-    private boolean authenticate(String username, String password) throws SQLException, ClassNotFoundException {
+    private boolean authenticate(String username, String password) throws SQLException{
         // PRÜFUNG PASSWORT UND USERNAME
         DatabaseLogic db = new DatabaseLogic();
         db.connectToDb();
