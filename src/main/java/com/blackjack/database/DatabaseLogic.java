@@ -6,7 +6,7 @@ public class DatabaseLogic {
 
     private Connection connection;
 
-    public void connectToDb() throws ClassNotFoundException, SQLException {
+    public void connectToDb() throws SQLException {
 
         String connectionUrl = "jdbc:sqlserver://provadis-it-ausbildung.de:1433;"
                 + "databaseName=BlackJack01;"
@@ -36,9 +36,16 @@ public class DatabaseLogic {
             statement.executeUpdate(sql);
             //throw ERROR
         }
+        catch (Exception ex){
+            throw new SQLException();
+        }
 
     }
+    public boolean checkUsernameExists(String user_name) {
+        String sql = String.format("SELECT user_password FROM blackjack_user WHERE user_name = '%S';", user_name);
 
+        return true;
+    }
     public boolean checkLoginData(String user_name, String user_password) throws SQLException {
 
         if (connection == null) {
@@ -66,6 +73,8 @@ public class DatabaseLogic {
         }
         return false;
     }
+
+
 
     // When you are done with the connection, it's a good practice to close it.
     public void closeConnection() throws SQLException {

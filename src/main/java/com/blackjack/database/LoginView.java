@@ -95,11 +95,8 @@ public class LoginView extends VerticalLayout {
                     dbLogic.closeConnection();
                     Notification.show("Registration successful");
                     dialog.close();
-
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
                 } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    Notification.show("Username already exists. Please choose another one");
                 }
 
             } else {
