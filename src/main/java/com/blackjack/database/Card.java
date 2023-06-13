@@ -2,8 +2,8 @@ package com.blackjack.database;
 
 public class Card {
 
-    private String suit;
-    private String rank;
+    public String suit;
+    public String rank;
 
     public Card(String suit, String rank){
         this.suit = suit;

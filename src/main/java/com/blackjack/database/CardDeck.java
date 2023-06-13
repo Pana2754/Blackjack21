@@ -1,6 +1,6 @@
 package com.blackjack.database;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,10 +14,12 @@ public class CardDeck {
         this(1);
     }
     public CardDeck(int numDecks){
+        cards = new ArrayList<>();
         for (int i = 0; i < numDecks; i++) {
             for (String suit : SUITS) {
                 for (String rank : RANKS) {
                     cards.add(new Card(suit, rank));
+
                 }
             }
         }
