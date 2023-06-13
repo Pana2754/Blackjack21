@@ -11,7 +11,7 @@ body {
     justify-content: space-around;
     align-items: center;
     font-size: 4rem;
-    overflow: scroll;
+    overflow: hidden;
 }
 
 
