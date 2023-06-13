@@ -6,6 +6,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.login.LoginForm;
+import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -23,9 +24,16 @@ public class LoginView extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
 
+        LoginI18n i18n = LoginI18n.createDefault();
+
+        LoginI18n.Form i18nForm = i18n.getForm();
+        i18nForm.setForgotPassword("Register");
+
         LoginForm loginForm = new LoginForm();
+        loginForm.setI18n(i18n);
         loginForm.setAction("login");
-        loginForm.setForgotPasswordButtonVisible(false);
+        loginForm.setForgotPasswordButtonVisible(true);
+
         loginForm.addLoginListener(event -> {
             String username = event.getUsername();
             String password = event.getPassword();
@@ -42,16 +50,10 @@ public class LoginView extends VerticalLayout {
                 throw new RuntimeException(e);
             }
         });
-        //Hi
-        Button registerButton = new Button("Register");
-        registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        registerButton.getStyle()
-                .set("--lumo-button-size", "var(--lumo-size-m)")
-                .set("--lumo-primary-color", "#007bff")
-                .set("--lumo-primary-text-color", "#ffffff");
-        registerButton.addClickListener(event -> showRegistrationForm());
 
-        add(new H2("Login"), loginForm, registerButton);
+        loginForm.addForgotPasswordListener(event -> showRegistrationForm());
+
+        add(new H2("Login"), loginForm);
     }
 
     private boolean authenticate(String username, String password) throws SQLException{
