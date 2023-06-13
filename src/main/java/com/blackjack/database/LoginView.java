@@ -53,7 +53,7 @@ public class LoginView extends VerticalLayout {
 
         loginForm.addForgotPasswordListener(event -> showRegistrationForm());
 
-        add(new H2("Login"), loginForm);
+        add( loginForm);
     }
 
     private boolean authenticate(String username, String password) throws SQLException{
