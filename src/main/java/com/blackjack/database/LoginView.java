@@ -42,9 +42,7 @@ public class LoginView extends VerticalLayout {
             try {
                 if (authenticate(username, password)) {
                     Notification.show("Login successful");
-                    GameEngine gameEngine = new GameEngine();
-                    gameEngine.addPlayer(username);
-                    gameEngine.startGame();
+
 
                 } else {
                     Notification.show("Invalid credentials");
