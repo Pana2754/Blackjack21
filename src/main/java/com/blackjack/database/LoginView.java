@@ -42,7 +42,7 @@ public class LoginView extends VerticalLayout {
                 throw new RuntimeException(e);
             }
         });
-
+        //Hi
         Button registerButton = new Button("Register");
         registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         registerButton.getStyle()
