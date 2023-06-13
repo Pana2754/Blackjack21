@@ -8,7 +8,10 @@ public class Player {
 
     private Integer cardValues;
 
-
+    public Player(String playerName){
+        this.playerName = playerName;
+        this.CoinBalance = 1000;
+    }
     private void getAnotherCard(){
 
     }

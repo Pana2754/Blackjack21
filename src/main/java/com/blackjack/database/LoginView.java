@@ -31,12 +31,14 @@ public class LoginView extends VerticalLayout {
             String password = event.getPassword();
 
             try {
-                if (!authenticate(username, password)) {
-                    Notification.show("Invalid credentials");
-                } else {
+                if (authenticate(username, password)) {
                     Notification.show("Login successful");
+
+
+                } else {
+                    Notification.show("Invalid credentials");
                 }
-            } catch (SQLException | ClassNotFoundException e) {
+            } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
         });
@@ -52,7 +54,7 @@ public class LoginView extends VerticalLayout {
         add(new H2("Login"), loginForm, registerButton);
     }
 
-    private boolean authenticate(String username, String password) throws SQLException, ClassNotFoundException {
+    private boolean authenticate(String username, String password) throws SQLException{
         // PRÜFUNG PASSWORT UND USERNAME
         DatabaseLogic db = new DatabaseLogic();
         db.connectToDb();
