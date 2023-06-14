@@ -7,6 +7,8 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
@@ -19,20 +21,19 @@ import java.sql.SQLException;
 public class LoginView extends VerticalLayout {
 
     public LoginView() {
+    	        
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
-        Image image = new Image("download.jpg", "Logo");
-        
-        
-        H2 heading = new H2("Login");
-        heading.getStyle().set("font-size", "24px");
-        
+        Image image = new Image("blackjack.png", "Logo");
+        image.addClassNames("login-logo"); 
+
         TextField usernameField = new TextField("Username");
         usernameField.setWidth("300px");
+        usernameField.addClassNames("login-input"); 
 
         PasswordField passwordField = new PasswordField("Password");
         passwordField.setWidth("300px");
-
+        passwordField.addClassNames("login-input"); 
         Button loginButton = new Button("Login");
         loginButton.setWidth("100px");
         loginButton.addClickListener(event -> {
@@ -42,8 +43,6 @@ public class LoginView extends VerticalLayout {
             try {
                 if (authenticate(username, password)) {
                     Notification.show("Login successful");
-
-
                 } else {
                     Notification.show("Invalid credentials");
                 }
@@ -51,14 +50,19 @@ public class LoginView extends VerticalLayout {
                 throw new RuntimeException(e);
             }
         });
+        loginButton.addClassNames("login-button"); 
 
         Button registerButton = new Button("Register");
         registerButton.setWidth("100px");
         registerButton.addClickListener(event -> {
             showRegistrationForm();
         });
+        registerButton.addClassNames("register-button");
+        HorizontalLayout buttonLayout = new HorizontalLayout(loginButton, registerButton);
 
-        add(image, heading, usernameField, passwordField, loginButton, registerButton);
+
+        add(image,usernameField, passwordField, buttonLayout);
+        addClassName("login-view"); 
     }
 
     private boolean authenticate(String username, String password) throws SQLException{
