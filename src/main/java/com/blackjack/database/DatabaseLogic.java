@@ -14,7 +14,6 @@ public class DatabaseLogic {
                 + "password=ProvadisBlackJackUser01&/";
 
         try {
-            // Load SQL Server JDBC driver and establish connection.
             System.out.print("Connecting to SQL Server ... ");
             connection = DriverManager.getConnection(connectionUrl);
             System.out.println("Done.");
@@ -28,13 +27,11 @@ public class DatabaseLogic {
     public void addUser(String user_name, String user_password) throws SQLException {
 
         if (connection == null){
-            /*error*/
             return;
         }
         String sql = String.format("INSERT INTO blackjack_user VALUES('%s', '%s');", user_name, user_password);
         try (Statement statement = connection.createStatement()){
             statement.executeUpdate(sql);
-            //throw ERROR
         }
         catch (Exception ex){
             throw new SQLException();
@@ -49,7 +46,6 @@ public class DatabaseLogic {
     public boolean checkLoginData(String user_name, String user_password) throws SQLException {
 
         if (connection == null) {
-            /*error*/
             return false;
         }
         String sql = String.format("SELECT user_password FROM blackjack_user WHERE user_name = '%S';", user_name);
@@ -64,9 +60,6 @@ public class DatabaseLogic {
                     return true;
                 }
             }
-
-            // vergleich muss noch stattfinden
-            //throw ERROR
         }
         catch (Exception ex){
             System.out.println(ex);
@@ -74,9 +67,6 @@ public class DatabaseLogic {
         return false;
     }
 
-
-
-    // When you are done with the connection, it's a good practice to close it.
     public void closeConnection() throws SQLException {
         if (connection != null) {
             connection.close();

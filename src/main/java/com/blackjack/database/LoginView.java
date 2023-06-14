@@ -1,5 +1,6 @@
 package com.blackjack.database;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
@@ -41,8 +42,9 @@ public class LoginView extends VerticalLayout {
             String password = passwordField.getValue();
 
             try {
-                if (authenticate(username, password)) {
+                if (authenticate(username, password) && passwordField.getValue()!= "") {
                     Notification.show("Login successful");
+                    UI.getCurrent().navigate("waiting-lobby");
                 } else {
                     Notification.show("Invalid credentials");
                 }
@@ -65,7 +67,6 @@ public class LoginView extends VerticalLayout {
     }
 
     private boolean authenticate(String username, String password) throws SQLException{
-        // PRÜFUNG PASSWORT UND USERNAME
         DatabaseLogic db = new DatabaseLogic();
         db.connectToDb();
         boolean result = db.checkLoginData(username, password);
