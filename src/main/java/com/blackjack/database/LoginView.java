@@ -8,33 +8,32 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 
 import java.sql.SQLException;
 
 @PageTitle("Login")
 @Route("login")
 public class LoginView extends VerticalLayout {
-	private static final long serialVersionUID = -4286830884968200051L;
+    private static final long serialVersionUID = -4286830884968200051L;
 
-	public LoginView() {
-    	        
+    public LoginView() {
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
         Image image = new Image("blackjack.png", "Logo");
-        image.addClassNames("login-logo"); 
+        image.addClassNames("login-logo");
 
         TextField usernameField = new TextField("Username");
         usernameField.setWidth("300px");
-        usernameField.addClassNames("login-input"); 
+        usernameField.addClassNames("login-input");
 
         PasswordField passwordField = new PasswordField("Password");
         passwordField.setWidth("300px");
-        passwordField.addClassNames("login-input"); 
+        passwordField.addClassNames("login-input");
         Button loginButton = new Button("Login");
         loginButton.setWidth("100px");
         loginButton.addClickListener(event -> {
@@ -42,8 +41,10 @@ public class LoginView extends VerticalLayout {
             String password = passwordField.getValue();
 
             try {
-                if (authenticate(username, password) && passwordField.getValue()!= "") {
+                if (authenticate(username, password) && passwordField.getValue() != "") {
                     Notification.show("Login successful");
+                    Lobby.Player activePlayer = new Lobby.Player(username, false);
+                    VaadinSession.getCurrent().setAttribute("activePlayer", activePlayer);
                     UI.getCurrent().navigate("waiting-lobby");
                 } else {
                     Notification.show("Invalid credentials");
@@ -52,7 +53,7 @@ public class LoginView extends VerticalLayout {
                 throw new RuntimeException(e);
             }
         });
-        loginButton.addClassNames("login-button"); 
+        loginButton.addClassNames("login-button");
         Button registerButton = new Button("Register");
         registerButton.setWidth("100px");
         registerButton.addClickListener(event -> {
@@ -61,12 +62,11 @@ public class LoginView extends VerticalLayout {
         registerButton.addClassNames("register-button");
         HorizontalLayout buttonLayout = new HorizontalLayout(loginButton, registerButton);
 
-
-        add(image,usernameField, passwordField, buttonLayout);
-        addClassName("login-view"); 
+        add(image, usernameField, passwordField, buttonLayout);
+        addClassName("login-view");
     }
 
-    private boolean authenticate(String username, String password) throws SQLException{
+    private boolean authenticate(String username, String password) throws SQLException {
         DatabaseLogic db = new DatabaseLogic();
         db.connectToDb();
         boolean result = db.checkLoginData(username, password);

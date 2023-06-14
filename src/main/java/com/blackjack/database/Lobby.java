@@ -1,44 +1,69 @@
 package com.blackjack.database;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@PageTitle("Waiting Lobby")
 @Route("waiting-lobby")
 public class Lobby extends VerticalLayout {
-	private static final long serialVersionUID = 503398040364625051L;
+    private static final long serialVersionUID = 503398040364625051L;
 
-	public Lobby() {
+    public Lobby() {
+        if (!isLoggedIn()) {
+            UI.getCurrent().navigate(LoginView.class);
+            return;
+        }
+        
         Image logo = new Image("blackjack.png", "Logo");
         logo.setWidth("150px");
         logo.setHeight("150px");
+        setWidthFull();
 
         H2 title = new H2("Waiting Lobby");
 
-        Grid<Player> playersGrid = new Grid<>(Player.class);
-        playersGrid.setItems(
-                new Player("Player 1", false),
-                new Player("Player 2", true),
-                new Player("Player 3", false)
-        );
-        playersGrid.setColumns("name", "ready");
+        Grid<Player> playersGrid = new Grid<>();
+        playersGrid.addColumn(Player::getName).setHeader("Name");
+        playersGrid.addComponentColumn(this::createReadyCheckbox).setHeader("Ready");
 
-        Checkbox readyCheckbox = new Checkbox("Ready");
-        readyCheckbox.addValueChangeListener(event -> {
-            boolean ready = event.getValue();
-            Player selectedPlayer = playersGrid.asSingleSelect().getValue();
-            if (selectedPlayer != null) {
-                selectedPlayer.setReady(ready);
-                playersGrid.getDataProvider().refreshAll();
-            }
-        });
+        Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
+        List<Player> players = new ArrayList<>();
+        if (activePlayer != null) {
+            players.add(activePlayer);
+        }
+        playersGrid.setItems(players);
+        playersGrid.setHeight("300px");
+        playersGrid.setWidth("900px");
 
-        add(logo, title, playersGrid, readyCheckbox);
+        add(logo, title, playersGrid);
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
+        setMargin(true);
+        setSpacing(true);
+    }
+
+    private boolean isLoggedIn() {
+        Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
+        return activePlayer != null;
+    }
+
+    private Checkbox createReadyCheckbox(Player player) {
+        Checkbox checkbox = new Checkbox();
+        checkbox.setValue(player.isReady());
+        checkbox.addValueChangeListener(event -> {
+            player.setReady(event.getValue());
+            // Perform any necessary logic or actions when the checkbox value changes
+        });
+        return checkbox;
     }
 
     public static class Player {
