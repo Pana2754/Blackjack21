@@ -9,8 +9,6 @@ import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
@@ -23,29 +21,28 @@ import java.sql.SQLException;
 public class LoginView extends VerticalLayout {
 
     public LoginView() {
-    	        
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
 
-        Image image = new Image("blackjack.png", "Logo");
-        image.addClassNames("login-logo"); 
+        LoginI18n i18n = LoginI18n.createDefault();
 
-        TextField usernameField = new TextField("Username");
-        usernameField.setWidth("300px");
-        usernameField.addClassNames("login-input"); 
+        LoginI18n.Form i18nForm = i18n.getForm();
+        i18nForm.setForgotPassword("Register");
 
-        PasswordField passwordField = new PasswordField("Password");
-        passwordField.setWidth("300px");
-        passwordField.addClassNames("login-input"); 
-        Button loginButton = new Button("Login");
-        loginButton.setWidth("100px");
-        loginButton.addClickListener(event -> {
-            String username = usernameField.getValue();
-            String password = passwordField.getValue();
+        LoginForm loginForm = new LoginForm();
+        loginForm.setI18n(i18n);
+        loginForm.setAction("login");
+        loginForm.setForgotPasswordButtonVisible(true);
+
+        loginForm.addLoginListener(event -> {
+            String username = event.getUsername();
+            String password = event.getPassword();
 
             try {
                 if (authenticate(username, password)) {
                     Notification.show("Login successful");
+
+
                 } else {
                     Notification.show("Invalid credentials");
                 }
@@ -53,21 +50,10 @@ public class LoginView extends VerticalLayout {
                 throw new RuntimeException(e);
             }
         });
-        loginButton.addClassNames("login-button"); 
 
+        loginForm.addForgotPasswordListener(event -> showRegistrationForm());
 
-        Button registerButton = new Button("Register");
-        registerButton.setWidth("100px");
-        registerButton.addClickListener(event -> {
-            showRegistrationForm();
-        });
-        registerButton.addClassNames("register-button");
-        HorizontalLayout buttonLayout = new HorizontalLayout(loginButton, registerButton);
-
-
-        add(image,usernameField, passwordField, buttonLayout);
-        addClassName("login-view"); 
-
+        add( loginForm);
     }
 
     private boolean authenticate(String username, String password) throws SQLException{
