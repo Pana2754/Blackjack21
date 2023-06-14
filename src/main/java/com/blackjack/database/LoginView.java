@@ -4,7 +4,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -19,8 +18,9 @@ import java.sql.SQLException;
 @PageTitle("Login")
 @Route("login")
 public class LoginView extends VerticalLayout {
+	private static final long serialVersionUID = -4286830884968200051L;
 
-    public LoginView() {
+	public LoginView() {
     	        
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
@@ -51,7 +51,6 @@ public class LoginView extends VerticalLayout {
             }
         });
         loginButton.addClassNames("login-button"); 
-
         Button registerButton = new Button("Register");
         registerButton.setWidth("100px");
         registerButton.addClickListener(event -> {
@@ -91,7 +90,6 @@ public class LoginView extends VerticalLayout {
             String confirmPassword = confirmPasswordField.getValue();
 
             if (password.equals(confirmPassword)) {
-            	// REGISTRIERLOGIK
                 DatabaseLogic dbLogic = new DatabaseLogic();
                 try {
                     dbLogic.connectToDb();
@@ -107,7 +105,6 @@ public class LoginView extends VerticalLayout {
                 Notification.show("Passwords do not match");
             }
         });
-
         formLayout.add(usernameField, passwordField, confirmPasswordField, registerButton);
         dialog.add(formLayout);
 
