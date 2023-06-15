@@ -101,7 +101,7 @@ public class LoginView extends VerticalLayout {
         TextField usernameField = new TextField("Username");
         PasswordField passwordField = new PasswordField("Password");
         PasswordField confirmPasswordField = new PasswordField("Confirm Password");
-        DatePicker datePicker = new DatePicker("Enter D.O.B");
+        DatePicker datePicker = new DatePicker("Birthdate");
         LocalDate userAge = datePicker.getValue();
 
         Button registerButton = new Button("Register");
