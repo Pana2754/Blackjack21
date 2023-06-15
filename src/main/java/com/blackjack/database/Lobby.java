@@ -6,6 +6,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+@Push
 @PageTitle("Waiting Lobby")
 @Route("waiting-lobby")
 public class Lobby extends VerticalLayout {
@@ -63,7 +65,6 @@ public class Lobby extends VerticalLayout {
     private Player getActivePlayer() {
         return (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
     }
-    //hello
     private Checkbox createReadyCheckbox(Player player) {
         Checkbox checkbox = new Checkbox();
         checkbox.setValue(player.isReady());
