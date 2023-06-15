@@ -2,6 +2,7 @@ package com.blackjack.database;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -17,6 +18,8 @@ import com.vaadin.flow.server.VaadinSession;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.Period;
 
 @PageTitle("Login")
 @Route("login")
@@ -80,7 +83,15 @@ public class LoginView extends VerticalLayout {
     }
 
  // ...
+    private void verifyAge(LocalDate selectedDate){
+        LocalDate curentTime = LocalDate.now();
+        Period difference = Period.between(curentTime,selectedDate);
+        int age  = difference.getYears();
 
+        if (age <= 18){
+            Notification.show("Not eligible! User under 18 are not allowed :( ");
+        }
+    }
     private void showRegistrationForm() {
         Dialog dialog = new Dialog();
         dialog.setWidth("400px");
@@ -90,6 +101,8 @@ public class LoginView extends VerticalLayout {
         TextField usernameField = new TextField("Username");
         PasswordField passwordField = new PasswordField("Password");
         PasswordField confirmPasswordField = new PasswordField("Confirm Password");
+        DatePicker datePicker = new DatePicker("Enter D.O.B");
+        LocalDate userAge = datePicker.getValue();
 
         Button registerButton = new Button("Register");
         registerButton.addClickListener(event -> {
@@ -100,6 +113,7 @@ public class LoginView extends VerticalLayout {
             if (password.equals(confirmPassword)) {
                 DatabaseLogic dbLogic = new DatabaseLogic();
                 try {
+                    verifyAge(userAge);
                     dbLogic.connectToDb();
                     dbLogic.addUser(username, password);
                     dbLogic.closeConnection();
@@ -114,12 +128,11 @@ public class LoginView extends VerticalLayout {
                 Notification.show("Passwords do not match");
             }
         });
-        formLayout.add(usernameField, passwordField, confirmPasswordField, registerButton);
+        formLayout.add(usernameField, passwordField, confirmPasswordField,datePicker, registerButton);
         dialog.add(formLayout);
 
         dialog.open();
     }
-
 
 
     private String hashPassword(String password) {
@@ -136,3 +149,16 @@ public class LoginView extends VerticalLayout {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
