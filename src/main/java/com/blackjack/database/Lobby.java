@@ -10,6 +10,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.component.button.Button;
+
+import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -53,14 +56,23 @@ public class Lobby extends VerticalLayout {
             activePlayers.add(activePlayer);
         }
 
+        Button startGame = new Button("START");
+        startGame.setWidth("100px");
+        startGame.addClickListener(event -> {
+            UI.getCurrent().navigate("GameView");
+            GameEngine.startGame(activePlayers);
+        });
+
         // Update the Grid with all the active players
         playersGrid.setItems(activePlayers);
 
-        add(logo, title, playersGrid);
+        add(logo, title, playersGrid, startGame);
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
         setMargin(true);
         setSpacing(true);
+
+
     }
 
     public static void playerLoggedIn(Player player) {

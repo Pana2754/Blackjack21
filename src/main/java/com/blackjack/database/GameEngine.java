@@ -5,18 +5,19 @@ import java.util.List;
 
 public class GameEngine {
 
-    private List<Player> players = new ArrayList<>();
+    private static List<Player> players = new ArrayList<>();
 
-    public void startGame() {
+    public static void startGame(List<Player> playerList) {
 
         Dealer dealer = new Dealer("Dealer");
+        players = playerList;
+
+        CardDeck cards = new CardDeck();
+
+
 
 
     }
 
-    public void addPlayer(String playerName){
-        players.add(new Player(playerName, false));
-
-    }
 
 }
