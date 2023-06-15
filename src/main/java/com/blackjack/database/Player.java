@@ -21,7 +21,7 @@ public class Player {
     private void increaseStake(int value){
 
     }
-    public String getName() {
+    public String getPlayerName() {
         return playerName;
     }
 

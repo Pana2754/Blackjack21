@@ -40,7 +40,7 @@ public class Lobby extends VerticalLayout {
         H2 title = new H2("Waiting Lobby");
 
 
-        playersGrid.addColumn(Player::getName).setHeader("Name");
+        playersGrid.addColumn(Player::getPlayerName).setHeader("Name");
         playersGrid.addComponentColumn(this::createReadyCheckbox).setHeader("Ready");
         playersGrid.setHeight("300px");
         playersGrid.setWidth("900px");
