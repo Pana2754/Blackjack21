@@ -65,6 +65,7 @@ public class Lobby extends VerticalLayout {
         getUI().ifPresent(ui -> {
             ui.access(() -> {
                 playersGrid.setItems(players);
+                playersGrid.getDataProvider().refreshAll();
             });
         });
     }
