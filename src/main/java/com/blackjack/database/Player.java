@@ -1,12 +1,15 @@
 package com.blackjack.database;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Player {
 
     private String playerName;
     private Integer CoinBalance;
     private Integer stake;
     private boolean ready;
-
+    private List<Card> cardList = new ArrayList<>();
     private Integer cardValues;
 
     public Player(String playerName, boolean ready){
@@ -14,8 +17,8 @@ public class Player {
         this.CoinBalance = 1000;
         this.ready = ready;
     }
-    private void getAnotherCard(){
-
+    public void takeCard(Card card){
+        cardList.add(card);
     }
 
     private void increaseStake(int value){

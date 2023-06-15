@@ -1,5 +1,6 @@
 package com.blackjack.database;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -14,8 +15,18 @@ public class GameView extends VerticalLayout {
 
         Button hit = new Button("Hit");
         hit.setWidth("100px");
+        hit.addClickListener(event -> {
+
+        });
+
+
+
         Button stand = new Button("Stand");
         stand.setWidth("100px");
+        stand.addClickListener(event -> {
+
+        });
+
 
         add(hit, stand);
 

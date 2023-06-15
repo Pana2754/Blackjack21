@@ -11,11 +11,20 @@ public class GameEngine {
 
         Dealer dealer = new Dealer("Dealer");
         players = playerList;
+        startRound();
 
+
+    }
+
+    private static void startRound(){
         CardDeck cards = new CardDeck();
+        cards.shuffle();
+        for (Player player: players) {
+            player.takeCard(cards.draw());
+        }
+    }
 
-
-
+    public void hitCard(){
 
     }
 
