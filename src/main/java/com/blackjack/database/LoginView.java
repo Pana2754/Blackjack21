@@ -104,14 +104,16 @@ public class LoginView extends VerticalLayout {
     }
 
  // ...
-    private void verifyAge(LocalDate selectedDate){
+    private boolean verifyAge(LocalDate selectedDate){
         LocalDate curentTime = LocalDate.now();
-        Period difference = Period.between(curentTime,selectedDate);
+        Period difference = Period.between(selectedDate,curentTime);
         int age  = difference.getYears();
 
-        if (age <= 18){
-            Notification.show("Not eligible! User under 18 are not allowed :( ");
+        if (age < 18){
+            Notification.show("You must be 18!");
+            return false;
         }
+        return true;
     }
     private void showRegistrationForm() {
         Dialog dialog = new Dialog();
@@ -123,28 +125,29 @@ public class LoginView extends VerticalLayout {
         PasswordField passwordField = new PasswordField("Password");
         PasswordField confirmPasswordField = new PasswordField("Confirm Password");
         DatePicker datePicker = new DatePicker("Birthdate");
-        LocalDate userAge = datePicker.getValue();
+
 
         Button registerButton = new Button("Register");
         registerButton.addClickListener(event -> {
             String username = usernameField.getValue();
             String password = hashPassword(passwordField.getValue());
             String confirmPassword = hashPassword(confirmPasswordField.getValue());
+            LocalDate userAge = datePicker.getValue();
 
-            if (password.equals(confirmPassword)) {
-                DatabaseLogic dbLogic = new DatabaseLogic();
-                try {
-                    verifyAge(userAge);
-                    dbLogic.connectToDb();
-                    dbLogic.addUser(username, password, false);
-                    dbLogic.closeConnection();
-                    Notification.show("Registration successful");
-                    dialog.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    Notification.show("Error during registration: " + e.getMessage());
+            if (password.equals(confirmPassword) ) {
+                if(verifyAge(userAge)){
+                    DatabaseLogic dbLogic = new DatabaseLogic();
+                    try {
+                        dbLogic.connectToDb();
+                        dbLogic.addUser(username, password, false);
+                        dbLogic.closeConnection();
+                        Notification.show("Registration successful");
+                        dialog.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        Notification.show("Error during registration: " + e.getMessage());
+                    }
                 }
-
             } else {
                 Notification.show("Passwords do not match");
             }
