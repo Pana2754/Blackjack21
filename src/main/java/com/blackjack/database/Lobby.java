@@ -23,7 +23,7 @@ public class Lobby extends VerticalLayout {
             UI.getCurrent().navigate(LoginView.class);
             return;
         }
-        
+
         Image logo = new Image("blackjack.png", "Logo");
         logo.setWidth("150px");
         logo.setHeight("150px");
@@ -34,15 +34,15 @@ public class Lobby extends VerticalLayout {
         Grid<Player> playersGrid = new Grid<>();
         playersGrid.addColumn(Player::getName).setHeader("Name");
         playersGrid.addComponentColumn(this::createReadyCheckbox).setHeader("Ready");
-
-        Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
-        List<Player> players = new ArrayList<>();
-        if (activePlayer != null) {
-            players.add(activePlayer);
-        }
-        playersGrid.setItems(players);
         playersGrid.setHeight("300px");
         playersGrid.setWidth("900px");
+
+        Player activePlayer = getActivePlayer();
+        if (activePlayer != null) {
+            List<Player> players = new ArrayList<>();
+            players.add(activePlayer);
+            playersGrid.setItems(players);
+        }
 
         add(logo, title, playersGrid);
         setAlignItems(Alignment.CENTER);
@@ -52,8 +52,11 @@ public class Lobby extends VerticalLayout {
     }
 
     private boolean isLoggedIn() {
-        Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
-        return activePlayer != null;
+        return getActivePlayer() != null;
+    }
+
+    private Player getActivePlayer() {
+        return (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
     }
 
     private Checkbox createReadyCheckbox(Player player) {
@@ -61,7 +64,6 @@ public class Lobby extends VerticalLayout {
         checkbox.setValue(player.isReady());
         checkbox.addValueChangeListener(event -> {
             player.setReady(event.getValue());
-            // Perform any necessary logic or actions when the checkbox value changes
         });
         return checkbox;
     }

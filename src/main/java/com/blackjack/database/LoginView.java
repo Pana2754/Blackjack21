@@ -14,6 +14,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 @PageTitle("Login")
@@ -34,11 +36,12 @@ public class LoginView extends VerticalLayout {
         PasswordField passwordField = new PasswordField("Password");
         passwordField.setWidth("300px");
         passwordField.addClassNames("login-input");
+
         Button loginButton = new Button("Login");
         loginButton.setWidth("100px");
         loginButton.addClickListener(event -> {
             String username = usernameField.getValue();
-            String password = passwordField.getValue();
+            String password = hashPassword(passwordField.getValue());
 
             try {
                 if (authenticate(username, password) && passwordField.getValue() != "") {
@@ -54,12 +57,14 @@ public class LoginView extends VerticalLayout {
             }
         });
         loginButton.addClassNames("login-button");
+
         Button registerButton = new Button("Register");
         registerButton.setWidth("100px");
         registerButton.addClickListener(event -> {
             showRegistrationForm();
         });
         registerButton.addClassNames("register-button");
+
         HorizontalLayout buttonLayout = new HorizontalLayout(loginButton, registerButton);
 
         add(image, usernameField, passwordField, buttonLayout);
@@ -74,6 +79,8 @@ public class LoginView extends VerticalLayout {
         return result;
     }
 
+ // ...
+
     private void showRegistrationForm() {
         Dialog dialog = new Dialog();
         dialog.setWidth("400px");
@@ -87,8 +94,8 @@ public class LoginView extends VerticalLayout {
         Button registerButton = new Button("Register");
         registerButton.addClickListener(event -> {
             String username = usernameField.getValue();
-            String password = passwordField.getValue();
-            String confirmPassword = confirmPasswordField.getValue();
+            String password = hashPassword(passwordField.getValue());
+            String confirmPassword = hashPassword(confirmPasswordField.getValue());
 
             if (password.equals(confirmPassword)) {
                 DatabaseLogic dbLogic = new DatabaseLogic();
@@ -99,7 +106,8 @@ public class LoginView extends VerticalLayout {
                     Notification.show("Registration successful");
                     dialog.close();
                 } catch (SQLException e) {
-                    Notification.show("Username already exists. Please choose another one");
+                    e.printStackTrace();
+                    Notification.show("Error during registration: " + e.getMessage());
                 }
 
             } else {
@@ -110,5 +118,21 @@ public class LoginView extends VerticalLayout {
         dialog.add(formLayout);
 
         dialog.open();
+    }
+
+
+
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            byte[] hashedPassword = md.digest(password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedPassword) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
