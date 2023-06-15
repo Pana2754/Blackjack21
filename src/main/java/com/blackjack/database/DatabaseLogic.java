@@ -39,11 +39,6 @@ public class DatabaseLogic {
         }
     }
     
-    public boolean checkUsernameExists(String user_name) {
-        String sql = String.format("SELECT user_password FROM blackjack_user WHERE user_name = '%S';", user_name);
-
-        return true;
-    }
     
 
     public boolean checkLoginData(String user_name, String user_password) throws SQLException {
