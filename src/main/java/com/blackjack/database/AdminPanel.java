@@ -29,7 +29,7 @@ public class AdminPanel extends VerticalLayout {
             return;
         }
 
-        Image logo = new Image("blackjack.png", "Logo");
+        Image logo = new Image("head.png", "Logo");
         logo.setWidth("150px");
         logo.setHeight("150px");
         setWidthFull();

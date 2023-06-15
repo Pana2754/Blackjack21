@@ -21,7 +21,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
 
-@PageTitle("Login")
 @Route("login")
 public class LoginView extends VerticalLayout {
     private static final long serialVersionUID = -4286830884968200051L;
@@ -29,7 +28,7 @@ public class LoginView extends VerticalLayout {
     public LoginView() {
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
-        Image image = new Image("blackjack.png", "Logo");
+        Image image = new Image("head.png", "Logo");
         image.addClassNames("login-logo");
 
         TextField usernameField = new TextField("Username");
@@ -55,8 +54,6 @@ public class LoginView extends VerticalLayout {
                     Notification.show("Login successful");
                     Player activePlayer = new Player(username, false);
                     VaadinSession.getCurrent().setAttribute("activePlayer", activePlayer);
-
-                    // Notify Lobby about the new player
                     Lobby.playerLoggedIn(activePlayer);
 
                     UI.getCurrent().navigate("waiting-lobby");

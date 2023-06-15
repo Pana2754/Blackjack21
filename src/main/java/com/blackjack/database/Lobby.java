@@ -32,7 +32,7 @@ public class Lobby extends VerticalLayout {
 
         Broadcaster.register(this::updateGrid);
 
-        Image logo = new Image("blackjack.png", "Logo");
+        Image logo = new Image("head.png", "Logo");
         logo.setWidth("150px");
         logo.setHeight("150px");
         setWidthFull();
@@ -64,10 +64,7 @@ public class Lobby extends VerticalLayout {
     }
 
     public static void playerLoggedIn(Player player) {
-        // Add the new player to the activePlayers list.
         activePlayers.add(player);
-
-        // Notify all listeners that the list of players has changed.
         Broadcaster.broadcast(activePlayers);
     }
     //

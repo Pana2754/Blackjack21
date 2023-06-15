@@ -4,7 +4,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-@PageTitle("Main")
+@PageTitle("BlackJack")
 @Route(value = "")
 public class MainView extends HorizontalLayout {
 
