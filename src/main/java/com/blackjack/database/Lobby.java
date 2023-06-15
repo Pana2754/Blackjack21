@@ -49,6 +49,7 @@ public class Lobby extends VerticalLayout {
 
         Player activePlayer = getActivePlayer();
         if (activePlayer != null && !activePlayers.contains(activePlayer)) {
+
             activePlayers.add(activePlayer);
         }
 
