@@ -63,7 +63,7 @@ public class Lobby extends VerticalLayout {
     private Player getActivePlayer() {
         return (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
     }
-
+    //hello
     private Checkbox createReadyCheckbox(Player player) {
         Checkbox checkbox = new Checkbox();
         checkbox.setValue(player.isReady());
