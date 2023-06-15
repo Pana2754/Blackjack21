@@ -97,6 +97,8 @@ public class Lobby extends VerticalLayout {
         checkbox.setValue(player.isReady());
         checkbox.addValueChangeListener(event -> {
             player.setReady(event.getValue());
+
+            Broadcaster.broadcast(activePlayers);
         });
         return checkbox;
     }
