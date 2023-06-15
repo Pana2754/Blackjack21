@@ -44,10 +44,14 @@ public class LoginView extends VerticalLayout {
             String password = hashPassword(passwordField.getValue());
 
             try {
-                if (authenticate(username, password) && passwordField.getValue() != "") {
+                if (authenticate(username, password) && !passwordField.getValue().isEmpty()) {
                     Notification.show("Login successful");
                     Player activePlayer = new Player(username, false);
                     VaadinSession.getCurrent().setAttribute("activePlayer", activePlayer);
+
+                    // Notify Lobby about the new player
+                    Lobby.playerLoggedIn(activePlayer);
+
                     UI.getCurrent().navigate("waiting-lobby");
                 } else {
                     Notification.show("Invalid credentials");

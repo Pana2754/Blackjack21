@@ -60,6 +60,14 @@ public class Lobby extends VerticalLayout {
         setSpacing(true);
     }
 
+    public static void playerLoggedIn(Player player) {
+        // Add the new player to the activePlayers list.
+        activePlayers.add(player);
+
+        // Notify all listeners that the list of players has changed.
+        Broadcaster.broadcast(activePlayers);
+    }
+
     private void updateGrid(List<Player> players) {
         // This method will be run in the UI thread, ensuring thread safety.
         getUI().ifPresent(ui -> {
