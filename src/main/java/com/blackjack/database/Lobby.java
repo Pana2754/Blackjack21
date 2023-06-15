@@ -67,7 +67,7 @@ public class Lobby extends VerticalLayout {
         // Notify all listeners that the list of players has changed.
         Broadcaster.broadcast(activePlayers);
     }
-
+    //
     private void updateGrid(List<Player> players) {
         // This method will be run in the UI thread, ensuring thread safety.
         getUI().ifPresent(ui -> {
