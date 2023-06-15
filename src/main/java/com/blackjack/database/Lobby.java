@@ -1,5 +1,4 @@
 package com.blackjack.database;
-
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
@@ -9,14 +8,16 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @PageTitle("Waiting Lobby")
 @Route("waiting-lobby")
 public class Lobby extends VerticalLayout {
     private static final long serialVersionUID = 503398040364625051L;
+
+    // A thread-safe list to store all active players
+    private static final List<Player> activePlayers = new CopyOnWriteArrayList<>();
 
     public Lobby() {
         if (!isLoggedIn()) {
@@ -38,11 +39,12 @@ public class Lobby extends VerticalLayout {
         playersGrid.setWidth("900px");
 
         Player activePlayer = getActivePlayer();
-        if (activePlayer != null) {
-            List<Player> players = new ArrayList<>();
-            players.add(activePlayer);
-            playersGrid.setItems(players);
+        if (activePlayer != null && !activePlayers.contains(activePlayer)) {
+            activePlayers.add(activePlayer);
         }
+
+        // Update the Grid with all the active players
+        playersGrid.setItems(activePlayers);
 
         add(logo, title, playersGrid);
         setAlignItems(Alignment.CENTER);
@@ -87,6 +89,20 @@ public class Lobby extends VerticalLayout {
 
         public void setReady(boolean ready) {
             this.ready = ready;
+        }
+
+        // Override equals and hashCode to be able to use contains()
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null || getClass() != obj.getClass()) return false;
+            Player player = (Player) obj;
+            return name.equals(player.name);
+        }
+
+        @Override
+        public int hashCode() {
+            return name.hashCode();
         }
     }
 }
