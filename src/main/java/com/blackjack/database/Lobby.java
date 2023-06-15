@@ -30,6 +30,8 @@ public class Lobby extends VerticalLayout {
             return;
         }
 
+        Broadcaster.register(this::updateGrid);
+
         Image logo = new Image("blackjack.png", "Logo");
         logo.setWidth("150px");
         logo.setHeight("150px");
@@ -43,7 +45,7 @@ public class Lobby extends VerticalLayout {
         playersGrid.setHeight("300px");
         playersGrid.setWidth("900px");
 
-        Broadcaster.register(this::updateGrid);
+
 
         Player activePlayer = getActivePlayer();
         if (activePlayer != null && !activePlayers.contains(activePlayer)) {
@@ -61,6 +63,14 @@ public class Lobby extends VerticalLayout {
         setSpacing(true);
     }
 
+    public static void playerLoggedIn(Player player) {
+        // Add the new player to the activePlayers list.
+        activePlayers.add(player);
+
+        // Notify all listeners that the list of players has changed.
+        Broadcaster.broadcast(activePlayers);
+    }
+    //
     private void updateGrid(List<Player> players) {
         // This method will be run in the UI thread, ensuring thread safety.
         getUI().ifPresent(ui -> {
@@ -88,6 +98,8 @@ public class Lobby extends VerticalLayout {
         checkbox.setValue(player.isReady());
         checkbox.addValueChangeListener(event -> {
             player.setReady(event.getValue());
+
+            Broadcaster.broadcast(activePlayers);
         });
         return checkbox;
     }
