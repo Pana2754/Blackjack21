@@ -30,6 +30,8 @@ public class Lobby extends VerticalLayout {
             return;
         }
 
+        Broadcaster.register(this::updateGrid);
+
         Image logo = new Image("blackjack.png", "Logo");
         logo.setWidth("150px");
         logo.setHeight("150px");
@@ -43,7 +45,7 @@ public class Lobby extends VerticalLayout {
         playersGrid.setHeight("300px");
         playersGrid.setWidth("900px");
 
-        Broadcaster.register(this::updateGrid);
+
 
         Player activePlayer = getActivePlayer();
         if (activePlayer != null && !activePlayers.contains(activePlayer)) {
