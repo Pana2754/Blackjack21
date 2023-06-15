@@ -1,19 +1,18 @@
 package com.blackjack.database;
 
+import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 
 
 @PageTitle("Waiting Lobby")
@@ -23,6 +22,7 @@ public class Lobby extends VerticalLayout {
 
     // A thread-safe list to store all active players
     private static final List<Player> activePlayers = new CopyOnWriteArrayList<>();
+    private Grid<Player> playersGrid = new Grid<>();
 
     public Lobby() {
         if (!isLoggedIn()) {
@@ -37,11 +37,13 @@ public class Lobby extends VerticalLayout {
 
         H2 title = new H2("Waiting Lobby");
 
-        Grid<Player> playersGrid = new Grid<>();
+
         playersGrid.addColumn(Player::getName).setHeader("Name");
         playersGrid.addComponentColumn(this::createReadyCheckbox).setHeader("Ready");
         playersGrid.setHeight("300px");
         playersGrid.setWidth("900px");
+
+        Broadcaster.register(this::updateGrid);
 
         Player activePlayer = getActivePlayer();
         if (activePlayer != null && !activePlayers.contains(activePlayer)) {
@@ -58,6 +60,20 @@ public class Lobby extends VerticalLayout {
         setSpacing(true);
     }
 
+    private void updateGrid(List<Player> players) {
+        // This method will be run in the UI thread, ensuring thread safety.
+        getUI().ifPresent(ui -> {
+            ui.access(() -> {
+                playersGrid.setItems(players);
+            });
+        });
+    }
+    @Override
+    protected void onDetach(DetachEvent detachEvent) {
+        // Unregister from broadcaster when UI is detached.
+        Broadcaster.unregister(this::updateGrid);
+        super.onDetach(detachEvent);
+    }
     private boolean isLoggedIn() {
         return getActivePlayer() != null;
     }
