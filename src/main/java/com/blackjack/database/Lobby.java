@@ -1,4 +1,5 @@
 package com.blackjack.database;
+
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
@@ -8,6 +9,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -70,39 +73,5 @@ public class Lobby extends VerticalLayout {
         return checkbox;
     }
 
-    public static class Player {
-        private String name;
-        private boolean ready;
 
-        public Player(String name, boolean ready) {
-            this.name = name;
-            this.ready = ready;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public boolean isReady() {
-            return ready;
-        }
-
-        public void setReady(boolean ready) {
-            this.ready = ready;
-        }
-
-        // Override equals and hashCode to be able to use contains()
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null || getClass() != obj.getClass()) return false;
-            Player player = (Player) obj;
-            return name.equals(player.name);
-        }
-
-        @Override
-        public int hashCode() {
-            return name.hashCode();
-        }
-    }
 }

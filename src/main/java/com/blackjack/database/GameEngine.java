@@ -15,7 +15,7 @@ public class GameEngine {
     }
 
     public void addPlayer(String playerName){
-        players.add(new Player(playerName));
+        players.add(new Player(playerName, false));
 
     }
 
