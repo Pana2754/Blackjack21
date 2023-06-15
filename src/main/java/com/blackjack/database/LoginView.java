@@ -46,7 +46,7 @@ public class LoginView extends VerticalLayout {
             try {
                 if (authenticate(username, password) && passwordField.getValue() != "") {
                     Notification.show("Login successful");
-                    Lobby.Player activePlayer = new Lobby.Player(username, false);
+                    Player activePlayer = new Player(username, false);
                     VaadinSession.getCurrent().setAttribute("activePlayer", activePlayer);
                     UI.getCurrent().navigate("waiting-lobby");
                 } else {

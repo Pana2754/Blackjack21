@@ -17,8 +17,12 @@ import java.util.List;
 @Route("waiting-lobby")
 public class Lobby extends VerticalLayout {
     private static final long serialVersionUID = 503398040364625051L;
+    List<Player> players= new ArrayList<>();
 
     public Lobby() {
+
+
+
         if (!isLoggedIn()) {
             UI.getCurrent().navigate(LoginView.class);
             return;
@@ -39,7 +43,7 @@ public class Lobby extends VerticalLayout {
 
         Player activePlayer = getActivePlayer();
         if (activePlayer != null) {
-            List<Player> players = new ArrayList<>();
+
             players.add(activePlayer);
             playersGrid.setItems(players);
         }
@@ -68,25 +72,5 @@ public class Lobby extends VerticalLayout {
         return checkbox;
     }
 
-    public static class Player {
-        private String name;
-        private boolean ready;
 
-        public Player(String name, boolean ready) {
-            this.name = name;
-            this.ready = ready;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public boolean isReady() {
-            return ready;
-        }
-
-        public void setReady(boolean ready) {
-            this.ready = ready;
-        }
-    }
 }
