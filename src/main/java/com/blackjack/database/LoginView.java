@@ -44,7 +44,11 @@ public class LoginView extends VerticalLayout {
             String password = hashPassword(passwordField.getValue());
 
             try {
-                if (authenticate(username, password) && passwordField.getValue() != "") {
+                if (isAdmin(username, password)) {
+                    Notification.show("Als Admin angemeldet");
+                    UI.getCurrent().navigate("admin-panel");
+                }
+                else if (authenticate(username, password) && passwordField.getValue() != "") {
                     Notification.show("Login successful");
                     Player activePlayer = new Player(username, false);
                     VaadinSession.getCurrent().setAttribute("activePlayer", activePlayer);
@@ -69,6 +73,19 @@ public class LoginView extends VerticalLayout {
 
         add(image, usernameField, passwordField, buttonLayout);
         addClassName("login-view");
+    }
+
+    private boolean isAdmin(String username, String password) throws SQLException {
+        if (authenticate(username, password) && password != "") {
+        DatabaseLogic db = new DatabaseLogic();
+        db.connectToDb();
+        boolean result = db.checkAdmin(username);
+        db.closeConnection();
+        return result;
+        }
+        else {
+            return false;
+        }
     }
 
     private boolean authenticate(String username, String password) throws SQLException {
@@ -101,7 +118,7 @@ public class LoginView extends VerticalLayout {
                 DatabaseLogic dbLogic = new DatabaseLogic();
                 try {
                     dbLogic.connectToDb();
-                    dbLogic.addUser(username, password);
+                    dbLogic.addUser(username, password, false);
                     dbLogic.closeConnection();
                     Notification.show("Registration successful");
                     dialog.close();

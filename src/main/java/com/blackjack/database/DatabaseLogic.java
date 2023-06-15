@@ -24,12 +24,12 @@ public class DatabaseLogic {
         }
     }
 
-    public void addUser(String user_name, String user_password) throws SQLException {
+    public void addUser(String user_name, String user_password, boolean isAdmin) throws SQLException {
         if (connection == null) {
             return;
         }
 
-        String sql = String.format("INSERT INTO blackjack_user VALUES('%s', '%s');", user_name, user_password);
+        String sql = String.format("INSERT INTO blackjack_user VALUES('%s', '%s', '%s');", user_name, user_password, isAdmin);
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
@@ -70,4 +70,30 @@ public class DatabaseLogic {
             connection.close();
         }
     }
+
+    public boolean checkAdmin(String user_name) {
+
+        if (connection == null) {
+            return false;
+        }
+        String sql = String.format("SELECT is_Admin FROM blackjack_user WHERE user_name = '%S';", user_name);
+        try (Statement statement = connection.createStatement()){
+            ResultSet result = statement.executeQuery(sql);
+
+            if(result.next()){
+                String isAdmin = result.getString("is_Admin");
+                if (isAdmin.equals("1")){
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+        catch (Exception ex){
+            System.out.println(ex);
+        }
+        return false;
+    }
+
 }
