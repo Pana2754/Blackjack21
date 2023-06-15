@@ -45,6 +45,7 @@ public class DatabaseLogic {
         return true;
     }
     
+
     public boolean checkLoginData(String user_name, String user_password) throws SQLException {
 
         if (connection == null) {
