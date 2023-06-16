@@ -13,6 +13,7 @@ public class GameStateManager {
     public GameStateManager(){
         playerList = new ArrayList<>();
         cards = new CardDeck();
+        cards.shuffle();
     }
     public static synchronized GameStateManager getInstance(){
         if(instance == null){
