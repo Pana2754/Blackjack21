@@ -29,6 +29,7 @@ public class LoginView extends VerticalLayout {
         Image image = new Image("head.png", "Logo");
         image.addClassNames("login-logo");
 
+
         TextField usernameField = new TextField("Username");
         usernameField.setWidth("300px");
         usernameField.addClassNames("login-input");
@@ -38,7 +39,7 @@ public class LoginView extends VerticalLayout {
         passwordField.addClassNames("login-input");
 
         Button loginButton = new Button("Login");
-        loginButton.setWidth("100px");
+        loginButton.setWidth("150px");
         loginButton.addClickListener(event -> {
             String username = usernameField.getValue();
             String password = hashPassword(passwordField.getValue());
@@ -64,7 +65,7 @@ public class LoginView extends VerticalLayout {
         loginButton.addClassNames("red-button");
 
         Button registerButton = new Button("Register");
-        registerButton.setWidth("100px");
+        registerButton.setWidth("150px");
         registerButton.addClickListener(event -> showRegistrationForm());
         registerButton.addClassNames("green-button");
 

@@ -32,6 +32,7 @@ public class AdminPanel extends VerticalLayout {
         banButton.addClickListener(event -> {
             Player selectedPlayer = getPlayerGrid().asSingleSelect().getValue();
             if (selectedPlayer != null) {
+                Notification.show("Banned: " + selectedPlayer.getPlayerName());
                 selectedPlayer.setBanned(true);
                 getPlayerGrid().getDataProvider().refreshAll();
                 updateBannedStatus(selectedPlayer.getPlayerName(), true);
@@ -50,6 +51,7 @@ public class AdminPanel extends VerticalLayout {
         unbanButton.addClickListener(event -> {
             Player selectedPlayer = getPlayerGrid().asSingleSelect().getValue();
             if (selectedPlayer != null) {
+                Notification.show("Unbanned: " + selectedPlayer.getPlayerName());
                 selectedPlayer.setBanned(false);
                 getPlayerGrid().getDataProvider().refreshAll();
                 updateBannedStatus(selectedPlayer.getPlayerName(), false);
