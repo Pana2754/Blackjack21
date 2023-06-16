@@ -25,12 +25,12 @@ public class DatabaseLogic {
         }
     }
 
-    public void addUser(String user_name, String user_password, boolean isAdmin) throws SQLException {
+    public void addUser(String user_name, String user_password, boolean isAdmin, boolean isBanned) throws SQLException {
         if (connection == null) {
             return;
         }
 
-        String sql = String.format("INSERT INTO blackjack_user VALUES('%s', '%s', '%s');", user_name, user_password, isAdmin);
+        String sql = String.format("INSERT INTO blackjack_user VALUES('%s', '%s', '%s', '%s');", user_name, user_password, isAdmin, isBanned);
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
