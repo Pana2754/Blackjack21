@@ -11,7 +11,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 
@@ -21,7 +20,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
 
-@PageTitle("Login")
 @Route("login")
 public class LoginView extends VerticalLayout {
     private static final long serialVersionUID = -4286830884968200051L;
@@ -29,7 +27,8 @@ public class LoginView extends VerticalLayout {
     public LoginView() {
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
-        Image image = new Image("blackjack.png", "Logo");
+
+        Image image = new Image("head.png", "Logo");
         image.addClassNames("login-logo");
 
         TextField usernameField = new TextField("Username");
@@ -48,20 +47,18 @@ public class LoginView extends VerticalLayout {
 
             try {
                 if (isAdmin(username, password)) {
-                    Notification.show("Als Admin angemeldet");
+                    Notification.show("Logged in as administrator!");
                     UI.getCurrent().navigate("admin-panel");
-                }
-                else if (authenticate(username, password) && passwordField.getValue() != "") {
-                    Notification.show("Login successful");
+                } else if (authenticate(username, password) && !passwordField.getValue().isEmpty()) {
+                    Notification.show("Login successful!");
+                    // Assuming you have a Player class and Lobby class, if not remove these lines
                     Player activePlayer = new Player(username, false);
                     VaadinSession.getCurrent().setAttribute("activePlayer", activePlayer);
-
-                    // Notify Lobby about the new player
                     Lobby.playerLoggedIn(activePlayer);
 
                     UI.getCurrent().navigate("waiting-lobby");
                 } else {
-                    Notification.show("Invalid credentials");
+                    Notification.show("Invalid credentials!");
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -71,9 +68,7 @@ public class LoginView extends VerticalLayout {
 
         Button registerButton = new Button("Register");
         registerButton.setWidth("100px");
-        registerButton.addClickListener(event -> {
-            showRegistrationForm();
-        });
+        registerButton.addClickListener(event -> showRegistrationForm());
         registerButton.addClassNames("register-button");
 
         HorizontalLayout buttonLayout = new HorizontalLayout(loginButton, registerButton);
@@ -83,38 +78,42 @@ public class LoginView extends VerticalLayout {
     }
 
     private boolean isAdmin(String username, String password) throws SQLException {
-        if (authenticate(username, password) && password != "") {
-        DatabaseLogic db = new DatabaseLogic();
-        db.connectToDb();
-        boolean result = db.checkAdmin(username);
-        db.closeConnection();
-        return result;
+        if (!password.isEmpty() && authenticate(username, password)) {
+            DatabaseLogic db = new DatabaseLogic();
+            try {
+                db.connectToDb();
+                boolean result = db.checkAdmin(username);
+                return result;
+            } finally {
+                db.closeConnection();
+            }
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
     private boolean authenticate(String username, String password) throws SQLException {
         DatabaseLogic db = new DatabaseLogic();
-        db.connectToDb();
-        boolean result = db.checkLoginData(username, password);
-        db.closeConnection();
-        return result;
+        try {
+            db.connectToDb();
+            boolean result = db.checkLoginData(username, password);
+            return result;
+        } finally {
+            db.closeConnection();
+        }
     }
 
- // ...
-    private boolean verifyAge(LocalDate selectedDate){
-        LocalDate curentTime = LocalDate.now();
-        Period difference = Period.between(selectedDate,curentTime);
-        int age  = difference.getYears();
+    private boolean verifyAge(LocalDate selectedDate) {
+        LocalDate currentTime = LocalDate.now();
+        Period difference = Period.between(selectedDate, currentTime);
+        int age = difference.getYears();
 
-        if (age < 18){
-            Notification.show("You must be 18!");
+        if (age < 18) {
+            Notification.show("You must be 18 to play!");
             return false;
         }
         return true;
     }
+
     private void showRegistrationForm() {
         Dialog dialog = new Dialog();
         dialog.setWidth("400px");
@@ -126,7 +125,6 @@ public class LoginView extends VerticalLayout {
         PasswordField confirmPasswordField = new PasswordField("Confirm Password");
         DatePicker datePicker = new DatePicker("Birthdate");
 
-
         Button registerButton = new Button("Register");
         registerButton.addClickListener(event -> {
             String username = usernameField.getValue();
@@ -134,30 +132,37 @@ public class LoginView extends VerticalLayout {
             String confirmPassword = hashPassword(confirmPasswordField.getValue());
             LocalDate userAge = datePicker.getValue();
 
-            if (password.equals(confirmPassword) ) {
-                if(verifyAge(userAge)){
-                    DatabaseLogic dbLogic = new DatabaseLogic();
-                    try {
-                        dbLogic.connectToDb();
-                        dbLogic.addUser(username, password, false);
-                        dbLogic.closeConnection();
-                        Notification.show("Registration successful");
-                        dialog.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        Notification.show("Error during registration: " + e.getMessage());
-                    }
+            DatabaseLogic dbLogic = new DatabaseLogic();
+            try {
+                dbLogic.connectToDb();
+
+                // Assuming there's a method called doesUserExist, if not you need to implement it or remove this block
+                if (dbLogic.doesUserExist(username)) {
+                    Notification.show("Username already exists!");
+                } else if (password.equals(confirmPassword) && verifyAge(userAge)) {
+                    dbLogic.addUser(username, password, false);
+                    Notification.show("Successfully registered!");
+                    dialog.close();
+                } else if (!password.equals(confirmPassword)) {
+                    Notification.show("Passwords do not match!");
                 }
-            } else {
-                Notification.show("Passwords do not match");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Notification.show("Registration failed!");
+            } finally {
+                try {
+                    dbLogic.closeConnection();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         });
-        formLayout.add(usernameField, passwordField, confirmPasswordField,datePicker, registerButton);
+
+        formLayout.add(usernameField, passwordField, confirmPasswordField, datePicker, registerButton);
         dialog.add(formLayout);
 
         dialog.open();
     }
-
 
     private String hashPassword(String password) {
         try {
@@ -173,16 +178,3 @@ public class LoginView extends VerticalLayout {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

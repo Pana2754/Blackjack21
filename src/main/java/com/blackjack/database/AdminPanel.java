@@ -24,8 +24,12 @@ public class AdminPanel extends VerticalLayout {
             UI.getCurrent().navigate(LoginView.class);
             return;
         }
+        else if(!isAnAdmin()){
+            UI.getCurrent().navigate(LoginView.class);
+            return;
+        }
 
-        Image logo = new Image("blackjack.png", "Logo");
+        Image logo = new Image("head.png", "Logo");
         logo.setWidth("150px");
         logo.setHeight("150px");
         setWidthFull();
@@ -33,9 +37,19 @@ public class AdminPanel extends VerticalLayout {
         H2 title = new H2("Admin Lobby");
 
     }
-        private boolean isLoggedIn() {
+
+    private boolean isAnAdmin() {
+        Player player = getActivePlayer();
+        if (player.getPlayerName().equals("admin"))
+        {return true;}
+        else return false;
+    }
+
+    private boolean isLoggedIn() {
             return getActivePlayer() != null;
         }
+
+
 
         private Player getActivePlayer() {
             return (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
