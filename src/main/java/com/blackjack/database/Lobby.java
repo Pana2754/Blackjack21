@@ -60,7 +60,9 @@ public class Lobby extends VerticalLayout {
         startGame.setWidth("100px");
         startGame.addClickListener(event -> {
             UI.getCurrent().navigate("GameView");
-            GameEngine.startGame(activePlayers);
+            GameStateManager gameStateManager = GameStateManager.getInstance();
+            gameStateManager.addPlayers(activePlayers);
+
         });
 
         // Update the Grid with all the active players

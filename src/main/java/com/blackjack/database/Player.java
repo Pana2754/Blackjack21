@@ -24,6 +24,9 @@ public class Player {
     private void increaseStake(int value){
 
     }
+    public List<Card> getHand(){
+        return cardList;
+    }
     public String getName() {
         return playerName;
     }
