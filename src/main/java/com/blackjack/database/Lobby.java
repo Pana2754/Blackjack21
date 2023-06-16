@@ -13,7 +13,6 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.component.button.Button;
 
-import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -48,17 +47,13 @@ public class Lobby extends VerticalLayout {
             activePlayers.add(activePlayer);
         }
 
-
         Button startGame = new Button("START");
         startGame.setWidth("100px");
         startGame.addClickListener(event -> {
             UI.getCurrent().navigate("GameView");
-            GameStateManager gameStateManager = GameStateManager.getInstance();
-            gameStateManager.addPlayers(activePlayers);
-
+            GameStateManager.getInstance().addPlayers(activePlayers);
         });
 
-        // Update the Grid with all the active players
         playersGrid.setItems(activePlayers);
 
         add(logo, title, playersGrid, startGame);
@@ -66,10 +61,9 @@ public class Lobby extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.CENTER);
         setMargin(true);
         setSpacing(true);
-        setWidth("100%"); // Set the width of the container to 100%
-        setPadding(true); // Add padding around the elements
-        setSpacing(true); // Add spacing between the elements
-
+        setWidth("100%");
+        setPadding(true);
+        setSpacing(true);
     }
 
     public static void playerLoggedIn(Player player) {
