@@ -8,32 +8,32 @@ import java.util.List;
 
 public class GameEngine {
 
-    private List<Player> players = new ArrayList<>();
+    public static boolean isHandOver21Points(Player player){
+        int aces = 0;
+        int handValue = player.getCardValues();
 
-    public void startGame() {
+        for (Card card: player.getHand()){
+            if(card.rank.equals("A")){
+                aces += 1;
+            }
+        }
 
-        Dealer dealer = new Dealer("Dealer");
-        startRound();
-
-
-    }
-
-    private void startRound(){
-        CardDeck cards = new CardDeck();
-        cards.shuffle();
-        // Somewhere in your game interface code
-
-
-        // Get the card assigned to this player
-        GameStateManager gameManager = GameStateManager.getInstance();
-        Card card = cards.draw();
-
-
-    }
+        if(handValue <= 21){
+            return false;
+        }
+        if(handValue > 21 && aces == 0){
+            return true;
+        }
+        for(int i = 1; i<=aces; i++){
+            if(handValue - i*10 <= 21){
+                return false;
+            }
+        }
+        return true;
 
 
 
-    public void hitCard(){
+
 
     }
 
