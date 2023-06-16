@@ -47,18 +47,20 @@ public class LoginView extends VerticalLayout {
 
             try {
                 if (isAdmin(username, password)) {
-                    Notification.show("Als Admin angemeldet");
+                    Notification
+                            .show("Logged in as administrator!");
+
                     UI.getCurrent().navigate("admin-panel");
                 }
                 else if (authenticate(username, password) && passwordField.getValue() != "") {
-                    Notification.show("Login successful");
+                    Notification.show("Login successful!");
                     Player activePlayer = new Player(username, false);
                     VaadinSession.getCurrent().setAttribute("activePlayer", activePlayer);
                     Lobby.playerLoggedIn(activePlayer);
 
                     UI.getCurrent().navigate("waiting-lobby");
                 } else {
-                    Notification.show("Invalid credentials");
+                    Notification.show("Invalid credentials!");
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
@@ -107,7 +109,8 @@ public class LoginView extends VerticalLayout {
         int age  = difference.getYears();
 
         if (age < 18){
-            Notification.show("You must be 18!");
+            Notification
+                    .show("You must be 18 to play!");
             return false;
         }
         return true;
@@ -138,15 +141,21 @@ public class LoginView extends VerticalLayout {
                         dbLogic.connectToDb();
                         dbLogic.addUser(username, password, false);
                         dbLogic.closeConnection();
-                        Notification.show("Registration successful");
+                        Notification
+                                .show("Successfully registered!");
+
                         dialog.close();
                     } catch (SQLException e) {
                         e.printStackTrace();
-                        Notification.show("Error during registration: " + e.getMessage());
+                        Notification
+                                .show("Registration failed!");
+
                     }
                 }
             } else {
-                Notification.show("Passwords do not match");
+                Notification
+                        .show("Passwords do not match!");
+
             }
         });
         formLayout.add(usernameField, passwordField, confirmPasswordField,datePicker, registerButton);

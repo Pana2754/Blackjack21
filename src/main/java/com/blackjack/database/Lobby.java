@@ -6,6 +6,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -13,14 +14,10 @@ import com.vaadin.flow.server.VaadinSession;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-
-
 @PageTitle("Waiting Lobby")
 @Route("waiting-lobby")
 public class Lobby extends VerticalLayout {
     private static final long serialVersionUID = 503398040364625051L;
-
-    // A thread-safe list to store all active players
     private static final List<Player> activePlayers = new CopyOnWriteArrayList<>();
     private Grid<Player> playersGrid = new Grid<>();
 
@@ -35,39 +32,33 @@ public class Lobby extends VerticalLayout {
         Image logo = new Image("head.png", "Logo");
         logo.setWidth("150px");
         logo.setHeight("150px");
-        setWidthFull();
 
         H2 title = new H2("Waiting Lobby");
 
-
         playersGrid.addColumn(Player::getPlayerName).setHeader("Name");
         playersGrid.addComponentColumn(this::createReadyCheckbox).setHeader("Ready");
-        playersGrid.setHeight("300px");
-        playersGrid.setWidth("900px");
-
-
+        HorizontalLayout gridWrapper = new HorizontalLayout(playersGrid);
+        gridWrapper.setJustifyContentMode(JustifyContentMode.CENTER);
 
         Player activePlayer = getActivePlayer();
         if (activePlayer != null && !activePlayers.contains(activePlayer)) {
-
             activePlayers.add(activePlayer);
         }
-
-        // Update the Grid with all the active players
         playersGrid.setItems(activePlayers);
 
         add(logo, title, playersGrid);
-        setAlignItems(Alignment.CENTER);
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setMargin(true);
-        setSpacing(true);
+        setAlignItems(Alignment.CENTER); // Align items to the center
+        setJustifyContentMode(JustifyContentMode.CENTER); // Justify content to the center
+        setWidth("100%"); // Set the width of the container to 100%
+        setPadding(true); // Add padding around the elements
+        setSpacing(true); // Add spacing between the elements
     }
 
     public static void playerLoggedIn(Player player) {
         activePlayers.add(player);
         Broadcaster.broadcast(activePlayers);
     }
-    //
+
     private void updateGrid(List<Player> players) {
         // This method will be run in the UI thread, ensuring thread safety.
         getUI().ifPresent(ui -> {
@@ -77,12 +68,14 @@ public class Lobby extends VerticalLayout {
             });
         });
     }
+
     @Override
     protected void onDetach(DetachEvent detachEvent) {
         // Unregister from broadcaster when UI is detached.
         Broadcaster.unregister(this::updateGrid);
         super.onDetach(detachEvent);
     }
+
     private boolean isLoggedIn() {
         return getActivePlayer() != null;
     }
@@ -90,16 +83,14 @@ public class Lobby extends VerticalLayout {
     private Player getActivePlayer() {
         return (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
     }
+
     private Checkbox createReadyCheckbox(Player player) {
         Checkbox checkbox = new Checkbox();
         checkbox.setValue(player.isReady());
         checkbox.addValueChangeListener(event -> {
             player.setReady(event.getValue());
-
             Broadcaster.broadcast(activePlayers);
         });
         return checkbox;
     }
-
-
 }

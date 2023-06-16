@@ -18,9 +18,10 @@ body {
 .login-logo {
     display: block;
     margin: 0 auto 20px;
-    width: 150px;
-    height: auto;
+    width: 300px;
+    height: 300px;
 }
+
 
 .login-heading {
     color: #333;
