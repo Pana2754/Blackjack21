@@ -30,7 +30,6 @@ public class Lobby extends VerticalLayout {
         }
 
         Broadcaster.register(this::updateGrid);
-
         Image logo = new Image("head.png", "Logo");
         logo.setWidth("150px");
         logo.setHeight("150px");
@@ -38,7 +37,6 @@ public class Lobby extends VerticalLayout {
         H2 title = new H2("Waiting Lobby");
 
         playersGrid.addColumn(Player::getPlayerName).setHeader("Name");
-        playersGrid.addComponentColumn(this::createReadyCheckbox).setHeader("Ready");
         HorizontalLayout gridWrapper = new HorizontalLayout(playersGrid);
         gridWrapper.setJustifyContentMode(JustifyContentMode.CENTER);
 
@@ -94,13 +92,4 @@ public class Lobby extends VerticalLayout {
         return (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
     }
 
-    private Checkbox createReadyCheckbox(Player player) {
-        Checkbox checkbox = new Checkbox();
-        checkbox.setValue(player.isReady());
-        checkbox.addValueChangeListener(event -> {
-            player.setReady(event.getValue());
-            Broadcaster.broadcast(activePlayers);
-        });
-        return checkbox;
-    }
 }

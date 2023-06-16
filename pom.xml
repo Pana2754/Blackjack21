@@ -54,16 +54,18 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>8.2.2.jre11</version>
+            <version>12.2.0.jre11</version>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <!-- Replace artifactId with vaadin-core to use only free components -->
             <artifactId>vaadin</artifactId>
+            <version>24.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-spring-boot-starter</artifactId>
+            <version>24.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.parttio</groupId>
@@ -88,7 +90,18 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-testbench-junit5</artifactId>
+            <version>24.0.0</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.helger</groupId>
+            <artifactId>ph-wsimport-plugin</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.davidmoten</groupId>
+            <artifactId>jax-maven-plugin-test</artifactId>
+            <version>0.2</version>
         </dependency>
     </dependencies>
 

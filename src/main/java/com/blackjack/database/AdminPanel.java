@@ -6,6 +6,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -18,14 +19,16 @@ import java.util.List;
 @PageTitle("Admin Panel")
 @Route("admin-panel")
 public class AdminPanel extends VerticalLayout {
-
     private List<Player> players = new ArrayList<>();
+    private Grid<Player> playerGrid;
 
     public AdminPanel() {
-
+        setWidthFull();
+    addClassName("admin-panel-title");
         H2 title = new H2("Adminpanel");
 
         Button banButton = new Button("Ban User");
+        banButton.addClassName("red-button");
         banButton.addClickListener(event -> {
             Player selectedPlayer = getPlayerGrid().asSingleSelect().getValue();
             if (selectedPlayer != null) {
@@ -35,12 +38,32 @@ public class AdminPanel extends VerticalLayout {
             }
         });
 
+        Button backButton= new Button("Back to Login");
+        backButton.addClassName("grey-button");
+        backButton.addClickListener(event -> {
+            UI.getCurrent().navigate("login");
+        });
 
-        Grid<Player> playerGrid = createPlayerGrid();
+
+        Button unbanButton = new Button("Unban User");
+        unbanButton.addClassName("green-button");
+        unbanButton.addClickListener(event -> {
+            Player selectedPlayer = getPlayerGrid().asSingleSelect().getValue();
+            if (selectedPlayer != null) {
+                selectedPlayer.setBanned(false);
+                getPlayerGrid().getDataProvider().refreshAll();
+                updateBannedStatus(selectedPlayer.getPlayerName(), false);
+            }
+        });
+
+        HorizontalLayout buttonLayout= new HorizontalLayout();
+        buttonLayout.add(banButton,unbanButton,backButton);
+
+        playerGrid = createPlayerGrid();
         fetchAllUsers();
         playerGrid.setItems(players);
 
-        add(title, playerGrid, banButton);
+        add(title, playerGrid, buttonLayout);
         if (!isLoggedIn()) {
             UI.getCurrent().navigate(LoginView.class);
             return;
@@ -53,6 +76,7 @@ public class AdminPanel extends VerticalLayout {
     private Grid<Player> createPlayerGrid() {
         Grid<Player> grid = new Grid<>();
         grid.addColumn(Player::getPlayerName).setHeader("Name");
+        grid.addColumn(Player::isBanned).setHeader("Banned");
         return grid;
     }
 
@@ -70,7 +94,7 @@ public class AdminPanel extends VerticalLayout {
     }
 
     private Grid<Player> getPlayerGrid() {
-        return (Grid<Player>) getComponentAt(2);
+        return playerGrid;
     }
 
     private void fetchAllUsers() {

@@ -13,8 +13,6 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
@@ -63,12 +61,12 @@ public class LoginView extends VerticalLayout {
                 throw new RuntimeException(e);
             }
         });
-        loginButton.addClassNames("login-button");
+        loginButton.addClassNames("red-button");
 
         Button registerButton = new Button("Register");
         registerButton.setWidth("100px");
         registerButton.addClickListener(event -> showRegistrationForm());
-        registerButton.addClassNames("register-button");
+        registerButton.addClassNames("green-button");
 
         HorizontalLayout buttonLayout = new HorizontalLayout(loginButton, registerButton);
 
