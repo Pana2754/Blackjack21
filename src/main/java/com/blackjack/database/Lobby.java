@@ -11,9 +11,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
-import com.vaadin.flow.component.button.Button;
-
-import java.awt.*;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -47,29 +44,14 @@ public class Lobby extends VerticalLayout {
         if (activePlayer != null && !activePlayers.contains(activePlayer)) {
             activePlayers.add(activePlayer);
         }
-
-
-        Button startGame = new Button("START");
-        startGame.setWidth("100px");
-        startGame.addClickListener(event -> {
-            UI.getCurrent().navigate("GameView");
-            GameStateManager gameStateManager = GameStateManager.getInstance();
-            gameStateManager.addPlayers(activePlayers);
-
-        });
-
-        // Update the Grid with all the active players
         playersGrid.setItems(activePlayers);
 
-        add(logo, title, playersGrid, startGame);
-        setAlignItems(Alignment.CENTER);
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setMargin(true);
-        setSpacing(true);
+        add(logo, title, playersGrid);
+        setAlignItems(Alignment.CENTER); // Align items to the center
+        setJustifyContentMode(JustifyContentMode.CENTER); // Justify content to the center
         setWidth("100%"); // Set the width of the container to 100%
         setPadding(true); // Add padding around the elements
         setSpacing(true); // Add spacing between the elements
-
     }
 
     public static void playerLoggedIn(Player player) {
@@ -78,7 +60,6 @@ public class Lobby extends VerticalLayout {
     }
 
     private void updateGrid(List<Player> players) {
-        // This method will be run in the UI thread, ensuring thread safety.
         getUI().ifPresent(ui -> {
             ui.access(() -> {
                 playersGrid.setItems(players);
@@ -89,7 +70,6 @@ public class Lobby extends VerticalLayout {
 
     @Override
     protected void onDetach(DetachEvent detachEvent) {
-        // Unregister from broadcaster when UI is detached.
         Broadcaster.unregister(this::updateGrid);
         super.onDetach(detachEvent);
     }
