@@ -10,7 +10,7 @@ public class GameStateManager {
 
     private CardDeck cards;
 
-    public GameStateManager(){
+    private GameStateManager(){
         playerList = new ArrayList<>();
         cards = new CardDeck();
         cards.shuffle();
