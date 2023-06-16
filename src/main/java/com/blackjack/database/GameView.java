@@ -41,8 +41,10 @@ public class GameView extends VerticalLayout {
 
     private void displayHand() {
         if (activePlayer != null) {
-            handContainer.removeAll(); // remove all old labels
-
+            handContainer.removeAll(); // remove all old label
+            Div pointsLabel = new Div();
+            pointsLabel.setText("Over 21 Points: " + GameEngine.isHandOver21Points(activePlayer));
+            handContainer.add(pointsLabel);
             List<Card> playerHand = activePlayer.getHand(); // Assuming you have a getter for the hand in the Player class
             // Display the cards to the player (e.g., in a Label or some other component)
             for (Card card : playerHand) {
@@ -50,6 +52,7 @@ public class GameView extends VerticalLayout {
                 label.setText("You have: " + card.suit + " " + card.rank); // Assuming your Card class has suit and rank properties
                 handContainer.add(label); // add the label to the container
             }
+
         }
     }
 }

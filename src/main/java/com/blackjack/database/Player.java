@@ -8,9 +8,10 @@ public class Player {
     private String playerName;
     private Integer CoinBalance;
     private Integer stake;
+
+    private int CardValue;
     private boolean ready;
     private List<Card> cardList = new ArrayList<>();
-    private Integer cardValues;
 
     public Player(String playerName, boolean ready){
         this.playerName = playerName;
@@ -23,6 +24,27 @@ public class Player {
 
     private void increaseStake(int value){
 
+    }
+
+    public int getCardValues(){
+
+        int result = 0;
+        for(Card card : cardList){
+            try {
+                result += Integer.parseInt(card.rank);
+                continue;
+            }
+            catch (Exception e){}
+
+            if (card.rank.equals("A")){
+                result += 11;
+            }
+            else {
+                result += 10;
+            }
+
+        }
+        return result;
     }
 
     public List<Card> getHand(){
@@ -39,6 +61,8 @@ public class Player {
     public void setReady(boolean ready) {
         this.ready = ready;
     }
+
+
 
 
 
