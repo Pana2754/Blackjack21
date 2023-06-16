@@ -8,10 +8,11 @@ public class Player {
     private String playerName;
 
     private Integer CoinBalance;
+    private Integer stake;
     private int CardValue;
     private boolean ready;
     private boolean banned;;
-    private Integer stake;
+
     private List<Card> cardList = new ArrayList<>();
 
     public Player(String playerName, boolean ready){
