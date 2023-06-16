@@ -8,7 +8,6 @@ public class Player {
     private String playerName;
 
     private Integer CoinBalance;
-    private Integer stake;
     private int CardValue;
     private boolean ready;
     private boolean banned;;
