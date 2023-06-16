@@ -13,6 +13,7 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,7 +24,6 @@ import java.time.Period;
 @Route("login")
 public class LoginView extends VerticalLayout {
     private static final long serialVersionUID = -4286830884968200051L;
-
     public LoginView() {
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
@@ -51,7 +51,6 @@ public class LoginView extends VerticalLayout {
                     UI.getCurrent().navigate("admin-panel");
                 } else if (authenticate(username, password) && !passwordField.getValue().isEmpty()) {
                     Notification.show("Login successful!");
-                    // Assuming you have a Player class and Lobby class, if not remove these lines
                     Player activePlayer = new Player(username, false);
                     VaadinSession.getCurrent().setAttribute("activePlayer", activePlayer);
                     Lobby.playerLoggedIn(activePlayer);
@@ -94,8 +93,10 @@ public class LoginView extends VerticalLayout {
     private boolean authenticate(String username, String password) throws SQLException {
         DatabaseLogic db = new DatabaseLogic();
         try {
+
             db.connectToDb();
             boolean result = db.checkLoginData(username, password);
+
             return result;
         } finally {
             db.closeConnection();
@@ -163,6 +164,7 @@ public class LoginView extends VerticalLayout {
 
         dialog.open();
     }
+
 
     private String hashPassword(String password) {
         try {

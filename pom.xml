@@ -15,6 +15,13 @@
         <selenium.version>4.8.3</selenium.version>
     </properties>
 
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-core</artifactId>
+            <version>22</version>
+        </dependency>
+
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>

@@ -1,5 +1,7 @@
 package com.blackjack.database;
 
+import com.vaadin.flow.component.notification.Notification;
+
 import java.sql.*;
 
 public class DatabaseLogic {
@@ -7,7 +9,6 @@ public class DatabaseLogic {
     private Connection connection;
 
     public void connectToDb() throws SQLException {
-
         String connectionUrl = "jdbc:sqlserver://provadis-it-ausbildung.de:1433;"
                 + "databaseName=BlackJack01;"
                 + "user=BlackJackUser01;"
@@ -38,32 +39,31 @@ public class DatabaseLogic {
             throw e;
         }
     }
-    
-    
 
     public boolean checkLoginData(String user_name, String user_password) throws SQLException {
-
         if (connection == null) {
             return false;
         }
-        String sql = String.format("SELECT user_password FROM blackjack_user WHERE user_name = '%S';", user_name);
-        try (Statement statement = connection.createStatement()){
+        String sql = String.format("SELECT user_password, isBanned FROM blackjack_user WHERE user_name = '%S';", user_name);
+        try (Statement statement = connection.createStatement()) {
             ResultSet result = statement.executeQuery(sql);
 
-            if(result.next()){
-
+            if (result.next()) {
                 String db_password = result.getString("user_password");
+                boolean isBanned = result.getBoolean("isBanned");
 
-                if (db_password.equals(user_password)){
+                if (isBanned) {
+                    Notification.show("You are banned!");
+                } else if (db_password.equals(user_password)) {
                     return true;
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex);
         }
         return false;
     }
+
 
     public void closeConnection() throws SQLException {
         if (connection != null) {
@@ -77,7 +77,7 @@ public class DatabaseLogic {
         }
 
         String sql = String.format("SELECT user_name FROM blackjack_user WHERE user_name = '%s';", user_name);
-        try (Statement statement = connection.createStatement()){
+        try (Statement statement = connection.createStatement()) {
             ResultSet result = statement.executeQuery(sql);
 
             if (result.next()) {
@@ -92,28 +92,28 @@ public class DatabaseLogic {
     }
 
     public boolean checkAdmin(String user_name) {
-
         if (connection == null) {
             return false;
         }
         String sql = String.format("SELECT is_Admin FROM blackjack_user WHERE user_name = '%S';", user_name);
-        try (Statement statement = connection.createStatement()){
+        try (Statement statement = connection.createStatement()) {
             ResultSet result = statement.executeQuery(sql);
 
-            if(result.next()){
+            if (result.next()) {
                 String isAdmin = result.getString("is_Admin");
-                if (isAdmin.equals("1")){
+                if (isAdmin.equals("1")) {
                     return true;
-                }
-                else {
+                } else {
                     return false;
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex);
         }
         return false;
     }
 
+    public Connection getConnection() {
+        return connection;
+    }
 }
