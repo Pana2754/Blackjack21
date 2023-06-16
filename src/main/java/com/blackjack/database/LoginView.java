@@ -139,7 +139,7 @@ public class LoginView extends VerticalLayout {
                 if (dbLogic.doesUserExist(username)) {
                     Notification.show("Username already exists!");
                 } else if (password.equals(confirmPassword) && verifyAge(userAge)) {
-                    dbLogic.addUser(username, password, false);
+                    dbLogic.addUser(username, password, false, false);
                     Notification.show("Successfully registered!");
                     dialog.close();
                 } else if (!password.equals(confirmPassword)) {

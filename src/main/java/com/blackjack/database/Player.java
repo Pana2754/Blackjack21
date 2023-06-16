@@ -12,6 +12,7 @@ public class Player {
     private int CardValue;
     private boolean ready;
     private boolean banned;;
+
     private List<Card> cardList = new ArrayList<>();
 
     public Player(String playerName, boolean ready){
