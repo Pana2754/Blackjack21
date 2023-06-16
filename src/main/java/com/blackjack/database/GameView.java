@@ -15,7 +15,7 @@ public class GameView extends VerticalLayout {
 
     private GameStateManager gameManager;
     VaadinSession vaadinSession = VaadinSession.getCurrent();
-    private static Player activePlayer;
+    private Player activePlayer;
     private Div handContainer; // container to hold the labels of the cards
 
     public GameView() {
