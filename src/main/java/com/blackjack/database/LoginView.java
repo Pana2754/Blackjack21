@@ -50,7 +50,7 @@ public class LoginView extends VerticalLayout {
                     UI.getCurrent().navigate("admin-panel");
                 } else if (authenticate(username, password) && !passwordField.getValue().isEmpty()) {
                     Notification.show("Login successful!");
-                    Player activePlayer = new Player(username, false);
+                    Player activePlayer = new Player(username, false, 1000);
                     VaadinSession.getCurrent().setAttribute("activePlayer", activePlayer);
                     Lobby.playerLoggedIn(activePlayer);
 
@@ -130,6 +130,7 @@ public class LoginView extends VerticalLayout {
             String username = usernameField.getValue();
             String password = hashPassword(passwordField.getValue());
             String confirmPassword = hashPassword(confirmPasswordField.getValue());
+
             LocalDate userAge = datePicker.getValue();
 
             DatabaseLogic dbLogic = new DatabaseLogic();
@@ -140,7 +141,7 @@ public class LoginView extends VerticalLayout {
                 if (dbLogic.doesUserExist(username)) {
                     Notification.show("Username already exists!");
                 } else if (password.equals(confirmPassword) && verifyAge(userAge)) {
-                    dbLogic.addUser(username, password, false, false);
+                    dbLogic.addUser(username, password, false, false, 1000);
                     Notification.show("Successfully registered!");
                     dialog.close();
                 } else if (!password.equals(confirmPassword)) {
