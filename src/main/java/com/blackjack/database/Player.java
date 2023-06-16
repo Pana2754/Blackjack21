@@ -7,7 +7,7 @@ public class Player {
 
     private String playerName;
 
-    private Integer CoinBalance;
+    private float CoinBalance;
     private Integer stake;
     private int CardValue;
     private boolean ready;
@@ -15,7 +15,7 @@ public class Player {
 
     private List<Card> cardList = new ArrayList<>();
 
-    public Player(String playerName, boolean ready){
+    public Player(String playerName, boolean ready, double balance){
         this.playerName = playerName;
         this.CoinBalance = 1000;
         this.ready = ready;
@@ -73,5 +73,11 @@ public class Player {
     }
 
 
+    public float getBalance() {
+        return CoinBalance;
+    }
 
+    public void setBalance(float newBalance) {
+        this.CoinBalance = newBalance;
+    }
 }

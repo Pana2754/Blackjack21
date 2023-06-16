@@ -29,6 +29,7 @@ public class LoginView extends VerticalLayout {
         Image image = new Image("head.png", "Logo");
         image.addClassNames("login-logo");
 
+
         TextField usernameField = new TextField("Username");
         usernameField.setWidth("300px");
         usernameField.addClassNames("login-input");
@@ -38,7 +39,7 @@ public class LoginView extends VerticalLayout {
         passwordField.addClassNames("login-input");
 
         Button loginButton = new Button("Login");
-        loginButton.setWidth("100px");
+        loginButton.setWidth("150px");
         loginButton.addClickListener(event -> {
             String username = usernameField.getValue();
             String password = hashPassword(passwordField.getValue());
@@ -49,7 +50,7 @@ public class LoginView extends VerticalLayout {
                     UI.getCurrent().navigate("admin-panel");
                 } else if (authenticate(username, password) && !passwordField.getValue().isEmpty()) {
                     Notification.show("Login successful!");
-                    Player activePlayer = new Player(username, false);
+                    Player activePlayer = new Player(username, false, 1000);
                     VaadinSession.getCurrent().setAttribute("activePlayer", activePlayer);
                     Lobby.playerLoggedIn(activePlayer);
 
@@ -64,7 +65,7 @@ public class LoginView extends VerticalLayout {
         loginButton.addClassNames("red-button");
 
         Button registerButton = new Button("Register");
-        registerButton.setWidth("100px");
+        registerButton.setWidth("150px");
         registerButton.addClickListener(event -> showRegistrationForm());
         registerButton.addClassNames("green-button");
 
@@ -129,6 +130,7 @@ public class LoginView extends VerticalLayout {
             String username = usernameField.getValue();
             String password = hashPassword(passwordField.getValue());
             String confirmPassword = hashPassword(confirmPasswordField.getValue());
+
             LocalDate userAge = datePicker.getValue();
 
             DatabaseLogic dbLogic = new DatabaseLogic();
@@ -139,7 +141,7 @@ public class LoginView extends VerticalLayout {
                 if (dbLogic.doesUserExist(username)) {
                     Notification.show("Username already exists!");
                 } else if (password.equals(confirmPassword) && verifyAge(userAge)) {
-                    dbLogic.addUser(username, password, false, false);
+                    dbLogic.addUser(username, password, false, false, 1000);
                     Notification.show("Successfully registered!");
                     dialog.close();
                 } else if (!password.equals(confirmPassword)) {

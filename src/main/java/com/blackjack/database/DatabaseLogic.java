@@ -24,13 +24,32 @@ public class DatabaseLogic {
             throw e;
         }
     }
+    public void updateBalance(String playerName, double newBalance) {
+        try {
+            DatabaseLogic dbLogic = new DatabaseLogic();
+            dbLogic.connectToDb();
 
-    public void addUser(String user_name, String user_password, boolean isAdmin, boolean isBanned) throws SQLException {
+            Connection connection = dbLogic.getConnection();
+            String sql = "UPDATE blackjack_user SET balance = ? WHERE user_name = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setDouble(1, newBalance);
+                statement.setString(2, playerName);
+                statement.executeUpdate();
+            }
+            dbLogic.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void addUser(String user_name, String user_password, boolean isAdmin, boolean isBanned, float balance) throws SQLException {
         if (connection == null) {
             return;
         }
 
-        String sql = String.format("INSERT INTO blackjack_user VALUES('%s', '%s', '%s', '%s');", user_name, user_password, isAdmin, isBanned);
+        String sql = String.format("INSERT INTO blackjack_user VALUES('%s', '%s', '%s', '%s', '%s');", user_name, user_password, isAdmin, isBanned, balance);
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
