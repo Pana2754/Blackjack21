@@ -18,7 +18,7 @@ import java.util.List;
 @PageTitle("BlackJack")
 @Route("GameView")
 public class GameView extends VerticalLayout {
-    private GameEngine gameEngine;
+    private GameStateManager gameManager;
     VaadinSession vaadinSession = VaadinSession.getCurrent();
     Player activePlayer;
     public GameView(){
@@ -26,6 +26,8 @@ public class GameView extends VerticalLayout {
         Button hit = new Button("Hit");
         hit.setWidth("100px");
         hit.addClickListener(event -> {
+            gameManager.giveCardToPlayer(activePlayer);
+            displayHand();
         });
         Button stand = new Button("Stand");
         stand.setWidth("100px");
@@ -39,7 +41,7 @@ public class GameView extends VerticalLayout {
 
     public void initializeGame(){
 
-        GameStateManager gameManager = new GameStateManager();
+        gameManager = GameStateManager.getInstance();
         gameManager.giveCardToPlayer(activePlayer);
         displayHand();
 
