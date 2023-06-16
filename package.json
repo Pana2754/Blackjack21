@@ -4,13 +4,12 @@
   "type": "module",
   "dependencies": {
     "@polymer/polymer": "3.5.1",
-    "@vaadin/a11y-base": "24.1.0",
     "@vaadin/accordion": "24.1.0",
     "@vaadin/app-layout": "24.1.0",
     "@vaadin/avatar": "24.1.0",
     "@vaadin/avatar-group": "24.1.0",
     "@vaadin/board": "24.1.0",
-    "@vaadin/bundles": "24.1.0",
+    "@vaadin/bundles": "24.0.0",
     "@vaadin/button": "24.1.0",
     "@vaadin/charts": "24.1.0",
     "@vaadin/checkbox": "24.1.0",
@@ -58,7 +57,6 @@
     "@vaadin/router": "1.7.5",
     "@vaadin/scroller": "24.1.0",
     "@vaadin/select": "24.1.0",
-    "@vaadin/side-nav": "24.1.0",
     "@vaadin/split-layout": "24.1.0",
     "@vaadin/tabs": "24.1.0",
     "@vaadin/tabsheet": "24.1.0",
@@ -100,13 +98,12 @@
   "vaadin": {
     "dependencies": {
       "@polymer/polymer": "3.5.1",
-      "@vaadin/a11y-base": "24.1.0",
       "@vaadin/accordion": "24.1.0",
       "@vaadin/app-layout": "24.1.0",
       "@vaadin/avatar": "24.1.0",
       "@vaadin/avatar-group": "24.1.0",
       "@vaadin/board": "24.1.0",
-      "@vaadin/bundles": "24.1.0",
+      "@vaadin/bundles": "24.0.0",
       "@vaadin/button": "24.1.0",
       "@vaadin/charts": "24.1.0",
       "@vaadin/checkbox": "24.1.0",
@@ -154,7 +151,6 @@
       "@vaadin/router": "1.7.5",
       "@vaadin/scroller": "24.1.0",
       "@vaadin/select": "24.1.0",
-      "@vaadin/side-nav": "24.1.0",
       "@vaadin/split-layout": "24.1.0",
       "@vaadin/tabs": "24.1.0",
       "@vaadin/tabsheet": "24.1.0",
@@ -193,11 +189,10 @@
       "workbox-core": "7.0.0",
       "workbox-precaching": "7.0.0"
     },
-    "hash": "2e5b002dfea194d0021170f05797ae72085b5094e257f33185f59fcaa2febf4a"
+    "hash": "a83726abcdd9ff2a5f5df2646c7a3a8a632e3d10ca68f1dbb1606717c3b18d7a"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
-    "@vaadin/a11y-base": "$@vaadin/a11y-base",
     "@vaadin/accordion": "$@vaadin/accordion",
     "@vaadin/app-layout": "$@vaadin/app-layout",
     "@vaadin/avatar": "$@vaadin/avatar",
@@ -241,7 +236,6 @@
     "@vaadin/radio-group": "$@vaadin/radio-group",
     "@vaadin/scroller": "$@vaadin/scroller",
     "@vaadin/select": "$@vaadin/select",
-    "@vaadin/side-nav": "$@vaadin/side-nav",
     "@vaadin/split-layout": "$@vaadin/split-layout",
     "@vaadin/tabs": "$@vaadin/tabs",
     "@vaadin/tabsheet": "$@vaadin/tabsheet",
