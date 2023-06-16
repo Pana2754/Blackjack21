@@ -1,5 +1,8 @@
 package com.blackjack.database;
 
+import com.vaadin.flow.component.charts.model.Label;
+import com.vaadin.flow.server.VaadinSession;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +22,19 @@ public class GameEngine {
     private static void startRound(){
         CardDeck cards = new CardDeck();
         cards.shuffle();
-        for (Player player: players) {
-            player.takeCard(cards.draw());
+        // Somewhere in your game interface code
+        VaadinSession vaadinSession = VaadinSession.getCurrent();
+        Player activePlayer = vaadinSession.getAttribute(Player.class);
+
+// Get the card assigned to this player
+        GameStateManager gameManager = GameStateManager.getInstance();
+        Card card = cards.draw();
+
+// Display the card to the player (e.g., with a Label)
+        Label cardLabel = new Label("Your card is: " + card.suit + " " + card.rank);
+
         }
-    }
+
 
     public void hitCard(){
 
