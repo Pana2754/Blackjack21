@@ -20,9 +20,10 @@ import java.util.List;
 public class GameView extends VerticalLayout {
     private GameStateManager gameManager;
     VaadinSession vaadinSession = VaadinSession.getCurrent();
-    Player activePlayer;
+    private static Player activePlayer;
     public GameView(){
 
+        gameManager = GameStateManager.getInstance();
         Button hit = new Button("Hit");
         hit.setWidth("100px");
         hit.addClickListener(event -> {
@@ -34,28 +35,20 @@ public class GameView extends VerticalLayout {
         stand.addClickListener(event -> {
         });
         add(hit, stand);
-
         activePlayer = (Player) vaadinSession.getAttribute("activePlayer");
-        initializeGame();
-    }
-
-    public void initializeGame(){
-
-        gameManager = GameStateManager.getInstance();
-        gameManager.giveCardToPlayer(activePlayer);
         displayHand();
 
     }
 
     private void displayHand() {
-
-        List<Card> playerHand = activePlayer.getHand(); // Assuming you have a getter for the hand in the Player class
-        // Display the cards to the player (e.g., in a Label or some other component)
-        for (Card card : playerHand) {
-            Div label = new Div();
-            label.setText("You have: " + card.suit + " " + card.rank); // Assuming your Card class has a suitable toString method
-            add(label);
+        if(activePlayer != null){
+            List<Card> playerHand = activePlayer.getHand(); // Assuming you have a getter for the hand in the Player class
+            // Display the cards to the player (e.g., in a Label or some other component)
+            for (Card card : playerHand) {
+                Div label = new Div();
+                label.setText("You have: " + card.suit + " " + card.rank); // Assuming your Card class has a suitable toString method
+                add(label);
+            }
         }
     }
-
 }

@@ -52,15 +52,16 @@ public class Lobby extends VerticalLayout {
         Button startGame = new Button("START");
         startGame.setWidth("100px");
         startGame.addClickListener(event -> {
-            UI.getCurrent().navigate("GameView");
             GameStateManager gameStateManager = GameStateManager.getInstance();
             gameStateManager.addPlayers(activePlayers);
+            gameStateManager.giveCardToPlayer(getActivePlayer());
+            gameStateManager.giveCardToPlayer(getActivePlayer());
+            UI.getCurrent().navigate("GameView");
 
         });
 
         // Update the Grid with all the active players
         playersGrid.setItems(activePlayers);
-
         add(logo, title, playersGrid, startGame);
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
