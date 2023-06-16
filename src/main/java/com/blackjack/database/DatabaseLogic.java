@@ -71,6 +71,26 @@ public class DatabaseLogic {
         }
     }
 
+    public boolean doesUserExist(String user_name) throws SQLException {
+        if (connection == null) {
+            return false;
+        }
+
+        String sql = String.format("SELECT user_name FROM blackjack_user WHERE user_name = '%s';", user_name);
+        try (Statement statement = connection.createStatement()){
+            ResultSet result = statement.executeQuery(sql);
+
+            if (result.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error during checking user existence:");
+            e.printStackTrace();
+            throw e;
+        }
+        return false;
+    }
+
     public boolean checkAdmin(String user_name) {
 
         if (connection == null) {
