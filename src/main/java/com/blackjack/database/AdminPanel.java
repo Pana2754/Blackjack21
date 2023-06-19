@@ -3,6 +3,7 @@ package com.blackjack.database;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
@@ -84,7 +85,16 @@ public class AdminPanel extends VerticalLayout {
                 grid.getDataProvider().refreshItem(player);
             });
 
-            HorizontalLayout buttonsLayout = new HorizontalLayout(banButton, unbanButton);
+            Button deleteButton = new Button("Delete");
+            deleteButton.addClickListener(event -> {
+                delete(player.getPlayerName());
+                Notification.show("Deleted: " + player.getPlayerName());
+                grid.getDataProvider().refreshItem(player);
+                updateGridData();
+            });
+
+
+            HorizontalLayout buttonsLayout = new HorizontalLayout(banButton, unbanButton, deleteButton);
             return buttonsLayout;
         }).setHeader("Actions");
 
@@ -162,6 +172,23 @@ public class AdminPanel extends VerticalLayout {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setBoolean(1, isBanned);
                 statement.setString(2, playerName);
+                statement.executeUpdate();
+            }
+            dbLogic.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void delete(String playerName) {
+        try {
+            DatabaseLogic dbLogic = new DatabaseLogic();
+            dbLogic.connectToDb();
+
+            Connection connection = dbLogic.getConnection();
+            String sql = "DELETE blackjack_user WHERE user_name = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, playerName);
                 statement.executeUpdate();
             }
             dbLogic.closeConnection();
