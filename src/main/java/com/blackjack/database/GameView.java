@@ -18,6 +18,18 @@ public class GameView extends VerticalLayout {
     private Div playerContainer; // ADDED this line
 
     public GameView() {
+
+        Broadcaster.register(() -> {
+            getUI().ifPresent(ui -> ui.access(() -> {
+                displayAllPlayersHands(); // Refresh the view
+            }));
+        });
+        addDetachListener(detachEvent -> Broadcaster.unregister(() -> {
+            getUI().ifPresent(ui -> ui.access(() -> {
+                displayAllPlayersHands(); // Refresh the view
+            }));
+        }));
+
         gameManager = GameStateManager.getInstance();
         // Initialized the new container
         playerContainer = new Div(); // ADDED this line
@@ -31,7 +43,7 @@ public class GameView extends VerticalLayout {
                 return;
             }
             gameManager.giveCardToPlayer(activePlayer);
-            displayAllPlayersHands(); // CHANGED this line from displayHand();
+            Broadcaster.broadcast();
         });
 
         Button stand = new Button("Stand");
