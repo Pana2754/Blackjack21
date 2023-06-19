@@ -110,40 +110,38 @@ public class DatabaseLogic {
         return false;
     }
 
-    public double getUserStats(String playerName) throws SQLException {
-        if (connection == null) {
-            throw new SQLException("Not connected to the database");
-        }
+    public  Player getUser(String username) {
+        Connection connection = null;
+        try {
+            DatabaseLogic dbLogic = new DatabaseLogic();
+            dbLogic.connectToDb();
 
-        String sql = "SELECT balance FROM blackjack_user WHERE user_name = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, playerName);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getDouble("balance");
-                } else {
-                    throw new SQLException("User not found");
+            connection = dbLogic.getConnection();
+            String sql = "SELECT * FROM blackjack_user WHERE user_name = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, username);
+                try (ResultSet result = statement.executeQuery()) {
+                    if (result.next()) {
+                        String userName = result.getString("user_name");
+                        boolean isBanned = result.getBoolean("isBanned");
+                        double balance = result.getDouble("balance");
+
+                        return new Player(userName, false, balance,isBanned);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             }
         }
-    }
-
-    public boolean getBannedStatus(String playerName) throws SQLException {
-        if (connection == null) {
-            throw new SQLException("Not connected to the database");
-        }
-
-        String sql = "SELECT isBanned FROM blackjack_user WHERE user_name = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, playerName);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getBoolean("isBanned");
-                } else {
-                    throw new SQLException("User not found");
-                }
-            }
-        }
+        return null;
     }
 
 
