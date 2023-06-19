@@ -25,6 +25,10 @@ public class GameView extends VerticalLayout {
         Button hit = new Button("Hit");
         hit.setWidth("100px");
         hit.addClickListener(event -> {
+            //check if hand is already over 21 points if no give player another card
+            if(GameEngine.isHandOver21Points(activePlayer)){
+                return;
+            }
             gameManager.giveCardToPlayer(activePlayer);
             displayHand();
         });
@@ -42,9 +46,12 @@ public class GameView extends VerticalLayout {
     private void displayHand() {
         if (activePlayer != null) {
             handContainer.removeAll(); // remove all old label
-            Div pointsLabel = new Div();
-            pointsLabel.setText("Over 21 Points: " + GameEngine.isHandOver21Points(activePlayer));
-            handContainer.add(pointsLabel);
+
+            if(GameEngine.isHandOver21Points(activePlayer)){
+                Div pointsLabel = new Div();
+                pointsLabel.setText("You lost!");
+                handContainer.add(pointsLabel);
+            }
             List<Card> playerHand = activePlayer.getHand(); // Assuming you have a getter for the hand in the Player class
             // Display the cards to the player (e.g., in a Label or some other component)
             for (Card card : playerHand) {
