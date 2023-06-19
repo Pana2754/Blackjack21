@@ -33,7 +33,6 @@ public class GameView extends VerticalLayout {
         gameManager = GameStateManager.getInstance();
         // Initialized the new container
         playerContainer = new Div(); // ADDED this line
-
         Button hit = new Button("Hit");
         hit.setWidth("100px");
         hit.addClickListener(event -> {
@@ -49,16 +48,18 @@ public class GameView extends VerticalLayout {
         Button stand = new Button("Stand");
         stand.setWidth("100px");
         stand.addClickListener(event -> {
+            Div label = new Div();
+            label.setText("The Dealer has 21 Points! You Lose");
+            add(label);
         });
 
         // Modified this line to add the playerContainer
         add(hit, stand, playerContainer); // CHANGED this line from add(hit, stand, handContainer);
 
+        Broadcaster.broadcast();
         // Calling the new method
-        displayAllPlayersHands(); // CHANGED this line from displayHand();
     }
 
-    // Replaced displayHand method with displayAllPlayersHands
     private void displayAllPlayersHands() { // CHANGED method name
         playerContainer.removeAll(); // CHANGED this line from handContainer.removeAll();
 
