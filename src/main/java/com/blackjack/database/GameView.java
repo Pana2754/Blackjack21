@@ -2,6 +2,7 @@ package com.blackjack.database;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -55,9 +56,9 @@ public class GameView extends VerticalLayout {
             List<Card> playerHand = activePlayer.getHand(); // Assuming you have a getter for the hand in the Player class
             // Display the cards to the player (e.g., in a Label or some other component)
             for (Card card : playerHand) {
-                Div label = new Div();
-                label.setText("You have: " + card.suit + " " + card.rank); // Assuming your Card class has suit and rank properties
-                handContainer.add(label); // add the label to the container
+                Image cardImage = new Image(card.imagePath, "");
+                cardImage.setWidth("50px");
+                add(cardImage);
             }
 
         }
