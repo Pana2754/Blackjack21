@@ -77,7 +77,7 @@ public class GameView extends VerticalLayout {
             for (Card card : playerHand) {
                 Image cardImage = new Image(card.imagePath, "");
                 cardImage.setWidth("50px");
-                add(cardImage);
+                handContainer.add(cardImage); // Modified this line
             }
             playerContainer.add(handContainer); // ADDED this line
         }
