@@ -49,7 +49,7 @@ public class Lobby extends VerticalLayout {
         startGame.setWidth("100px");
         startGame.addClickListener(event -> {
             GameStateManager gameStateManager = GameStateManager.getInstance();
-            gameStateManager.addPlayers(activePlayers);
+            gameStateManager.addPlayer(activePlayer);
             gameStateManager.giveCardToPlayer(getActivePlayer());
             gameStateManager.giveCardToPlayer(getActivePlayer());
             UI.getCurrent().navigate("GameView");

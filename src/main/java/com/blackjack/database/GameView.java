@@ -14,52 +14,71 @@ import java.util.List;
 public class GameView extends VerticalLayout {
 
     private GameStateManager gameManager;
-    VaadinSession vaadinSession = VaadinSession.getCurrent();
-    private Player activePlayer;
-    private Div handContainer; // container to hold the labels of the cards
+    // Added a new container to hold all players' cards
+    private Div playerContainer; // ADDED this line
 
     public GameView() {
-        gameManager = GameStateManager.getInstance();
-        handContainer = new Div(); // initialize the container
 
+        Broadcaster.register(() -> {
+            getUI().ifPresent(ui -> ui.access(() -> {
+                displayAllPlayersHands(); // Refresh the view
+            }));
+        });
+        addDetachListener(detachEvent -> Broadcaster.unregister(() -> {
+            getUI().ifPresent(ui -> ui.access(() -> {
+                displayAllPlayersHands(); // Refresh the view
+            }));
+        }));
+
+        gameManager = GameStateManager.getInstance();
+        // Initialized the new container
+        playerContainer = new Div(); // ADDED this line
         Button hit = new Button("Hit");
         hit.setWidth("100px");
         hit.addClickListener(event -> {
-            //check if hand is already over 21 points if no give player another card
-            if(GameEngine.isHandOver21Points(activePlayer)){
+            // Modified these lines to handle all players
+            Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer"); // ADDED this line
+            if (GameEngine.isHandOver21Points(activePlayer)) {
                 return;
             }
             gameManager.giveCardToPlayer(activePlayer);
-            displayHand();
+            Broadcaster.broadcast();
         });
 
         Button stand = new Button("Stand");
         stand.setWidth("100px");
         stand.addClickListener(event -> {
+            Div label = new Div();
+            label.setText("The Dealer has 21 Points! You Lose");
+            add(label);
         });
 
-        add(hit, stand, handContainer); // add the container to the layout
-        activePlayer = (Player) vaadinSession.getAttribute("activePlayer");
-        displayHand();
+        // Modified this line to add the playerContainer
+        add(hit, stand, playerContainer); // CHANGED this line from add(hit, stand, handContainer);
+
+        Broadcaster.broadcast();
+        // Calling the new method
     }
 
-    private void displayHand() {
-        if (activePlayer != null) {
-            handContainer.removeAll(); // remove all old label
+    private void displayAllPlayersHands() { // CHANGED method name
+        playerContainer.removeAll(); // CHANGED this line from handContainer.removeAll();
 
-            if(GameEngine.isHandOver21Points(activePlayer)){
+        // Added these lines to loop through all players and display their cards
+        List<Player> allPlayers = gameManager.getPlayerList(); // ADDED this line
+        for (Player player : allPlayers) {
+            Div handContainer = new Div(); // ADDED this line
+            List<Card> playerHand = player.getHand();
+            if (GameEngine.isHandOver21Points(player)) {
                 Div pointsLabel = new Div();
-                pointsLabel.setText("You lost!");
+                pointsLabel.setText(player.getPlayerName() + " lost!");
                 handContainer.add(pointsLabel);
             }
-            List<Card> playerHand = activePlayer.getHand(); // Assuming you have a getter for the hand in the Player class
-            // Display the cards to the player (e.g., in a Label or some other component)
             for (Card card : playerHand) {
                 Div label = new Div();
-                label.setText("You have: " + card.suit + " " + card.rank); // Assuming your Card class has suit and rank properties
-                handContainer.add(label); // add the label to the container
+                label.setText(player.getPlayerName() + " has: " + card.suit + " " + card.rank);
+                handContainer.add(label);
             }
-
+            playerContainer.add(handContainer); // ADDED this line
         }
     }
 }
