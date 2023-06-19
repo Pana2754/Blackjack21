@@ -51,13 +51,10 @@ public class LoginView extends VerticalLayout {
                 } else if (authenticate(username, password) && !passwordField.getValue().isEmpty()) {
                     Notification.show("Login successful!");
                     DatabaseLogic db = new DatabaseLogic();
-                    db.connectToDb();
-                    double balance = db.getUserStats(username);
-                    boolean banned = db.getBannedStatus(username);
-                    Player activePlayer = new Player(username,banned,balance);
+                    Player activePlayer = db.getUser(username);
                     VaadinSession.getCurrent().setAttribute("activePlayer", activePlayer);
                     Lobby.playerLoggedIn(activePlayer);
-                    db.closeConnection();
+
                     UI.getCurrent().navigate("waiting-lobby");
                 } else {
                     Notification.show("Invalid credentials!");
@@ -65,7 +62,6 @@ public class LoginView extends VerticalLayout {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-
         });
         loginButton.addClassNames("red-button");
 

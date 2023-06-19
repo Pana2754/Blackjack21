@@ -99,7 +99,7 @@ public class AdminPanel extends VerticalLayout {
                     player.setBalance(newBalance);
                     updateBalance(player.getPlayerName(), newBalance);
                     Notification.show("Balance updated for: " + player.getPlayerName());
-                    playerGrid.getDataProvider().refreshAll(); // Aktualisieren Sie das gesamte Grid
+                    playerGrid.getDataProvider().refreshAll();
                 } catch (NumberFormatException e) {
                     Notification.show("Invalid balance input");
                 }
@@ -141,7 +141,7 @@ public class AdminPanel extends VerticalLayout {
                     String userName = result.getString("user_name");
                     boolean isBanned = result.getBoolean("isBanned");
                     double balance = result.getDouble("balance");
-                    Player player = new Player(userName, isBanned, balance);
+                    Player player = new Player(userName, isBanned, balance, isBanned);
                     players.add(player);
                 }
             }
@@ -149,6 +149,8 @@ public class AdminPanel extends VerticalLayout {
             e.printStackTrace();
         }
     }
+
+
 
     private void updateBannedStatus(String playerName, boolean isBanned) {
         try {

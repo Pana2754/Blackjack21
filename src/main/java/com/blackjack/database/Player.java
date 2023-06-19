@@ -15,10 +15,11 @@ public class Player {
 
     private List<Card> cardList = new ArrayList<>();
 
-    public Player(String playerName, boolean ready, double balance){
+    public Player(String playerName, boolean ready, double balance, Boolean isBanned){
         this.playerName = playerName;
         this.CoinBalance = balance;
         this.ready = ready;
+        this.banned = isBanned;
     }
     public void takeCard(Card card){
         cardList.add(card);
