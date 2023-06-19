@@ -2,6 +2,7 @@ package com.blackjack.database;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -74,9 +75,9 @@ public class GameView extends VerticalLayout {
                 handContainer.add(pointsLabel);
             }
             for (Card card : playerHand) {
-                Div label = new Div();
-                label.setText(player.getPlayerName() + " has: " + card.suit + " " + card.rank);
-                handContainer.add(label);
+                Image cardImage = new Image(card.imagePath, "");
+                cardImage.setWidth("50px");
+                add(cardImage);
             }
             playerContainer.add(handContainer); // ADDED this line
         }
