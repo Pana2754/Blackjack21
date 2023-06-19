@@ -3,7 +3,7 @@ package com.blackjack.database;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+public class Player implements IPlayer {
 
     private String playerName;
 
@@ -13,6 +13,8 @@ public class Player {
     private boolean ready;
     private boolean banned;;
 
+    private boolean isStanding;
+
     private List<Card> cardList = new ArrayList<>();
 
     public Player(String playerName, boolean ready, double balance, Boolean isBanned){
@@ -20,6 +22,7 @@ public class Player {
         this.CoinBalance = balance;
         this.ready = ready;
         this.banned = isBanned;
+        this.isStanding = false;
     }
     public void takeCard(Card card){
         cardList.add(card);
@@ -28,7 +31,12 @@ public class Player {
     private void increaseStake(int value){
 
     }
-
+    public void setStanding(boolean standing){
+        this.isStanding = standing;
+    }
+    public boolean getStanding(){
+        return this.isStanding;
+    }
     public int getCardValues(){
 
         int result = 0;

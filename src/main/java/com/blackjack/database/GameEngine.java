@@ -8,34 +8,31 @@ import java.util.List;
 
 public class GameEngine {
 
-    public static boolean isHandOver21Points(Player player){
+    public static boolean isHandOverPoints(IPlayer player, int maxPoints) {
         int aces = 0;
         int handValue = player.getCardValues();
 
-        for (Card card: player.getHand()){
-            if(card.rank.equals("A")){
+        if(player.getHand() == null){
+            return false;
+        }
+        for (Card card : player.getHand()) {
+            if (card.rank.equals("A")) {
                 aces += 1;
             }
         }
 
-        if(handValue <= 21){
+        if (handValue <= maxPoints) {
             return false;
         }
-        if(handValue > 21 && aces == 0){
+        if (handValue > maxPoints && aces == 0) {
             return true;
         }
-        for(int i = 1; i<=aces; i++){
-            if(handValue - i*10 <= 21){
+        for (int i = 1; i <= aces; i++) {
+            if (handValue - i * 10 <= maxPoints) {
                 return false;
             }
         }
         return true;
-
-
-
-
-
     }
-
-
 }
+

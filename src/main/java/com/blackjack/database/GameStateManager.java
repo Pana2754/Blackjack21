@@ -25,7 +25,7 @@ public class GameStateManager {
         playerList.add(player);
     }
 
-    public void giveCardToPlayer(Player player){
+    public void giveCardToPlayer(IPlayer player){
         player.takeCard(cards.draw());
     }
 
