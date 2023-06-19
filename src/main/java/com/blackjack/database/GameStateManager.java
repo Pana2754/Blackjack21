@@ -29,5 +29,10 @@ public class GameStateManager {
         player.takeCard(cards.draw());
     }
 
+    public List<Player> getPlayerList(){
+        return playerList;
+    }
+
+
 
 }
