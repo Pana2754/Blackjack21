@@ -21,8 +21,8 @@ public class GameStateManager {
         }
         return instance;
     }
-    public void addPlayers(List<Player> players){
-        playerList.addAll(players);
+    public void addPlayer(Player player){
+        playerList.add(player);
     }
 
     public void giveCardToPlayer(Player player){
