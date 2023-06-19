@@ -19,7 +19,9 @@ public class GameView extends VerticalLayout {
 
     public GameView() {
 
-        Broadcaster.register(() -> {
+        Broadcaster.register(this::displayAllPlayersHands);
+        Broadcaster.unregister(this::displayAllPlayersHands);
+        /*Broadcaster.register(() -> {
             getUI().ifPresent(ui -> ui.access(() -> {
                 displayAllPlayersHands(); // Refresh the view
             }));
@@ -28,7 +30,7 @@ public class GameView extends VerticalLayout {
             getUI().ifPresent(ui -> ui.access(() -> {
                 displayAllPlayersHands(); // Refresh the view
             }));
-        }));
+        }));*/
 
         gameManager = GameStateManager.getInstance();
         // Initialized the new container
