@@ -1,5 +1,6 @@
 package com.blackjack.database;
 
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -37,9 +38,6 @@ public class AdminPanel extends VerticalLayout {
         buttonLayout.add(backButton);
 
         playerGrid = createPlayerGrid();
-        fetchAllUsers();
-        playerGrid.setItems(players);
-
         add(title, playerGrid, buttonLayout);
         if (!isLoggedIn()) {
             UI.getCurrent().navigate(LoginView.class);
@@ -50,13 +48,25 @@ public class AdminPanel extends VerticalLayout {
         }
     }
 
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+        updateGridData();
+    }
+
+    private void updateGridData() {
+        players.clear();
+        fetchAllUsers();
+        playerGrid.setItems(players);
+    }
+
+
     private Grid<Player> createPlayerGrid() {
         Grid<Player> grid = new Grid<>();
         grid.addColumn(Player::getPlayerName).setHeader("Name");
         grid.addColumn(Player::isBanned).setHeader("Banned");
         grid.addColumn(Player::getBalance).setHeader("Balance");
 
-        // Add new column with Ban and Unban buttons
         grid.addComponentColumn(player -> {
             Button banButton = new Button("Ban");
             banButton.addClickListener(event -> {
@@ -78,7 +88,6 @@ public class AdminPanel extends VerticalLayout {
             return buttonsLayout;
         }).setHeader("Actions");
 
-        // Add new column with TextField and Button to set balance
         grid.addComponentColumn(player -> {
             TextField balanceField = new TextField();
             balanceField.setPlaceholder("New balance");
@@ -90,11 +99,13 @@ public class AdminPanel extends VerticalLayout {
                     player.setBalance(newBalance);
                     updateBalance(player.getPlayerName(), newBalance);
                     Notification.show("Balance updated for: " + player.getPlayerName());
-                    grid.getDataProvider().refreshItem(player);
+                    playerGrid.getDataProvider().refreshAll(); // Aktualisieren Sie das gesamte Grid
                 } catch (NumberFormatException e) {
                     Notification.show("Invalid balance input");
                 }
             });
+
+
 
             HorizontalLayout balanceLayout = new HorizontalLayout(balanceField, setBalanceButton);
             return balanceLayout;
@@ -134,7 +145,6 @@ public class AdminPanel extends VerticalLayout {
                     players.add(player);
                 }
             }
-            dbLogic.closeConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }

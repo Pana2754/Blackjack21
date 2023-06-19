@@ -110,6 +110,43 @@ public class DatabaseLogic {
         return false;
     }
 
+    public double getUserStats(String playerName) throws SQLException {
+        if (connection == null) {
+            throw new SQLException("Not connected to the database");
+        }
+
+        String sql = "SELECT balance FROM blackjack_user WHERE user_name = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, playerName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getDouble("balance");
+                } else {
+                    throw new SQLException("User not found");
+                }
+            }
+        }
+    }
+
+    public boolean getBannedStatus(String playerName) throws SQLException {
+        if (connection == null) {
+            throw new SQLException("Not connected to the database");
+        }
+
+        String sql = "SELECT isBanned FROM blackjack_user WHERE user_name = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, playerName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getBoolean("isBanned");
+                } else {
+                    throw new SQLException("User not found");
+                }
+            }
+        }
+    }
+
+
     public boolean checkAdmin(String user_name) {
         if (connection == null) {
             return false;

@@ -7,7 +7,7 @@ public class Player {
 
     private String playerName;
 
-    private float CoinBalance;
+    private double CoinBalance;
     private Integer stake;
     private int CardValue;
     private boolean ready;
@@ -17,7 +17,7 @@ public class Player {
 
     public Player(String playerName, boolean ready, double balance){
         this.playerName = playerName;
-        this.CoinBalance = 1000;
+        this.CoinBalance = balance;
         this.ready = ready;
     }
     public void takeCard(Card card){
@@ -73,7 +73,7 @@ public class Player {
     }
 
 
-    public float getBalance() {
+    public double getBalance() {
         return CoinBalance;
     }
 
