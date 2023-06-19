@@ -34,12 +34,16 @@ public class GameView extends VerticalLayout {
         gameManager = GameStateManager.getInstance();
         // Initialized the new container
         playerContainer = new Div(); // ADDED this line
+
+        displayAllPlayersHands();
+
         Button hit = new Button("Hit");
         hit.setWidth("100px");
         hit.addClickListener(event -> {
             // Modified these lines to handle all players
             Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer"); // ADDED this line
             if (GameEngine.isHandOver21Points(activePlayer)) {
+                hit.setEnabled(false);
                 return;
             }
             gameManager.giveCardToPlayer(activePlayer);
@@ -62,8 +66,8 @@ public class GameView extends VerticalLayout {
     }
 
     private void displayAllPlayersHands() { // CHANGED method name
-        playerContainer.removeAll(); // CHANGED this line from handContainer.removeAll();
 
+        playerContainer.removeAll(); // CHANGED this line from handContainer.removeAll();
         // Added these lines to loop through all players and display their cards
         List<Player> allPlayers = gameManager.getPlayerList(); // ADDED this line
         for (Player player : allPlayers) {
