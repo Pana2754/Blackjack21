@@ -18,6 +18,9 @@ public class GameView extends VerticalLayout {
     private GameStateManager gameManager;
     // Added a new container to hold all players' cards
     private Div playerContainer; // ADDED this line
+    private Div dealerContainer;
+    private Div endState;
+    private Button reset;
 
     public GameView() {
 
@@ -35,74 +38,111 @@ public class GameView extends VerticalLayout {
         gameManager = GameStateManager.getInstance();
         // Initialized the new container
         playerContainer = new Div(); // ADDED this line
+        dealerContainer = new Div();
+        endState = new Div();
 
         displayAllPlayersHands();
 
         Button hit = new Button("Hit");
-        hit.setWidth("100px");
+        hit.setWidth("150px");
         hit.addClickListener(event -> {
             // Modified these lines to handle all players
             Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer"); // ADDED this line
             gameManager.giveCardToPlayer(activePlayer);
             Broadcaster.broadcast();
-            if (GameEngine.isHandOverPoints(activePlayer, 21)) {
-                checkIfDealersTurn();
+            if (GameStateManager.isHandOverPoints(activePlayer, 21)) {
+                activePlayer.isOut= true;
+                if(gameManager.isDealersTurn()){
+                    startDealerPlay();
+                }
                 hit.setEnabled(false);
             }
         });
 
         Button stand = new Button("Stand");
-        stand.setWidth("100px");
+        stand.setWidth("150px");
         stand.addClickListener(event -> {
             Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer"); // ADDED this line
             activePlayer.setStanding(true);
             hit.setEnabled(false);
             stand.setEnabled(false);
 
-            if (checkIfDealersTurn()){
+            if (gameManager.isDealersTurn()){
                 startDealerPlay();
             }
 
         });
 
+        reset = new Button("New Game");
+        reset.setWidth("150px");
+        reset.setVisible(false);
+        reset.setEnabled(false);
+        reset.addClickListener(event -> {
+            reset.setVisible(false);
+            reset.setEnabled(false);
+            hit.setEnabled(true);
+            stand.setEnabled(true);
+            gameManager.resetGame();
+            dealerContainer.removeAll();
+            endState.removeAll();
+            displayAllPlayersHands();
+        });
         // Modified this line to add the playerContainer
-        add(hit, stand, playerContainer); // CHANGED this line from add(hit, stand, handContainer);
+        add(hit, stand, reset, playerContainer); // CHANGED this line from add(hit, stand, handContainer);
 
         Broadcaster.broadcast();
         // Calling the new method
     }
 
-    private boolean checkIfDealersTurn(){
-        boolean allPlayersDone = gameManager.getPlayerList().stream()
-                .allMatch(player -> GameEngine.isHandOverPoints(player,21) || player.getStanding());
-        return allPlayersDone;
-    }
     private void startDealerPlay(){
-        Div dealerHand = new Div();
         Dealer dealer = new Dealer("Dealer");
         GameStateManager gameStateManager = GameStateManager.getInstance();
-        while (!GameEngine.isHandOverPoints(dealer, 16)){
+        while (!GameStateManager.isHandOverPoints(dealer, 16)){
 
             gameStateManager.giveCardToPlayer(dealer);
         }
         Div label = new Div();
         label.setText("The Dealer has: " + dealer.getCardValues() + "Points!");
-        dealerHand.add(label);
+        dealerContainer.add(label);
 
-        if(GameEngine.isHandOverPoints(dealer, 21)){
-
+        if(GameStateManager.isHandOverPoints(dealer, 21)){
+            dealer.isOut= true;
             Div label2 = new Div();
             label2.setText("The Dealer has lost!");
-            dealerHand.add(label2);
+            dealerContainer.add(label2);
         }
 
         for (Card card : dealer.getHand()) {
             Image cardImage = new Image(card.imagePath, "");
             cardImage.setWidth("50px");
-            dealerHand.add(cardImage);
+            dealerContainer.add(cardImage);
         }
-        add(dealerHand);
+
+        add(dealerContainer);
         Broadcaster.broadcast();
+
+        GameEnd(dealer);
+    }
+
+    public void GameEnd(Dealer dealer){
+
+        for(Player player : gameManager.getPlayerList()){
+            if(!player.isOut && (GameStateManager.isHandOverPoints(player, dealer.getCardValues()) || dealer.isOut)){
+                Div label = new Div();
+                label.setText(player.getPlayerName() + " has Won!");
+                endState.add(label);
+            }
+            else {
+                Div label = new Div();
+                label.setText(player.getPlayerName() + " has lost!");
+                endState.add(label);
+            }
+        }
+        add(endState);
+        reset.setEnabled(true);
+        reset.setVisible(true);
+
+
     }
 
     private void displayAllPlayersHands() { // CHANGED method name
@@ -113,9 +153,9 @@ public class GameView extends VerticalLayout {
         for (Player player : allPlayers) {
             Div handContainer = new Div(); // ADDED this line
             List<Card> playerHand = player.getHand();
-            if (GameEngine.isHandOverPoints(player, 21)) {
+            if (GameStateManager.isHandOverPoints(player, 21)) {
                 Div pointsLabel = new Div();
-                pointsLabel.setText(player.getPlayerName() + " lost!");
+                pointsLabel.setText(player.getPlayerName() + " is Over 21 Points!");
                 handContainer.add(pointsLabel);
             }
             for (Card card : playerHand) {
@@ -126,4 +166,5 @@ public class GameView extends VerticalLayout {
             playerContainer.add(handContainer); // ADDED this line
         }
     }
+
 }
