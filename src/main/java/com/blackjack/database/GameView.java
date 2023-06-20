@@ -1,7 +1,4 @@
 package com.blackjack.database;
-
-import com.vaadin.flow.animation.KeyframeAnimation;
-import com.vaadin.flow.animation.Keyframes;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
@@ -34,16 +31,11 @@ public class GameView extends VerticalLayout {
             }));
         }));
 
-        //added lines
-        Keyframes flyInFromTop = Keyframes.create("flyInFromTop", "0% { opacity: 0; transform: translateY(-100%); } 100% { opacity: 1; transform: translateY(0); }");
-        KeyframeAnimation animation = KeyframeAnimation.of(flyInFromTop);
-        animation.setDuration("0.5s");
-        animation.setTimingFunction("ease-in-out");
         gameManager = GameStateManager.getInstance();
         // Initialized the new container
         playerContainer = new Div(); // ADDED this line
 
-        displayAllPlayersHands(animation);
+        displayAllPlayersHands();
 
         Button hit = new Button("Hit");
         hit.setWidth("100px");
@@ -112,7 +104,7 @@ public class GameView extends VerticalLayout {
         Broadcaster.broadcast();
     }
 
-    private void displayAllPlayersHands(KeyframeAnimation animation) { // CHANGED method name
+    private void displayAllPlayersHands() { // CHANGED method name
 
         playerContainer.removeAll(); // CHANGED this line from handContainer.removeAll();
         // Added these lines to loop through all players and display their cards
@@ -128,7 +120,7 @@ public class GameView extends VerticalLayout {
             for (Card card : playerHand) {
                 Image cardImage = new Image(card.imagePath, "");
                 cardImage.setWidth("200px");
-                cardImage.getElement().getStyle().set("animation-name", animation.getName()); // Apply animation
+                //cardImage.getElement().getStyle().set("animation-name", animation.getName()); // Apply animation
                 cardImage.getElement().getClassList().add("card-image"); // Add the CSS class
                 handContainer.add(cardImage); // Modified this line
             }
