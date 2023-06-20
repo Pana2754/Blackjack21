@@ -7,9 +7,12 @@ public class Dealer implements IPlayer{
 
     public String name;
     public List<Card> cards;
+
+    public boolean isOut;
     public Dealer(String name){
         this.name = name;
         cards = new ArrayList<>();
+        isOut = false;
     }
     public void takeCard(Card card){
         cards.add(card);
@@ -20,7 +23,11 @@ public class Dealer implements IPlayer{
         if(cards == null){
             return result;
         }
+        int aces = 0;
         for(Card card : cards){
+            if (card.rank.equals("A")) {
+                aces += 1;
+            }
             try {
                 result += Integer.parseInt(card.rank);
                 continue;
@@ -35,9 +42,15 @@ public class Dealer implements IPlayer{
             }
 
         }
+        while (result > 21 && aces > 0){
+            result -= 10;
+            aces -= 1;
+        }
         return result;
     }
     public List<Card> getHand() {
         return cards;
     }
+
+
 }

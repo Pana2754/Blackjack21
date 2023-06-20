@@ -15,6 +15,8 @@ public class Player implements IPlayer {
 
     private boolean isStanding;
 
+    public boolean isOut;
+
     private List<Card> cardList = new ArrayList<>();
 
     public Player(String playerName, boolean ready, double balance, Boolean isBanned){
@@ -40,7 +42,14 @@ public class Player implements IPlayer {
     public int getCardValues(){
 
         int result = 0;
+        if(cardList == null){
+            return result;
+        }
+        int aces = 0;
         for(Card card : cardList){
+            if (card.rank.equals("A")) {
+                aces += 1;
+            }
             try {
                 result += Integer.parseInt(card.rank);
                 continue;
@@ -55,7 +64,17 @@ public class Player implements IPlayer {
             }
 
         }
+        while (result > 21 && aces > 0){
+            result -= 10;
+            aces -= 1;
+        }
         return result;
+    }
+
+    public void resetHand(){
+        cardList= new ArrayList<>();
+        isOut = false;
+        isStanding = false;
     }
 
     public List<Card> getHand(){
@@ -89,4 +108,6 @@ public class Player implements IPlayer {
     public void setBalance(float newBalance) {
         this.CoinBalance = newBalance;
     }
+
+
 }
