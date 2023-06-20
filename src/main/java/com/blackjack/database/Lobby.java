@@ -54,7 +54,7 @@ public class Lobby extends VerticalLayout {
             gameStateManager.giveCardToPlayer(getActivePlayer());
             UI.getCurrent().navigate("GameView");
         });
-
+        playersGrid.setPageSize(7);
         playersGrid.setItems(activePlayers);
         add(logo, title, playersGrid, startGame);
         setAlignItems(Alignment.CENTER);
