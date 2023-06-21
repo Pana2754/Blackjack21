@@ -1,11 +1,31 @@
-/* login-view.css */
-body {
-    background-image: url('themes/mytodo/bg.webp');
+.card {
+    position: absolute;
+    width: 100px; /* Adjust the size of the cards as needed */
+    height: 150px;
+    animation-name: deal;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+}
 
+@keyframes deal {
+    0% {
+        opacity: 0;
+        transform: translate(0, -100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+}
+
+
+body {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
 }
+
 :host {
     width: 100vw;
     height: 100vh;

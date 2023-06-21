@@ -24,24 +24,6 @@ public class DatabaseLogic {
             throw e;
         }
     }
-    public void updateBalance(String playerName, double newBalance) {
-        try {
-            DatabaseLogic dbLogic = new DatabaseLogic();
-            dbLogic.connectToDb();
-
-            Connection connection = dbLogic.getConnection();
-            String sql = "UPDATE blackjack_user SET balance = ? WHERE user_name = ?";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setDouble(1, newBalance);
-                statement.setString(2, playerName);
-                statement.executeUpdate();
-            }
-            dbLogic.closeConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
 
 
     public void addUser(String user_name, String user_password, boolean isAdmin, boolean isBanned, float balance) throws SQLException {
@@ -59,7 +41,7 @@ public class DatabaseLogic {
         }
     }
 
-    public boolean checkLoginData(String user_name, String user_password) throws SQLException {
+    public boolean checkLoginData(String user_name, String user_password) {
         if (connection == null) {
             return false;
         }
@@ -155,11 +137,7 @@ public class DatabaseLogic {
 
             if (result.next()) {
                 String isAdmin = result.getString("is_Admin");
-                if (isAdmin.equals("1")) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return isAdmin.equals("1");
             }
         } catch (Exception ex) {
             System.out.println(ex);
