@@ -71,7 +71,7 @@ public class Lobby extends VerticalLayout {
         setSpacing(true);
     }
 
-
+//test
     public static void playerLoggedIn(Player player) {
         boolean isAlreadyPresent = activePlayers.stream()
                 .anyMatch(existingPlayer -> existingPlayer.equals(player));

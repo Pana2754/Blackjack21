@@ -104,7 +104,7 @@ public class Player implements IPlayer {
     public double getBalance() {
         return CoinBalance;
     }
-
+//
     public void setBalance(float newBalance) {
         this.CoinBalance = newBalance;
     }
