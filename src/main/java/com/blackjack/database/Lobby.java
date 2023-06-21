@@ -2,14 +2,19 @@ package com.blackjack.database;
 
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.component.button.Button;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -17,10 +22,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @PageTitle("Waiting Lobby")
 @Route("waiting-lobby")
 public class Lobby extends VerticalLayout {
-
     private static final long serialVersionUID = 503398040364625051L;
     private static final List<Player> activePlayers = new CopyOnWriteArrayList<>();
-    private final Grid<Player> playersGrid = new Grid<>();
+    private Grid<Player> playersGrid = new Grid<>();
 
     public Lobby() {
         if (!isLoggedIn()) {
@@ -29,12 +33,34 @@ public class Lobby extends VerticalLayout {
         }
 
         Broadcaster.register(this::updateGrid);
+        Image logo = new Image("head.png", "Logo");
+        logo.setWidth("150px");
+        logo.setHeight("150px");
 
-        Image logo = createLogo();
         H2 title = new H2("Waiting Lobby");
 
-        configurePlayersGrid();
+        playersGrid.addColumn(Player::getPlayerName).setHeader("Name");
 
+        playersGrid.addColumn(new ComponentRenderer<>(player -> {
+            Button startButton = new Button("Start");
+            if (!player.equals(getActivePlayer())) {
+                startButton.setEnabled(false);
+            }
+            startButton.addClickListener(event -> {
+                GameStateManager gameStateManager = GameStateManager.getInstance();
+                gameStateManager.addPlayer(player);
+                gameStateManager.giveCardToPlayer(player);
+                gameStateManager.giveCardToPlayer(player);
+                UI.getCurrent().navigate("GameView");
+            });
+            return startButton;
+        })).setHeader("Start Game");
+
+        HorizontalLayout gridWrapper = new HorizontalLayout(playersGrid);
+        gridWrapper.setJustifyContentMode(JustifyContentMode.CENTER);
+
+        playersGrid.setPageSize(7);
+        playersGrid.setItems(activePlayers);
         add(logo, title, playersGrid);
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -45,39 +71,18 @@ public class Lobby extends VerticalLayout {
         setSpacing(true);
     }
 
-    private Image createLogo() {
-        Image logo = new Image("head.png", "Logo");
-        logo.setWidth("150px");
-        logo.setHeight("150px");
-        return logo;
-    }
-
-    private void configurePlayersGrid() {
-        playersGrid.addColumn(Player::getPlayerName).setHeader("Name");
-        playersGrid.setPageSize(7);
-
-        playersGrid.addComponentColumn(player -> {
-            Button startGame = new Button("START");
-            startGame.setEnabled(activePlayers.size() < 7);
-            startGame.addClickListener(event -> startGame(player));
-            return startGame;
-        }).setHeader("Start Game");
-
-        playersGrid.setItems(activePlayers);
-    }
-
-    private void startGame(Player activePlayer) {
-        GameStateManager gameStateManager = GameStateManager.getInstance();
-        gameStateManager.addPlayer(activePlayer);
-        gameStateManager.giveCardToPlayer(getActivePlayer());
-        gameStateManager.giveCardToPlayer(getActivePlayer());
-        UI.getCurrent().navigate("GameView");
-    }
-
+    //test
     public static void playerLoggedIn(Player player) {
-        if (!isPlayerInList(player, activePlayers)) {
-            activePlayers.add(player);
-            Broadcaster.broadcast(activePlayers);
+        boolean isAlreadyPresent = activePlayers.stream()
+                .anyMatch(existingPlayer -> existingPlayer.equals(player));
+
+        if (!isAlreadyPresent) {
+            if (activePlayers.size() >= 7) {
+                Notification.show("Lobby full, please wait for the next session!", 3000, Notification.Position.MIDDLE);
+            } else {
+                activePlayers.add(player);
+                Broadcaster.broadcast(activePlayers);
+            }
         }
     }
 
@@ -102,9 +107,5 @@ public class Lobby extends VerticalLayout {
 
     private Player getActivePlayer() {
         return (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
-    }
-
-    private static boolean isPlayerInList(Player player, List<Player> playerList) {
-        return playerList.stream().anyMatch(p -> p.getPlayerName().equals(player.getPlayerName()));
     }
 }

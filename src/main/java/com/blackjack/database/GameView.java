@@ -23,6 +23,11 @@ import java.util.List;
 public class GameView extends VerticalLayout {
 
     private GameStateManager gameManager;
+    // Added a new container to hold all players' cards
+    private Div playerContainer; // ADDED this line
+    private Div dealerContainer;
+    private Div endState;
+    private Button reset;
     private Div playerContainer;
     private Div cardStack; // Added a Div to represent the card stack
 
@@ -30,13 +35,21 @@ public class GameView extends VerticalLayout {
     public GameView() {
 
         Broadcaster.register(() -> {
-            getUI().ifPresent(ui -> ui.access(this::displayAllPlayersHands));
+            getUI().ifPresent(ui -> ui.access(() -> {
+                displayAllPlayersHands(); // Refresh the view
+            }));
         });
         addDetachListener(detachEvent -> Broadcaster.unregister(() -> {
-            getUI().ifPresent(ui -> ui.access(this::displayAllPlayersHands));
+            getUI().ifPresent(ui -> ui.access(() -> {
+                displayAllPlayersHands(); // Refresh the view
+            }));
         }));
 
         gameManager = GameStateManager.getInstance();
+        // Initialized the new container
+        playerContainer = new Div(); // ADDED this line
+        dealerContainer = new Div();
+        endState = new Div();
         playerContainer = new Div();
         cardStack = new Div(); // Initialized the card stack container
 
@@ -44,31 +57,51 @@ public class GameView extends VerticalLayout {
         displayAllPlayersHands();
 
         Button hit = new Button("Hit");
-        hit.setWidth("100px");
+        hit.setWidth("150px");
         hit.addClickListener(event -> {
-            Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
+            // Modified these lines to handle all players
+            Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer"); // ADDED this line
             gameManager.giveCardToPlayer(activePlayer);
             Broadcaster.broadcast();
-            if (GameEngine.isHandOverPoints(activePlayer, 21)) {
-                checkIfDealersTurn();
+            if (GameStateManager.isHandOverPoints(activePlayer, 21)) {
+                activePlayer.isOut= true;
+                if(gameManager.isDealersTurn()){
+                    startDealerPlay();
+                }
                 hit.setEnabled(false);
             }
         });
 
         Button stand = new Button("Stand");
-        stand.setWidth("100px");
+        stand.setWidth("150px");
         stand.addClickListener(event -> {
-            Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
+            Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer"); // ADDED this line
             activePlayer.setStanding(true);
             hit.setEnabled(false);
             stand.setEnabled(false);
 
-            if (checkIfDealersTurn()) {
+            if (gameManager.isDealersTurn()){
                 startDealerPlay();
             }
 
         });
 
+        reset = new Button("New Game");
+        reset.setWidth("150px");
+        reset.setVisible(false);
+        reset.setEnabled(false);
+        reset.addClickListener(event -> {
+            reset.setVisible(false);
+            reset.setEnabled(false);
+            hit.setEnabled(true);
+            stand.setEnabled(true);
+            gameManager.resetGame();
+            dealerContainer.removeAll();
+            endState.removeAll();
+            displayAllPlayersHands();
+        });
+        // Modified this line to add the playerContainer
+        add(hit, stand, reset, playerContainer); // CHANGED this line from add(hit, stand, handContainer);
         Div buttonContainer = new Div();
         buttonContainer.add(hit, stand);
 
@@ -85,54 +118,83 @@ public class GameView extends VerticalLayout {
 
 
         Broadcaster.broadcast();
+        // Calling the new method
     }
 
-    private boolean checkIfDealersTurn() {
-        boolean allPlayersDone = gameManager.getPlayerList().stream()
-                .allMatch(player -> GameEngine.isHandOverPoints(player, 21) || player.getStanding());
-        return allPlayersDone;
-    }
-
-    private void startDealerPlay() {
-        Div dealerHand = new Div();
+    private void startDealerPlay(){
         Dealer dealer = new Dealer("Dealer");
-        Div dealerHandContainer = new Div(); // Create a container for the dealer's hand
+        Div dealerHandContainer = new Div();
+        Div dealerHand = new Div();// Create a container for the dealer's hand
         GameStateManager gameStateManager = GameStateManager.getInstance();
-        while (!GameEngine.isHandOverPoints(dealer, 16)) {
+        while (!GameStateManager.isHandOverPoints(dealer, 16)){
+
             gameStateManager.giveCardToPlayer(dealer);
         }
         Div label = new Div();
         label.setText("The Dealer has: " + dealer.getCardValues() + "Points!");
+        dealerContainer.add(label);
         label.addClassName("loss-label");
         dealerHand.add(label);
 
-        if (GameEngine.isHandOverPoints(dealer, 21)) {
+        if(GameStateManager.isHandOverPoints(dealer, 21)){
+            dealer.isOut= true;
             Div label2 = new Div();
             label2.setText("The Dealer has lost!");
+            dealerContainer.add(label2);
             label2.addClassName("loss-label");
             dealerHand.add(label2);
         }
 
         for (Card card : dealer.getHand()) {
             Image cardImage = new Image(card.imagePath, "");
+            cardImage.setWidth("50px");
+            dealerContainer.add(cardImage);
             cardImage.getElement().getClassList().add("card-image");
             cardImage.setWidth("100px");
             dealerHand.add(cardImage);
         }
+
+        add(dealerContainer);
         dealerHandContainer.add(dealerHand); // Add the dealer's cards to the dealer's hand container
         dealerHandContainer.setClassName("card-container"); // Use the same card container class as the players class as the players
         add(dealerHand);
         Broadcaster.broadcast();
+
+        GameEnd(dealer);
     }
 
-    private void displayAllPlayersHands() {
-        playerContainer.removeAll();
-        List<Player> allPlayers = gameManager.getPlayerList();
+    public void GameEnd(Dealer dealer){
+
+        for(Player player : gameManager.getPlayerList()){
+            if(!player.isOut && (GameStateManager.isHandOverPoints(player, dealer.getCardValues()) || dealer.isOut)){
+                Div label = new Div();
+                label.setText(player.getPlayerName() + " has Won!");
+                endState.add(label);
+            }
+            else {
+                Div label = new Div();
+                label.setText(player.getPlayerName() + " has lost!");
+                endState.add(label);
+            }
+        }
+        add(endState);
+        reset.setEnabled(true);
+        reset.setVisible(true);
+
+
+    }
+
+    private void displayAllPlayersHands() { // CHANGED method name
+
+        playerContainer.removeAll(); // CHANGED this line from handContainer.removeAll();
+        // Added these lines to loop through all players and display their cards
+        List<Player> allPlayers = gameManager.getPlayerList(); // ADDED this line
         for (Player player : allPlayers) {
             Div handContainer = new Div();
             List<Card> playerHand = player.getHand();
-            if (GameEngine.isHandOverPoints(player, 21)) {
+            if (GameStateManager.isHandOverPoints(player, 21)) {
                 Div pointsLabel = new Div();
+                pointsLabel.setText(player.getPlayerName() + " is Over 21 Points!");
                 pointsLabel.setText(player.getPlayerName() + " lost!");
                 pointsLabel.addClassName("loss-notification");
                 handContainer.add(pointsLabel);
@@ -148,6 +210,7 @@ public class GameView extends VerticalLayout {
             playerContainer.add(handContainer);
         }
     }
+
     private void animateCardFly() {
         // Invoke JavaScript code to trigger the card fly animation
         getElement().executeJs("animateCardFly();");
