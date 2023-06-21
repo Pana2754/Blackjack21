@@ -2,6 +2,7 @@ package com.blackjack.database;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Player {
 
@@ -81,4 +82,21 @@ public class Player {
     public void setBalance(float newBalance) {
         this.CoinBalance = newBalance;
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Player player = (Player) obj;
+        return playerName.equals(player.playerName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(playerName);
+    }
+
 }
