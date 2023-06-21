@@ -1,6 +1,7 @@
 package com.blackjack.database;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
@@ -25,6 +26,7 @@ import java.util.List;
 
 @PageTitle("BlackJack")
 @Route("GameView")
+
 public class GameView extends VerticalLayout implements BeforeEnterObserver {
 
     private GameStateManager gameManager;
@@ -124,7 +126,7 @@ public class GameView extends VerticalLayout implements BeforeEnterObserver {
         playerContainer.setClassName("card-container");
         cardStack.setClassName("card-stack show-cards");
         // Added CSS class for the card stack
-
+        addClassName("gameView");
 
         add(hit,stand, playerContainer, cardStack);
 
