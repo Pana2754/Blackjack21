@@ -1,7 +1,9 @@
 package com.blackjack.database;
 
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
@@ -37,9 +39,6 @@ public class AdminPanel extends VerticalLayout {
         buttonLayout.add(backButton);
 
         playerGrid = createPlayerGrid();
-        fetchAllUsers();
-        playerGrid.setItems(players);
-
         add(title, playerGrid, buttonLayout);
         if (!isLoggedIn()) {
             UI.getCurrent().navigate(LoginView.class);
@@ -50,35 +49,63 @@ public class AdminPanel extends VerticalLayout {
         }
     }
 
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        super.onAttach(attachEvent);
+        updateGridData();
+    }
+
+    private void updateGridData() {
+        players.clear();
+        fetchAllUsers();
+        playerGrid.setItems(players);
+    }
+
+
     private Grid<Player> createPlayerGrid() {
         Grid<Player> grid = new Grid<>();
+        grid.getStyle().set("opacity", "0.75");
+
         grid.addColumn(Player::getPlayerName).setHeader("Name");
-        grid.addColumn(Player::isBanned).setHeader("Banned");
         grid.addColumn(Player::getBalance).setHeader("Balance");
 
-        // Add new column with Ban and Unban buttons
         grid.addComponentColumn(player -> {
             Button banButton = new Button("Ban");
+            Button unbanButton = new Button("Unban");
+
+            // Initial button colors
+            banButton.getStyle().set("color", player.isBanned() ? "initial" : "red");
+            unbanButton.getStyle().set("color", player.isBanned() ? "green" : "initial");
+
             banButton.addClickListener(event -> {
                 Notification.show("Banned: " + player.getPlayerName());
                 player.setBanned(true);
                 updateBannedStatus(player.getPlayerName(), true);
                 grid.getDataProvider().refreshItem(player);
+                banButton.getStyle().set("color", "initial");
+                unbanButton.getStyle().set("color", "green");
             });
 
-            Button unbanButton = new Button("Unban");
             unbanButton.addClickListener(event -> {
                 Notification.show("Unbanned: " + player.getPlayerName());
                 player.setBanned(false);
                 updateBannedStatus(player.getPlayerName(), false);
                 grid.getDataProvider().refreshItem(player);
+                unbanButton.getStyle().set("color", "initial");
+                banButton.getStyle().set("color", "red");
             });
 
-            HorizontalLayout buttonsLayout = new HorizontalLayout(banButton, unbanButton);
+            Button deleteButton = new Button("Delete");
+            deleteButton.addClickListener(event -> {
+                delete(player.getPlayerName());
+                Notification.show("Deleted: " + player.getPlayerName());
+                updateGridData();
+            });
+
+            HorizontalLayout buttonsLayout = new HorizontalLayout(banButton, unbanButton, deleteButton);
             return buttonsLayout;
         }).setHeader("Actions");
 
-        // Add new column with TextField and Button to set balance
         grid.addComponentColumn(player -> {
             TextField balanceField = new TextField();
             balanceField.setPlaceholder("New balance");
@@ -90,7 +117,7 @@ public class AdminPanel extends VerticalLayout {
                     player.setBalance(newBalance);
                     updateBalance(player.getPlayerName(), newBalance);
                     Notification.show("Balance updated for: " + player.getPlayerName());
-                    grid.getDataProvider().refreshItem(player);
+                    grid.getDataProvider().refreshAll();
                 } catch (NumberFormatException e) {
                     Notification.show("Invalid balance input");
                 }
@@ -102,6 +129,9 @@ public class AdminPanel extends VerticalLayout {
 
         return grid;
     }
+
+
+
 
     private boolean isAnAdmin() {
         Player player = getActivePlayer();
@@ -130,15 +160,16 @@ public class AdminPanel extends VerticalLayout {
                     String userName = result.getString("user_name");
                     boolean isBanned = result.getBoolean("isBanned");
                     double balance = result.getDouble("balance");
-                    Player player = new Player(userName, isBanned, balance);
+                    Player player = new Player(userName, isBanned, balance, isBanned);
                     players.add(player);
                 }
             }
-            dbLogic.closeConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+
 
     private void updateBannedStatus(String playerName, boolean isBanned) {
         try {
@@ -150,6 +181,23 @@ public class AdminPanel extends VerticalLayout {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setBoolean(1, isBanned);
                 statement.setString(2, playerName);
+                statement.executeUpdate();
+            }
+            dbLogic.closeConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void delete(String playerName) {
+        try {
+            DatabaseLogic dbLogic = new DatabaseLogic();
+            dbLogic.connectToDb();
+
+            Connection connection = dbLogic.getConnection();
+            String sql = "DELETE blackjack_user WHERE user_name = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, playerName);
                 statement.executeUpdate();
             }
             dbLogic.closeConnection();

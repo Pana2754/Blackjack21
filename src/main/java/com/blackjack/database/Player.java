@@ -2,12 +2,13 @@ package com.blackjack.database;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Player {
 
     private String playerName;
 
-    private float CoinBalance;
+    private double CoinBalance;
     private Integer stake;
     private int CardValue;
     private boolean ready;
@@ -15,10 +16,11 @@ public class Player {
 
     private List<Card> cardList = new ArrayList<>();
 
-    public Player(String playerName, boolean ready, double balance){
+    public Player(String playerName, boolean ready, double balance, Boolean isBanned){
         this.playerName = playerName;
-        this.CoinBalance = 1000;
+        this.CoinBalance = balance;
         this.ready = ready;
+        this.banned = isBanned;
     }
     public void takeCard(Card card){
         cardList.add(card);
@@ -73,11 +75,28 @@ public class Player {
     }
 
 
-    public float getBalance() {
+    public double getBalance() {
         return CoinBalance;
     }
-
+//
     public void setBalance(float newBalance) {
         this.CoinBalance = newBalance;
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Player player = (Player) obj;
+        return playerName.equals(player.playerName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(playerName);
+    }
+
 }

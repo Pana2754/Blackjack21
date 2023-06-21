@@ -50,7 +50,8 @@ public class LoginView extends VerticalLayout {
                     UI.getCurrent().navigate("admin-panel");
                 } else if (authenticate(username, password) && !passwordField.getValue().isEmpty()) {
                     Notification.show("Login successful!");
-                    Player activePlayer = new Player(username, false, 1000);
+                    DatabaseLogic db = new DatabaseLogic();
+                    Player activePlayer = db.getUser(username);
                     VaadinSession.getCurrent().setAttribute("activePlayer", activePlayer);
                     Lobby.playerLoggedIn(activePlayer);
 

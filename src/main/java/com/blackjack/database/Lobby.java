@@ -4,10 +4,13 @@ import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
@@ -37,26 +40,28 @@ public class Lobby extends VerticalLayout {
         H2 title = new H2("Waiting Lobby");
 
         playersGrid.addColumn(Player::getPlayerName).setHeader("Name");
+
+        playersGrid.addColumn(new ComponentRenderer<>(player -> {
+            Button startButton = new Button("Start");
+            if (!player.equals(getActivePlayer())) {
+                startButton.setEnabled(false);
+            }
+            startButton.addClickListener(event -> {
+                GameStateManager gameStateManager = GameStateManager.getInstance();
+                gameStateManager.addPlayer(player);
+                gameStateManager.giveCardToPlayer(player);
+                gameStateManager.giveCardToPlayer(player);
+                UI.getCurrent().navigate("GameView");
+            });
+            return startButton;
+        })).setHeader("Start Game");
+
         HorizontalLayout gridWrapper = new HorizontalLayout(playersGrid);
         gridWrapper.setJustifyContentMode(JustifyContentMode.CENTER);
 
-        Player activePlayer = getActivePlayer();
-        if (activePlayer != null && !activePlayers.contains(activePlayer)) {
-            activePlayers.add(activePlayer);
-        }
-
-        Button startGame = new Button("START");
-        startGame.setWidth("100px");
-        startGame.addClickListener(event -> {
-            GameStateManager gameStateManager = GameStateManager.getInstance();
-            gameStateManager.addPlayer(activePlayer);
-            gameStateManager.giveCardToPlayer(getActivePlayer());
-            gameStateManager.giveCardToPlayer(getActivePlayer());
-            UI.getCurrent().navigate("GameView");
-        });
-
+        playersGrid.setPageSize(7);
         playersGrid.setItems(activePlayers);
-        add(logo, title, playersGrid, startGame);
+        add(logo, title, playersGrid);
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
         setMargin(true);
@@ -66,9 +71,19 @@ public class Lobby extends VerticalLayout {
         setSpacing(true);
     }
 
+//test
     public static void playerLoggedIn(Player player) {
-        activePlayers.add(player);
-        Broadcaster.broadcast(activePlayers);
+        boolean isAlreadyPresent = activePlayers.stream()
+                .anyMatch(existingPlayer -> existingPlayer.equals(player));
+
+        if (!isAlreadyPresent) {
+            if (activePlayers.size() >= 7) {
+                Notification.show("Lobby full, please wait for the next session!", 3000, Notification.Position.MIDDLE);
+            } else {
+                activePlayers.add(player);
+                Broadcaster.broadcast(activePlayers);
+            }
+        }
     }
 
     private void updateGrid(List<Player> players) {
@@ -93,5 +108,4 @@ public class Lobby extends VerticalLayout {
     private Player getActivePlayer() {
         return (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
     }
-
 }

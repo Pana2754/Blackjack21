@@ -110,6 +110,41 @@ public class DatabaseLogic {
         return false;
     }
 
+    public  Player getUser(String username) {
+        Connection connection = null;
+        try {
+            DatabaseLogic dbLogic = new DatabaseLogic();
+            dbLogic.connectToDb();
+
+            connection = dbLogic.getConnection();
+            String sql = "SELECT * FROM blackjack_user WHERE user_name = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, username);
+                try (ResultSet result = statement.executeQuery()) {
+                    if (result.next()) {
+                        String userName = result.getString("user_name");
+                        boolean isBanned = result.getBoolean("isBanned");
+                        double balance = result.getDouble("balance");
+
+                        return new Player(userName, false, balance,isBanned);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+
     public boolean checkAdmin(String user_name) {
         if (connection == null) {
             return false;
