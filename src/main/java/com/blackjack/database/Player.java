@@ -2,9 +2,8 @@ package com.blackjack.database;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class Player {
+public class Player implements IPlayer {
 
     private String playerName;
 
@@ -14,6 +13,10 @@ public class Player {
     private boolean ready;
     private boolean banned;;
 
+    private boolean isStanding;
+
+    public boolean isOut;
+
     private List<Card> cardList = new ArrayList<>();
 
     public Player(String playerName, boolean ready, double balance, Boolean isBanned){
@@ -21,6 +24,7 @@ public class Player {
         this.CoinBalance = balance;
         this.ready = ready;
         this.banned = isBanned;
+        this.isStanding = false;
     }
     public void takeCard(Card card){
         cardList.add(card);
@@ -29,11 +33,23 @@ public class Player {
     private void increaseStake(int value){
 
     }
-
+    public void setStanding(boolean standing){
+        this.isStanding = standing;
+    }
+    public boolean getStanding(){
+        return this.isStanding;
+    }
     public int getCardValues(){
 
         int result = 0;
+        if(cardList == null){
+            return result;
+        }
+        int aces = 0;
         for(Card card : cardList){
+            if (card.rank.equals("A")) {
+                aces += 1;
+            }
             try {
                 result += Integer.parseInt(card.rank);
                 continue;
@@ -48,7 +64,17 @@ public class Player {
             }
 
         }
+        while (result > 21 && aces > 0){
+            result -= 10;
+            aces -= 1;
+        }
         return result;
+    }
+
+    public void resetHand(){
+        cardList= new ArrayList<>();
+        isOut = false;
+        isStanding = false;
     }
 
     public List<Card> getHand(){
@@ -82,21 +108,6 @@ public class Player {
     public void setBalance(float newBalance) {
         this.CoinBalance = newBalance;
     }
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        Player player = (Player) obj;
-        return playerName.equals(player.playerName);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(playerName);
-    }
 
 }
