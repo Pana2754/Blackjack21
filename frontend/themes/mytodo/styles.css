@@ -1,8 +1,8 @@
 /* notification */
-.loss-label {
+.label-design {
     position: absolute;
-    bottom: 0;
-    left: 50%;
+    left: 50px; /* Adjust the top value as needed */
+    left: 80%;
     transform: translateX(-50%);
     display: inline-block;
     background-color: #fff652;
@@ -16,6 +16,7 @@
     opacity: 0;
     z-index: 1;
 }
+
 
 @keyframes labelAnimation {
     0% {
@@ -67,10 +68,21 @@
 
 /* Card animation */
 .card-image {
-    width: 100px;
-    margin: 5px;
-    transition: transform 0.5s;
+    position: absolute;
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
+
+@keyframes card-fly {
+    0% {
+        transform: translate(-50%, -50%);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(var(--targetX), var(--targetY));
+        opacity: 1;
+    }
+}
+
 
 .card-container {
     display: flex;

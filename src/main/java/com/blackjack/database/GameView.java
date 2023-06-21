@@ -9,6 +9,12 @@ import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.Route;
+
 
 
 
@@ -19,8 +25,7 @@ import java.util.List;
 
 @PageTitle("BlackJack")
 @Route("GameView")
-//@JsModule("./fly-cards.js") // Reference to the fly-cards.js file//  JS
-public class GameView extends VerticalLayout {
+public class GameView extends VerticalLayout implements BeforeEnterObserver {
 
     private GameStateManager gameManager;
     // Added a new container to hold all players' cards
@@ -28,10 +33,18 @@ public class GameView extends VerticalLayout {
     private Div dealerContainer;
     private Div endState;
     private Button reset;
-    private Div playerContainer;
     private Div cardStack; // Added a Div to represent the card stack
 
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        // Load the fly-cards.js file
+        UI.getCurrent().getPage().addJavaScript("frontend/js/fly-cards.js");
+    }
 
+    private void animateCardFly(Component cardComponent) {
+        // Invoke JavaScript code to trigger the card fly animation
+        UI.getCurrent().getPage().executeJs("animateCardFly($0);", cardComponent.getElement());
+    }
     public GameView() {
 
         Broadcaster.register(() -> {
@@ -133,7 +146,7 @@ public class GameView extends VerticalLayout {
         Div label = new Div();
         label.setText("The Dealer has: " + dealer.getCardValues() + "Points!");
         dealerContainer.add(label);
-        label.addClassName("loss-label");
+        label.addClassName("label-design");
         dealerHand.add(label);
 
         if(GameStateManager.isHandOverPoints(dealer, 21)){
@@ -141,7 +154,7 @@ public class GameView extends VerticalLayout {
             Div label2 = new Div();
             label2.setText("The Dealer has lost!");
             dealerContainer.add(label2);
-            label2.addClassName("loss-label");
+            label2.addClassName("label-design");
             dealerHand.add(label2);
         }
 
@@ -169,11 +182,13 @@ public class GameView extends VerticalLayout {
             if(!player.isOut && (GameStateManager.isHandOverPoints(player, dealer.getCardValues()) || dealer.isOut)){
                 Div label = new Div();
                 label.setText(player.getPlayerName() + " has Won!");
+                label.addClassName("label-design");
                 endState.add(label);
             }
             else {
                 Div label = new Div();
                 label.setText(player.getPlayerName() + " has lost!");
+                label.addClassName("label-design");
                 endState.add(label);
             }
         }
@@ -197,6 +212,7 @@ public class GameView extends VerticalLayout {
                 pointsLabel.setText(player.getPlayerName() + " is Over 21 Points!");
                 pointsLabel.setText(player.getPlayerName() + " lost!");
                 pointsLabel.addClassName("loss-notification");
+                pointsLabel.addClassName("label-design");
                 handContainer.add(pointsLabel);
             }
             for (Card card : playerHand) {
@@ -204,6 +220,7 @@ public class GameView extends VerticalLayout {
                 cardImage.setWidth("100px");
                 //cardImage.getElement().getClassList().add("card-image");
                 cardImage.getElement().setAttribute("class", "card-image fly-out");
+                cardImage.getElement().setAttribute("id", "card-" + card.getId());
                 handContainer.add(cardImage);
             }
 
@@ -211,10 +228,6 @@ public class GameView extends VerticalLayout {
         }
     }
 
-    private void animateCardFly() {
-        // Invoke JavaScript code to trigger the card fly animation
-        getElement().executeJs("animateCardFly();");
-    }
 
 
 }
