@@ -1,3 +1,70 @@
+/* notification */
+.loss-label {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-block;
+    background-color: #fff652;
+    color: #282424;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    animation: labelAnimation 2s ease-in-out forwards;
+    opacity: 0;
+    z-index: 1;
+}
+
+@keyframes labelAnimation {
+    0% {
+        transform: translateX(-50%) scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: translateX(-50%) scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+    }
+}
+
+.loss-notification {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-block;
+    background-color:  #fff652;
+    color: #282424;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    animation: notificationAnimation 2s ease-in-out forwards;
+    opacity: 0;
+    z-index: 1;
+}
+
+@keyframes notificationAnimation {
+    0% {
+        transform: translateX(-50%) scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: translateX(-50%) scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+    }
+}
+
 /* Card animation */
 .card-image {
     width: 100px;
@@ -27,6 +94,7 @@
     transform: translateX(50%);
 }
 
+
 /* Card stack animation */
 .card-stack {
     width: 120px;
@@ -34,7 +102,6 @@
     margin: 5px;
     position: relative;
     z-index: 3;
-    transition: transform 0.5s;
     background-color: #f5f5f5;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -45,9 +112,50 @@
     perspective: 1000px;
     transform-style: preserve-3d;
     transform-origin: bottom center;
-    transform: rotateX(30deg) translateY(-30px);
+    animation: glow-animation 2s infinite;
 }
 
+@keyframes glow-animation {
+    0% {
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 30px rgba(255, 255, 255, 0.8),
+        0 0 40px rgba(255, 255, 255, 0.8),
+        0 0 50px rgba(255, 255, 255, 0.8);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 30px rgba(255, 255, 255, 0.8),
+        0 0 40px rgba(255, 255, 255, 0.8),
+        0 0 50px rgba(255, 255, 255, 0.8),
+        0 0 60px rgba(255, 255, 255, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 30px rgba(255, 255, 255, 0.8),
+        0 0 40px rgba(255, 255, 255, 0.8),
+        0 0 50px rgba(255, 255, 255, 0.8);
+    }
+}
+
+/* Card stack animation */
+.card-stack {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-stack .card-image {
+    position: absolute;
+    top: -100px; /* Adjust the value as needed */
+    opacity: 0;
+    transition: top 0.5s, opacity 0.5s;
+}
+
+.card-stack.show-cards .card-image {
+    top: 0;
+    opacity: 1;
+}
 
 .card-stack .card-image {
     position: absolute;
@@ -81,28 +189,6 @@
     text-align: center;
 }
 
-.button-container {
-    margin-top: 20px;
-}
-
-.card-stack {
-    margin-top: 20px;
-}
-
-.button.hit {
-    background-color: #41c9c6;
-    color: white;
-}
-
-.button.stand {
-    background-color: #e30606;
-    color: white;
-}
-
-.button.hit:hover, .button.stand:hover {
-    background-color: #249c99;
-}
-
 .dealer-container {
     display: flex;
     flex-wrap: wrap;
@@ -117,6 +203,53 @@
 
 
 /*buttons modification*/
+.shining-button {
+    width: 100px;
+    height: 40px;
+    background: linear-gradient(45deg, #ffed00, #ff8a00);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.shining-button:before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 10%, transparent 40%);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.shining-button:hover:before {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    animation: shining-animation 1s infinite;
+}
+
+@keyframes shining-animation {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0);
+    }
+    50% {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0);
+    }
+}
 
 /* login-view.css */
 body {

@@ -19,7 +19,7 @@ import java.util.List;
 
 @PageTitle("BlackJack")
 @Route("GameView")
-@JsModule("./frontend/js/fly-cards.js") // Reference to the fly-cards.js file
+//@JsModule("./fly-cards.js") // Reference to the fly-cards.js file//  JS
 public class GameView extends VerticalLayout {
 
     private GameStateManager gameManager;
@@ -45,7 +45,6 @@ public class GameView extends VerticalLayout {
 
         Button hit = new Button("Hit");
         hit.setWidth("100px");
-        hit.getElement().setAttribute("class", "button hit");
         hit.addClickListener(event -> {
             Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
             gameManager.giveCardToPlayer(activePlayer);
@@ -58,7 +57,6 @@ public class GameView extends VerticalLayout {
 
         Button stand = new Button("Stand");
         stand.setWidth("100px");
-        stand.getElement().setAttribute("class", "button stand");
         stand.addClickListener(event -> {
             Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
             activePlayer.setStanding(true);
@@ -75,12 +73,14 @@ public class GameView extends VerticalLayout {
         buttonContainer.add(hit, stand);
 
         setClassName("container");
-        hit.setClassName("button-container");
-        stand.setClassName("button-container");
+        hit.setClassName("shining-button");
+        stand.setClassName("shining-button");
         playerContainer.setClassName("card-container");
-        cardStack.setClassName("card-stack"); // Added CSS class for the card stack
+        cardStack.setClassName("card-stack show-cards");
+        // Added CSS class for the card stack
 
-        add(buttonContainer, playerContainer, cardStack);
+
+        add(hit,stand, playerContainer, cardStack);
 
 
 
@@ -103,11 +103,13 @@ public class GameView extends VerticalLayout {
         }
         Div label = new Div();
         label.setText("The Dealer has: " + dealer.getCardValues() + "Points!");
+        label.addClassName("loss-label");
         dealerHand.add(label);
 
         if (GameEngine.isHandOverPoints(dealer, 21)) {
             Div label2 = new Div();
             label2.setText("The Dealer has lost!");
+            label2.addClassName("loss-label");
             dealerHand.add(label2);
         }
 
@@ -132,20 +134,23 @@ public class GameView extends VerticalLayout {
             if (GameEngine.isHandOverPoints(player, 21)) {
                 Div pointsLabel = new Div();
                 pointsLabel.setText(player.getPlayerName() + " lost!");
+                pointsLabel.addClassName("loss-notification");
                 handContainer.add(pointsLabel);
             }
             for (Card card : playerHand) {
                 Image cardImage = new Image(card.imagePath, "");
                 cardImage.setWidth("100px");
-                cardImage.getElement().getClassList().add("card-image");
+                //cardImage.getElement().getClassList().add("card-image");
+                cardImage.getElement().setAttribute("class", "card-image fly-out");
                 handContainer.add(cardImage);
             }
+
             playerContainer.add(handContainer);
         }
     }
-    private void animateCards() {
+    private void animateCardFly() {
         // Invoke JavaScript code to trigger the card fly animation
-        //getElement().executeJs("animateCardFly();");
+        getElement().executeJs("animateCardFly();");
     }
 
 
