@@ -11,10 +11,13 @@ public class GameStateManager {
 
     private static GameStateManager instance;
     private List<Player> playerList;
+
+    public Dealer dealer;
     private CardDeck cards;
 
     private GameStateManager() {
         playerList = new ArrayList<>();
+        dealer = new Dealer("dealer");
         cards = new CardDeck();
         cards.shuffle();
     }
@@ -56,33 +59,30 @@ public class GameStateManager {
         }
     }
     public void startGame(){
-        UI  g =  UI.getCurrent();
-        startStakeRound();
-        for(Player player : playerList){
-            player.takeCard(cards.draw());
-            player.takeCard(cards.draw());
+        if(isStakeRoundOver()){
+            for(Player player : playerList){
+                player.takeCard(cards.draw());
+                player.takeCard(cards.draw());
+            }
+            dealer.takeCard(cards.draw());
+            Broadcaster.startGame();
         }
-        Broadcaster.startGame();
-
     }
 
-    private void startStakeRound()  {
-        while (playerList.stream().allMatch(player -> !player.hasIncreasedStake)){
-            try {
-                Thread.sleep(100); // Sleep for 100 milliseconds
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
+    private boolean isStakeRoundOver()  {
 
+        return playerList.stream().allMatch(player -> player.hasIncreasedStake);
     }
 
     public void resetGame(){
         cards = new CardDeck();
         cards.shuffle();
         for (Player player: playerList){
+            player.hasIncreasedStake = false;
+            player.resetStake();
             player.resetHand();
+            dealer.resetHand();
         }
-        startGame();
+        Broadcaster.resetGame();
     }
 }

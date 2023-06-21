@@ -50,7 +50,6 @@ public class Lobby extends VerticalLayout {
                 GameStateManager gameStateManager = GameStateManager.getInstance();
                 gameStateManager.addPlayer(player);
                 // Start a new GameView for this player
-                GameViewManager.getInstance().startGameViewForPlayer(player);
 
                 UI.getCurrent().navigate("GameView");
 

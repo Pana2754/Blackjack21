@@ -14,7 +14,7 @@ public class Player implements IPlayer {
     public boolean hasIncreasedStake;
     private int CardValue;
     private boolean ready;
-    private boolean banned;;
+    private boolean banned;
 
     private boolean isStanding;
 
@@ -37,6 +37,9 @@ public class Player implements IPlayer {
     public void increaseStake(int value){
         stake+= value;
         CoinBalance -= value;
+    }
+    public void resetStake(){
+        stake = 0;
     }
     public int getStake(){
         return stake;
@@ -115,6 +118,10 @@ public class Player implements IPlayer {
 //
     public void setBalance(float newBalance) {
         this.CoinBalance = newBalance;
+    }
+
+    public void increaseBalance(int amount){
+        this.CoinBalance+= amount;
     }
     @Override
     public boolean equals(Object obj) {

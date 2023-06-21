@@ -35,9 +35,9 @@ public class Broadcaster {
         }
 
     }
-    public static synchronized void onGameStart(){
-        for (final Runnable gameListener:gameListeners){
-            executor.execute(gameListener);
+    public static void resetGame(){
+        for(GameEventListener listener : gameEventListeners){
+            listener.onGameReset();
         }
     }
     public static synchronized void unregister(Runnable listener){gameListeners.remove(listener);}

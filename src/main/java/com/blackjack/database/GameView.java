@@ -27,6 +27,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
     private Button reset;
     Button stand;
     Button hit;
+    Button raiseStake10;
 
     private UI currentUI; // Store the UI instance
     Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
@@ -57,10 +58,11 @@ public class GameView extends VerticalLayout implements GameEventListener {
         stake.setText("Stake: 0");
 
         displayAllPlayersHands();
-        Button raiseStake10 = new Button("Put10");
+        raiseStake10 = new Button("Put10");
         raiseStake10.setWidth("150px");
         raiseStake10.addClickListener(event -> {
             raiseStake(10, activePlayer);
+            gameManager.startGame();
         });
         hit = new Button("Hit");
         hit.setWidth("150px");
@@ -116,7 +118,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
     }
 
     private void startDealerPlay(){
-        Dealer dealer = new Dealer("Dealer");
+        Dealer dealer = gameManager.dealer;
         GameStateManager gameStateManager = GameStateManager.getInstance();
         while (!GameStateManager.isHandOverPoints(dealer, 16)){
 
@@ -133,12 +135,6 @@ public class GameView extends VerticalLayout implements GameEventListener {
             dealerContainer.add(label2);
         }
 
-        for (Card card : dealer.getHand()) {
-            Image cardImage = new Image(card.imagePath, "");
-            cardImage.setWidth("50px");
-            dealerContainer.add(cardImage);
-        }
-
         add(dealerContainer);
         Broadcaster.broadcast();
 
@@ -150,8 +146,10 @@ public class GameView extends VerticalLayout implements GameEventListener {
         for(Player player : gameManager.getPlayerList()){
             if(!player.isOut && (GameStateManager.isHandOverPoints(player, dealer.getCardValues()) || dealer.isOut)){
                 Div label = new Div();
-                label.setText(player.getPlayerName() + " has Won!");
+                label.setText(player.getPlayerName() + " has Won! + " + player.getStake()*2);
+                player.increaseBalance(2*player.getStake());
                 endState.add(label);
+
             }
             else {
                 Div label = new Div();
@@ -197,8 +195,20 @@ public class GameView extends VerticalLayout implements GameEventListener {
                 cardImage.setWidth("50px");
                 handContainer.add(cardImage); // Modified this line
             }
+            Div balance = new Div();
+            balance.setText("" +player.getBalance());
+            handContainer.add(balance);
             playerContainer.add(handContainer); // ADDED this line
         }
+        Dealer dealer = gameManager.dealer;
+        Div hand = new Div();
+        hand.setText(dealer.name);
+        for (Card card: dealer.getHand()){
+            Image cardImage = new Image(card.imagePath, "");
+            cardImage.setWidth("50px");
+            hand.add(cardImage);
+        }
+        playerContainer.add(hand);
     }
 
     @Override
@@ -208,10 +218,35 @@ public class GameView extends VerticalLayout implements GameEventListener {
             hit.setEnabled(true);
             stand.setEnabled(true);
             stand.setVisible(true);
+            raiseStake10.setVisible(false);
+            raiseStake10.setEnabled(false);
+
 
             displayAllPlayersHands();
             Broadcaster.broadcast();
         });
+    }
+
+    @Override
+    public void onGameReset() {
+        currentUI.access(()-> {
+            // Clear the game area
+            playerContainer.removeAll();
+            dealerContainer.removeAll();
+            endState.removeAll();
+            stake.setText("Stake: 0");
+            // Reset buttons
+            hit.setEnabled(false);
+            stand.setEnabled(false);
+            reset.setVisible(false);
+            reset.setEnabled(false);
+            raiseStake10.setVisible(true);
+            raiseStake10.setEnabled(true);
+
+            displayAllPlayersHands();
+            Broadcaster.broadcast();
+        });
+
     }
 
 }
