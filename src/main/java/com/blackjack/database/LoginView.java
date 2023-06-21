@@ -3,6 +3,7 @@ package com.blackjack.database;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -20,9 +21,11 @@ import java.time.LocalDate;
 import java.time.Period;
 
 @Route("login")
+@CssImport("./themes/mytodo/loginview.css")
 public class LoginView extends VerticalLayout {
     private static final long serialVersionUID = -4286830884968200051L;
     public LoginView() {
+        setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
 
@@ -75,7 +78,6 @@ public class LoginView extends VerticalLayout {
         add(image, usernameField, passwordField, buttonLayout);
         addClassName("login-view");
     }
-
     private boolean isAdmin(String username, String password) throws SQLException {
         if (!password.isEmpty() && authenticate(username, password)) {
             DatabaseLogic db = new DatabaseLogic();

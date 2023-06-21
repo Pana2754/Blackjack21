@@ -24,7 +24,7 @@ import com.vaadin.flow.component.grid.Grid;
 
 @PageTitle("Admin Panel")
 @Route("admin-panel")
-@CssImport("./themes/mytodo/admin.css")
+@CssImport("./themes/mytodo/adminview.css")
 public class AdminPanel extends VerticalLayout {
     private final List<Player> players = new ArrayList<>();
     private final Grid<Player> playerGrid;
