@@ -64,7 +64,7 @@ public class AdminPanel extends VerticalLayout {
 
     private Grid<Player> createPlayerGrid() {
         Grid<Player> grid = new Grid<>();
-        grid.getStyle().set("opacity", "0.75"); // Set opacity to 75%
+        grid.getStyle().set("opacity", "0.75");
 
         grid.addColumn(Player::getPlayerName).setHeader("Name");
         grid.addColumn(Player::getBalance).setHeader("Balance");
