@@ -114,7 +114,6 @@ public class LoginView extends VerticalLayout {
         }
         return true;
     }
-
     private void showRegistrationForm() {
         Dialog dialog = new Dialog();
         dialog.setWidth("400px");
@@ -131,11 +130,13 @@ public class LoginView extends VerticalLayout {
             String username = usernameField.getValue();
             String password = hashPassword(passwordField.getValue());
             String confirmPassword = hashPassword(confirmPasswordField.getValue());
-
             LocalDate userAge = datePicker.getValue();
 
             if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || userAge == null) {
                 Notification.show("Please fill in all fields!");
+            } else if (!password.equals(confirmPassword)) {
+                Notification.show("Passwords do not match!");
+            } else if (!verifyAge(userAge)) {
             } else {
                 DatabaseLogic dbLogic = new DatabaseLogic();
                 try {
@@ -143,12 +144,10 @@ public class LoginView extends VerticalLayout {
 
                     if (dbLogic.doesUserExist(username)) {
                         Notification.show("Username already exists!");
-                    } else if (password.equals(confirmPassword) && verifyAge(userAge)) {
+                    } else {
                         dbLogic.addUser(username, password, false, false, 1000);
                         Notification.show("Successfully registered!");
                         dialog.close();
-                    } else if (!password.equals(confirmPassword)) {
-                        Notification.show("Passwords do not match!");
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -168,6 +167,8 @@ public class LoginView extends VerticalLayout {
 
         dialog.open();
     }
+
+
 
 
     private String hashPassword(String password) {

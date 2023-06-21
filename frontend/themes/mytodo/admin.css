@@ -1,0 +1,59 @@
+.admin-panel-title {
+    width: 100%;
+    max-width: 1500px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Admin panel title */
+.admin-panel-title h2 {
+    font-size: 36px;
+    color: #34495e;
+    margin-bottom: 30px;
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid #bdc3c7;
+}
+
+/* Player grid styles */
+.admin-panel-title .vaadin-grid {
+    margin-top: 40px;
+    border: none;
+}
+
+/* Grid header */
+.admin-panel-title .vaadin-grid .vaadin-grid-header {
+    background-color: #2980b9;
+    color: #007BFF;
+}
+
+/* Grid cells */
+.admin-panel-title .vaadin-grid-cell-content {
+    padding: 15px 20px;
+    color: #34495e;
+    font-size: 14px;
+}
+
+/* Back button */
+.grey-button {
+    display: inline-block;
+    margin-top: 20px;
+    background-color: #27ae60;
+    color: #ffffff;
+    border: none;
+    padding: 12px 25px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Change background color on hover */
+.grey-button:hover {
+    background-color: #2ecc71;
+    transform: translateY(-2px);
+}

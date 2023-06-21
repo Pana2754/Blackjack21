@@ -3,7 +3,8 @@ package com.blackjack.database;
 import com.vaadin.flow.component.AttachEvent;
         import com.vaadin.flow.component.UI;
         import com.vaadin.flow.component.button.Button;
-        import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.grid.Grid;
         import com.vaadin.flow.component.html.H2;
         import com.vaadin.flow.component.notification.Notification;
         import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -23,6 +24,7 @@ import com.vaadin.flow.component.AttachEvent;
 
 @PageTitle("Admin Panel")
 @Route("admin-panel")
+@CssImport("./themes/mytodo/admin.css")
 public class AdminPanel extends VerticalLayout {
     private final List<Player> players = new ArrayList<>();
     private final Grid<Player> playerGrid;
@@ -30,7 +32,7 @@ public class AdminPanel extends VerticalLayout {
     public AdminPanel() {
         setWidthFull();
         addClassName("admin-panel-title");
-        H2 title = new H2("Admin panel");
+        H2 title = new H2("ADMINPANEL");
 
         Button backButton = new Button("Back to Login");
         backButton.addClassName("grey-button");
