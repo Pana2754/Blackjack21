@@ -1,4 +1,4 @@
-/* card animation */
+/* Card animation */
 .card-image {
     width: 100px;
     margin: 5px;
@@ -27,6 +27,51 @@
     transform: translateX(50%);
 }
 
+/* Card stack animation */
+.card-stack {
+    width: 120px;
+    height: 180px;
+    margin: 5px;
+    position: relative;
+    z-index: 3;
+    transition: transform 0.5s;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-image: url('download.jpg');
+    background-size: cover;
+    background-position: center;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transform-origin: bottom center;
+    transform: rotateX(30deg) translateY(-30px);
+}
+
+
+.card-stack .card-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.5s, opacity 0.5s;
+}
+
+.card-stack .card-image.front {
+    transform: rotateY(0deg);
+}
+
+.card-stack .card-image.back {
+    transform: rotateY(180deg);
+}
+
+.card-stack .card-image.flipped {
+    transform: rotateY(180deg);
+    opacity: 0;
+}
+
+/* Additional Styling Enhancements */
 .container {
     display: flex;
     flex-direction: column;
@@ -40,7 +85,25 @@
     margin-top: 20px;
 }
 
-.card-container {
+.card-stack {
+    margin-top: 20px;
+}
+
+.button.hit {
+    background-color: #41c9c6;
+    color: white;
+}
+
+.button.stand {
+    background-color: #e30606;
+    color: white;
+}
+
+.button.hit:hover, .button.stand:hover {
+    background-color: #249c99;
+}
+
+.dealer-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -48,29 +111,10 @@
     margin-top: 20px;
 }
 
-.card-image {
-    width: 100px;
-    margin: 5px;
+.dealer-container .card-image {
+    transform: translateY(-50%);
 }
 
-
-
-/* card animation */
-/* card stack animation */
-.card-stack {
-    width: 100px;
-    height: 150px; /* Adjust the height based on your card size */
-    margin: 5px;
-    position: relative;
-    z-index: 3;
-    transition: transform 0.5s;
-    background-color: #f5f5f5; /* Set the background color */
-    border: 1px solid #ccc; /* Add a border */
-    border-radius: 5px; /* Add border radius for a rounded appearance */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a box shadow for depth */
-    background-image: url('download.jpg');
-    background-size: cover;
-}
 
 /*buttons modification*/
 
