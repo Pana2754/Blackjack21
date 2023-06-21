@@ -29,7 +29,7 @@ public class LoginView extends VerticalLayout {
         Image image = new Image("head.png", "Logo");
         image.addClassNames("login-logo");
 
-
+        //
         TextField usernameField = new TextField("Username");
         usernameField.setWidth("300px");
         usernameField.addClassNames("login-input");
