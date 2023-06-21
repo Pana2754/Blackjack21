@@ -134,28 +134,31 @@ public class LoginView extends VerticalLayout {
 
             LocalDate userAge = datePicker.getValue();
 
-            DatabaseLogic dbLogic = new DatabaseLogic();
-            try {
-                dbLogic.connectToDb();
-
-                // Assuming there's a method called doesUserExist, if not you need to implement it or remove this block
-                if (dbLogic.doesUserExist(username)) {
-                    Notification.show("Username already exists!");
-                } else if (password.equals(confirmPassword) && verifyAge(userAge)) {
-                    dbLogic.addUser(username, password, false, false, 1000);
-                    Notification.show("Successfully registered!");
-                    dialog.close();
-                } else if (!password.equals(confirmPassword)) {
-                    Notification.show("Passwords do not match!");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                Notification.show("Registration failed!");
-            } finally {
+            if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || userAge == null) {
+                Notification.show("Please fill in all fields!");
+            } else {
+                DatabaseLogic dbLogic = new DatabaseLogic();
                 try {
-                    dbLogic.closeConnection();
+                    dbLogic.connectToDb();
+
+                    if (dbLogic.doesUserExist(username)) {
+                        Notification.show("Username already exists!");
+                    } else if (password.equals(confirmPassword) && verifyAge(userAge)) {
+                        dbLogic.addUser(username, password, false, false, 1000);
+                        Notification.show("Successfully registered!");
+                        dialog.close();
+                    } else if (!password.equals(confirmPassword)) {
+                        Notification.show("Passwords do not match!");
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
+                    Notification.show("Registration failed!");
+                } finally {
+                    try {
+                        dbLogic.closeConnection();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
