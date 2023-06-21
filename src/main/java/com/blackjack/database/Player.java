@@ -9,7 +9,9 @@ public class Player implements IPlayer {
     private String playerName;
 
     private double CoinBalance;
-    private Integer stake;
+    private int stake;
+
+    public boolean hasIncreasedStake;
     private int CardValue;
     private boolean ready;
     private boolean banned;;
@@ -26,13 +28,18 @@ public class Player implements IPlayer {
         this.ready = ready;
         this.banned = isBanned;
         this.isStanding = false;
+        hasIncreasedStake = false;
     }
     public void takeCard(Card card){
         cardList.add(card);
     }
 
-    private void increaseStake(int value){
-
+    public void increaseStake(int value){
+        stake+= value;
+        CoinBalance -= value;
+    }
+    public int getStake(){
+        return stake;
     }
     public void setStanding(boolean standing){
         this.isStanding = standing;

@@ -1,8 +1,10 @@
 package com.blackjack.database;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -13,41 +15,60 @@ import java.util.List;
 
 @PageTitle("BlackJack")
 @Route("GameView")
-public class GameView extends VerticalLayout {
+public class GameView extends VerticalLayout implements GameEventListener {
 
     private GameStateManager gameManager;
     // Added a new container to hold all players' cards
     private Div playerContainer; // ADDED this line
     private Div dealerContainer;
     private Div endState;
+
+    private Div stake;
     private Button reset;
+    Button stand;
+    Button hit;
+
+    private UI currentUI; // Store the UI instance
+    Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
 
     public GameView() {
+
+        currentUI = UI.getCurrent();
 
         Broadcaster.register(() -> {
             getUI().ifPresent(ui -> ui.access(() -> {
                 displayAllPlayersHands(); // Refresh the view
             }));
         });
+
         addDetachListener(detachEvent -> Broadcaster.unregister(() -> {
             getUI().ifPresent(ui -> ui.access(() -> {
                 displayAllPlayersHands(); // Refresh the view
             }));
         }));
+        Broadcaster.addGameEventListener(this);
 
         gameManager = GameStateManager.getInstance();
         // Initialized the new container
         playerContainer = new Div(); // ADDED this line
         dealerContainer = new Div();
         endState = new Div();
+        stake = new Div();
+        stake.setText("Stake: 0");
 
         displayAllPlayersHands();
-
-        Button hit = new Button("Hit");
+        Button raiseStake10 = new Button("Put10");
+        raiseStake10.setWidth("150px");
+        raiseStake10.addClickListener(event -> {
+            raiseStake(10, activePlayer);
+        });
+        hit = new Button("Hit");
         hit.setWidth("150px");
+        hit.setEnabled(false);
+        //hit.setVisible(false);
         hit.addClickListener(event -> {
             // Modified these lines to handle all players
-            Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer"); // ADDED this line
+             // ADDED this line
             gameManager.giveCardToPlayer(activePlayer);
             Broadcaster.broadcast();
             if (GameStateManager.isHandOverPoints(activePlayer, 21)) {
@@ -59,10 +80,11 @@ public class GameView extends VerticalLayout {
             }
         });
 
-        Button stand = new Button("Stand");
+        stand = new Button("Stand");
         stand.setWidth("150px");
+        stand.setEnabled(false);
+        //stand.setVisible(false);
         stand.addClickListener(event -> {
-            Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer"); // ADDED this line
             activePlayer.setStanding(true);
             hit.setEnabled(false);
             stand.setEnabled(false);
@@ -88,10 +110,9 @@ public class GameView extends VerticalLayout {
             displayAllPlayersHands();
         });
         // Modified this line to add the playerContainer
-        add(hit, stand, reset, playerContainer); // CHANGED this line from add(hit, stand, handContainer);
+        add(hit, stand, reset, playerContainer,stake, raiseStake10); // CHANGED this line from add(hit, stand, handContainer);
 
         Broadcaster.broadcast();
-        // Calling the new method
     }
 
     private void startDealerPlay(){
@@ -145,13 +166,26 @@ public class GameView extends VerticalLayout {
 
     }
 
+    private void raiseStake(int amount, Player player){
+        if(player.getBalance() >= amount){
+            player.increaseStake(amount);
+            stake.setText("Stake: "+ player.getStake());
+            player.hasIncreasedStake = true;
+        }
+        else{
+            Notification.show("You dont have enough Cash!");
+        }
+
+    }
+
     private void displayAllPlayersHands() { // CHANGED method name
 
         playerContainer.removeAll(); // CHANGED this line from handContainer.removeAll();
         // Added these lines to loop through all players and display their cards
         List<Player> allPlayers = gameManager.getPlayerList(); // ADDED this line
         for (Player player : allPlayers) {
-            Div handContainer = new Div(); // ADDED this line
+            Div handContainer = new Div();
+            handContainer.setText(player.getPlayerName());// ADDED this line
             List<Card> playerHand = player.getHand();
             if (GameStateManager.isHandOverPoints(player, 21)) {
                 Div pointsLabel = new Div();
@@ -165,6 +199,19 @@ public class GameView extends VerticalLayout {
             }
             playerContainer.add(handContainer); // ADDED this line
         }
+    }
+
+    @Override
+    public void onGameStart() {
+        currentUI.access(() -> {
+            hit.setVisible(true);
+            hit.setEnabled(true);
+            stand.setEnabled(true);
+            stand.setVisible(true);
+
+            displayAllPlayersHands();
+            Broadcaster.broadcast();
+        });
     }
 
 }

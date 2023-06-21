@@ -1,15 +1,16 @@
 package com.blackjack.database;
 
+import com.vaadin.flow.component.UI;
 import org.atmosphere.config.service.Message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GameStateManager {
 
     private static GameStateManager instance;
     private List<Player> playerList;
-
     private CardDeck cards;
 
     private GameStateManager() {
@@ -55,11 +56,27 @@ public class GameStateManager {
         }
     }
     public void startGame(){
+        UI  g =  UI.getCurrent();
+        startStakeRound();
         for(Player player : playerList){
             player.takeCard(cards.draw());
             player.takeCard(cards.draw());
         }
+        Broadcaster.startGame();
+
     }
+
+    private void startStakeRound()  {
+        while (playerList.stream().allMatch(player -> !player.hasIncreasedStake)){
+            try {
+                Thread.sleep(100); // Sleep for 100 milliseconds
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+    }
+
     public void resetGame(){
         cards = new CardDeck();
         cards.shuffle();

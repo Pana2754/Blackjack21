@@ -49,9 +49,15 @@ public class Lobby extends VerticalLayout {
             startButton.addClickListener(event -> {
                 GameStateManager gameStateManager = GameStateManager.getInstance();
                 gameStateManager.addPlayer(player);
-                gameStateManager.giveCardToPlayer(player);
-                gameStateManager.giveCardToPlayer(player);
+                // Start a new GameView for this player
+                GameViewManager.getInstance().startGameViewForPlayer(player);
+
                 UI.getCurrent().navigate("GameView");
+
+                UI ui = UI.getCurrent();
+                new Thread(() -> {
+                    gameStateManager.startGame();
+                }).start();
             });
             return startButton;
         })).setHeader("Start Game");
