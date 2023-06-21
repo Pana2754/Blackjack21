@@ -160,6 +160,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
         add(endState);
         reset.setEnabled(true);
         reset.setVisible(true);
+        Broadcaster.broadcast();
 
 
     }
