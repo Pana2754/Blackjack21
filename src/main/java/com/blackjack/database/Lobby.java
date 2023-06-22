@@ -52,11 +52,7 @@ public class Lobby extends VerticalLayout {
                 // Start a new GameView for this player
 
                 UI.getCurrent().navigate("GameView");
-
-                UI ui = UI.getCurrent();
-                new Thread(() -> {
-                    gameStateManager.startGame();
-                }).start();
+                gameStateManager.startStakeRound();
             });
             return startButton;
         })).setHeader("Start Game");

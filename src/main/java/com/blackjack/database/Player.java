@@ -34,6 +34,11 @@ public class Player implements IPlayer {
         cardList.add(card);
     }
 
+    @Override
+    public void setOut(boolean out) {
+        isOut = out;
+    }
+
     public void increaseStake(int value){
         stake+= value;
         CoinBalance -= value;

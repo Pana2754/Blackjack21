@@ -19,6 +19,8 @@ public class Broadcaster {
     public static void addGameEventListener(GameEventListener listener) {
         gameEventListeners.add(listener);
     }
+
+    public static void removeGameEventListener(GameEventListener listener){gameEventListeners.remove(listener);}
     public static void startGame() {
         for (GameEventListener listener : gameEventListeners) {
             listener.onGameStart();
@@ -35,7 +37,29 @@ public class Broadcaster {
         }
 
     }
-    public static void resetGame(){
+    public static synchronized void stakeRound(){
+        for (GameEventListener listener: gameEventListeners){
+            listener.onStakeRoundStart();
+        }
+    }
+    public static synchronized void playRound(){
+
+    }
+    public static synchronized void playerIsOut(IPlayer player){
+        for (GameEventListener listener: gameEventListeners){
+            listener.playerIsOut(player);
+        }
+    }
+    public static synchronized void dealerRound(){
+
+    }
+
+    public static synchronized void gameEnd(){
+        for(GameEventListener listener: gameEventListeners){
+            listener.onGameEnd();
+        }
+    }
+    public static synchronized void resetGame(){
         for(GameEventListener listener : gameEventListeners){
             listener.onGameReset();
         }

@@ -18,6 +18,16 @@ public class Dealer implements IPlayer{
         cards.add(card);
     }
 
+    @Override
+    public String getPlayerName() {
+        return name;
+    }
+
+    @Override
+    public void setOut(boolean out) {
+       isOut = out;
+    }
+
     public void resetHand(){
         cards= new ArrayList<>();
         isOut = false;
