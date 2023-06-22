@@ -21,6 +21,13 @@ public class GameView extends VerticalLayout implements GameEventListener {
     private Div gameTitle, backgroundContainer;
 
     private GameStateManager gameManager;
+
+    Div topRightDiv;
+    Div topLeftDiv;
+    Div balanceText;
+    Div stakeText;
+
+    Div bottomLeftDiv;
     private Div playerContainer;
     private Div cardStack;
     private Div dealerPointsLabel;
@@ -142,21 +149,30 @@ public class GameView extends VerticalLayout implements GameEventListener {
         // Initialize stake label
         stake = new Div();
         stake.setText("Stake: 0");
-        Div topRightDiv = new Div();
-        topRightDiv.setText("Top Right Text");
+
+        topRightDiv = new Div();
+        if(activePlayer != null){
+            Div playerName = new Div();
+            playerName.setText(activePlayer.getPlayerName());
+            balanceText = new Div();
+            balanceText.setText("Balance: " + activePlayer.getBalance());
+            stakeText = new Div();
+            stakeText.setText("Stake: " + activePlayer.getStake());
+            topRightDiv.add(playerName);
+            topRightDiv.add(balanceText);
+            topRightDiv.add(stakeText);
+
+        }
         topRightDiv.setClassName("top-right-corner");
 
-        Div topLeftDiv = new Div();
-        topLeftDiv.setText("Top Left Text");
+        topLeftDiv = new Div();
         topLeftDiv.setClassName("top-left-corner");
 
-        Div bottomLeftDiv = new Div();
-        topLeftDiv.setText("bottom Left Text");
-        topLeftDiv.setClassName("bottom-left-corner");
+        bottomLeftDiv = new Div();
+        bottomLeftDiv.setClassName("bottom-left-corner");
 
         // Initialize dealer points label
         dealerPointsLabel = new Div();
-        dealerPointsLabel.setText("Dealer Points: 0");
         dealerPointsLabel.setClassName("dealer-points-label");
 
 
@@ -233,7 +249,8 @@ public class GameView extends VerticalLayout implements GameEventListener {
         if(player.getBalance() >= amount){
 
             player.increaseStake(amount);
-            stake.setText("Stake: "+ player.getStake());
+            balanceText.setText("Balance: "+player.getBalance());
+            stakeText.setText("Stake: "+ player.getStake());
             player.hasIncreasedStake = true;
         }
         else{

@@ -8,7 +8,7 @@ public class Player implements IPlayer {
 
     private String playerName;
 
-    private double CoinBalance;
+    private int CoinBalance;
     private int stake;
 
     public boolean hasIncreasedStake;
@@ -22,7 +22,7 @@ public class Player implements IPlayer {
 
     private List<Card> cardList = new ArrayList<>();
 
-    public Player(String playerName, boolean ready, double balance, Boolean isBanned){
+    public Player(String playerName, boolean ready, int balance, Boolean isBanned){
         this.playerName = playerName;
         this.CoinBalance = balance;
         this.ready = ready;
@@ -112,11 +112,11 @@ public class Player implements IPlayer {
     }
 
 
-    public double getBalance() {
+    public int getBalance() {
         return CoinBalance;
     }
 //
-    public void setBalance(float newBalance) {
+    public void setBalance(int newBalance) {
         this.CoinBalance = newBalance;
     }
 

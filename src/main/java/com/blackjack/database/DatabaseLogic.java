@@ -24,7 +24,7 @@ public class DatabaseLogic {
             throw e;
         }
     }
-    public void updateBalance(String playerName, double newBalance) {
+    public void updateBalance(String playerName, int newBalance) {
         try {
             DatabaseLogic dbLogic = new DatabaseLogic();
             dbLogic.connectToDb();
@@ -32,7 +32,7 @@ public class DatabaseLogic {
             Connection connection = dbLogic.getConnection();
             String sql = "UPDATE blackjack_user SET balance = ? WHERE user_name = ?";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setDouble(1, newBalance);
+                statement.setInt(1, newBalance);
                 statement.setString(2, playerName);
                 statement.executeUpdate();
             }
@@ -124,7 +124,7 @@ public class DatabaseLogic {
                     if (result.next()) {
                         String userName = result.getString("user_name");
                         boolean isBanned = result.getBoolean("isBanned");
-                        double balance = result.getDouble("balance");
+                        int balance = result.getInt("balance");
 
                         return new Player(userName, false, balance,isBanned);
                     }

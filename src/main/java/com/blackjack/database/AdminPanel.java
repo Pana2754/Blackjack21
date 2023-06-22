@@ -129,7 +129,7 @@ public class AdminPanel extends VerticalLayout {
             Button setBalanceButton = new Button("Set Balance");
             setBalanceButton.addClickListener(event -> {
                 try {
-                    float newBalance = Float.parseFloat(balanceField.getValue());
+                    int newBalance = Integer.parseInt(balanceField.getValue());
                     player.setBalance(newBalance);
                     updateBalance(player.getPlayerName(), newBalance);
                     Notification.show("Balance updated for: " + player.getPlayerName());
@@ -171,7 +171,7 @@ public class AdminPanel extends VerticalLayout {
                 while (result.next()) {
                     String userName = result.getString("user_name");
                     boolean isBanned = result.getBoolean("isBanned");
-                    double balance = result.getDouble("balance");
+                    int balance = result.getInt("balance");
                     Player player = new Player(userName, isBanned, balance, isBanned);
                     players.add(player);
                 }
@@ -230,7 +230,7 @@ public class AdminPanel extends VerticalLayout {
         }
     }
 
-    private void updateBalance(String playerName, double newBalance) throws SQLException {
+    private void updateBalance(String playerName, int newBalance) throws SQLException {
         DatabaseLogic dbLogic = null;
         PreparedStatement statement = null;
         try {
@@ -240,7 +240,7 @@ public class AdminPanel extends VerticalLayout {
             Connection connection = dbLogic.getConnection();
             String sql = "UPDATE blackjack_user SET balance = ? WHERE user_name = ?";
             statement = connection.prepareStatement(sql);
-            statement.setDouble(1, newBalance);
+            statement.setInt(1, newBalance);
             statement.setString(2, playerName);
             statement.executeUpdate();
         } catch (SQLException e) {
