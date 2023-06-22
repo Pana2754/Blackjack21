@@ -1,253 +1,156 @@
-/* notification */
-.notifylabel {
-    position: absolute;
-    left: 80%;
-    transform: translateX(-50%);
-    display: inline-block;
-    background-color: #fff652;
-    color: #282424;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
-    animation: labelAnimation 2s ease-in-out forwards;
-    opacity: 0;
-    z-index: 1;
+/* Root styles */
+
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+    --highlight-color: #f39c12;
+    --text-color: #ecf0f1;
+    --notification-color: #e74c3c;
 }
 
-@keyframes labelAnimation {
-    0% {
-        transform: translateX(-50%) scale(0.5);
-        opacity: 0;
-    }
-    50% {
-        transform: translateX(-50%) scale(1.2);
-        opacity: 1;
-    }
-    100% {
-        transform: translateX(-50%) scale(1);
-        opacity: 1;
-    }
-}
-
-.loss-notification {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    display: inline-block;
-    background-color:  #fff652;
-    color: #282424;
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: bold;
-    text-transform: uppercase;
-    animation: notificationAnimation 2s ease-in-out forwards;
-    opacity: 0;
-    z-index: 1;
-}
-
-@keyframes notificationAnimation {
-    0% {
-        transform: translateX(-50%) scale(0.5);
-        opacity: 0;
-    }
-    50% {
-        transform: translateX(-50%) scale(1.2);
-        opacity: 1;
-    }
-    100% {
-        transform: translateX(-50%) scale(1);
-        opacity: 1;
-    }
-}
-
-/* Card animation */
-.card-image {
-    width: 100px;
-    margin: 5px;
-    transition: transform 0.5s;
-}
-
-.card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.card-container .card-image {
-    position: relative;
-    z-index: 1;
-}
-
-.card-container .card-image:last-child {
-    z-index: 2;
-    transform: translateX(-50%);
-}
-
-.card-container .card-image:not(:last-child) {
-    transform: translateX(50%);
-}
-
-
-/* Card stack animation */
-.card-stack {
-    width: 120px;
-    height: 180px;
-    margin: 5px;
-    position: relative;
-    z-index: 3;
-    background-color: #f5f5f5;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    background-image: url('download.jpg');
-    background-size: cover;
-    background-position: center;
-    perspective: 1000px;
-    transform-style: preserve-3d;
-    transform-origin: bottom center;
-    animation: glow-animation 2s infinite;
-}
-
-@keyframes glow-animation {
-    0% {
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
-        0 0 20px rgba(255, 255, 255, 0.8),
-        0 0 30px rgba(255, 255, 255, 0.8),
-        0 0 40px rgba(255, 255, 255, 0.8),
-        0 0 50px rgba(255, 255, 255, 0.8);
-    }
-    50% {
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
-        0 0 30px rgba(255, 255, 255, 0.8),
-        0 0 40px rgba(255, 255, 255, 0.8),
-        0 0 50px rgba(255, 255, 255, 0.8),
-        0 0 60px rgba(255, 255, 255, 0.8);
-    }
-    100% {
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
-        0 0 20px rgba(255, 255, 255, 0.8),
-        0 0 30px rgba(255, 255, 255, 0.8),
-        0 0 40px rgba(255, 255, 255, 0.8),
-        0 0 50px rgba(255, 255, 255, 0.8);
-    }
-}
-
-/* Card stack animation */
-.card-stack {
-    position: relative;
-    overflow: hidden;
-}
-
-.card-stack .card-image {
-    position: absolute;
-    top: -100px; /* Adjust the value as needed */
-    opacity: 0;
-    transition: top 0.5s, opacity 0.5s;
-}
-
-.card-stack.show-cards .card-image {
-    top: 0;
-    opacity: 1;
-}
-
-.card-stack .card-image {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    transform-style: preserve-3d;
-    transition: transform 0.5s, opacity 0.5s;
-}
-
-.card-stack .card-image.front {
-    transform: rotateY(0deg);
-}
-
-.card-stack .card-image.back {
-    transform: rotateY(180deg);
-}
-
-.card-stack .card-image.flipped {
-    transform: rotateY(180deg);
-    opacity: 0;
-}
-
-/* Additional Styling Enhancements */
-.container {
+/* Background Container */
+.background-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width: 100vw;
     height: 100vh;
-    text-align: center;
+    background-image: url('gamebg.webp');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
 }
 
-.dealer-container {
+/* Game Title */
+.game-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Control Panel */
+.control-panel {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
+    gap: 20px;
+    margin-bottom: 20px;
 }
 
-.dealer-container .card-image {
-    transform: translateY(-50%);
-}
-
-
-/*buttons modification*/
-.shining-button {
-    width: 100px;
-    height: 40px;
-    background: linear-gradient(45deg, #ffed00, #ff8a00);
-    color: white;
+/* Control Panel Buttons */
+.control-panel button {
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    color: var(--text-color);
+    background-color: var(--secondary-color);
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s;
+    transition: background-color 0.3s ease-in-out;
 }
 
-.shining-button:before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 10%, transparent 40%);
+.control-panel button:hover {
+    background-color: var(--highlight-color);
+}
+
+/* Card Container */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+/* Dealer Container */
+.dealer-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    margin-top: 30px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--secondary-color);
+    border-radius: 10px;
+}
+
+
+/* Notification */
+.notifylabel {
+    padding: 10px 20px;
+    background-color: var(--notification-color);
+    color: var(--text-color);
+    border-radius: 4px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    animation: fadeInOut 2s ease-in-out;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+/* Card Stack Animation */
+/* Existing CSS */
+/* ... */
+
+/* Card animations */
+.card-image {
+    transform: scale(0.8);
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0);
-    transition: opacity 0.3s, transform 0.3s;
+    transition: transform 0.5s, opacity 0.5s;
 }
 
-.shining-button:hover:before {
+.card-image.fly-out {
+    transform: scale(1);
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-    animation: shining-animation 1s infinite;
 }
 
-@keyframes shining-animation {
-    0% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(0);
-    }
-    50% {
-        opacity: 0.6;
-        transform: translate(-50%, -50%) scale(1);
-    }
-    100% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(0);
-    }
+/* Divs at top corners */
+.top-right-corner, .top-left-corner, .bottom-left-corner {
+    position: absolute;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.top-right-corner {
+    top: 10px;
+    right: 10px;
+}
+.bottom-left-corner {
+    bottom: 10px;
+    left: 10px;
+}
+.top-left-corner {
+    top: 10px;
+    left: 10px;
+}
+
+
+.display-panel {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    background-color: #589eef;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dealer-points-label, .notifications-label {
+    margin-left: 20px;
 }
 
 /* login-view.css */

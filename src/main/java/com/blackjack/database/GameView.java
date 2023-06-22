@@ -6,28 +6,28 @@ import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
 @PageTitle("BlackJack")
 @Route("GameView")
 public class GameView extends VerticalLayout implements GameEventListener {
+    private Div gameTitle, backgroundContainer;
 
     private GameStateManager gameManager;
     private Div playerContainer;
-    private Div cardStack; // Added a Div to represent the card stack
+    private Div cardStack;
+    private Div dealerPointsLabel;
 
-    // Added a new container to hold all players' cards
-    //private Div playerContainer; // ADDED this line
     private Div dealerContainer;
     private Div endState;
+    private Div balance;
 
     private Div stake;
     private Button reset;
@@ -37,6 +37,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
 
     private UI currentUI; // Store the UI instance
     Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
+
 
     public GameView() {
 
@@ -55,15 +56,19 @@ public class GameView extends VerticalLayout implements GameEventListener {
         }));
         Broadcaster.addGameEventListener(this);
 
+
+        // Initialized the new containe
         gameManager = GameStateManager.getInstance();
         playerContainer = new Div();
-        cardStack = new Div(); // Initialized the card stack container
-
-        // Initialized the new container
-        //playerContainer = new Div(); // ADDED this line
+        cardStack = new Div();
         dealerContainer = new Div();
         endState = new Div();
         stake = new Div();
+        // Initialize game title
+        gameTitle = new Div();
+        gameTitle.setText("BLACKJACK");
+        gameTitle.setClassName("game-title");
+
         stake.setText("Stake: 0");
 
         displayAllPlayersHands();
@@ -76,10 +81,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
         hit = new Button("Hit");
         hit.setWidth("150px");
         hit.setEnabled(false);
-        //hit.setVisible(false);
         hit.addClickListener(event -> {
-            // Modified these lines to handle all players
-             // ADDED this line
             gameManager.giveCardToPlayer(activePlayer);
             Broadcaster.broadcast();
             if (GameStateManager.isHandOverPoints(activePlayer, 21)) {
@@ -121,37 +123,72 @@ public class GameView extends VerticalLayout implements GameEventListener {
             endState.removeAll();
             displayAllPlayersHands();
         });
-        // Modified this line to add the playerContainer
-        add(hit, stand, reset, playerContainer,stake, raiseStake10); // CHANGED this line from add(hit, stand, handContainer);
-        Div buttonContainer = new Div();
-        buttonContainer.add(hit, stand);
+
+
 
         setClassName("container");
         hit.setClassName("shining-button");
+        reset.setClassName("shining-button");
+        raiseStake10.setClassName("shining-button");
         stand.setClassName("shining-button");
         playerContainer.setClassName("card-container");
         cardStack.setClassName("card-stack show-cards");
-        // Added CSS class for the card stack
+
+// Initialize background container
+        backgroundContainer = new Div();
+        backgroundContainer.setClassName("background-container");
+
+        // Organizing the layout
+        // Initialize stake label
+        stake = new Div();
+        stake.setText("Stake: 0");
+        Div topRightDiv = new Div();
+        topRightDiv.setText("Top Right Text");
+        topRightDiv.setClassName("top-right-corner");
+
+        Div topLeftDiv = new Div();
+        topLeftDiv.setText("Top Left Text");
+        topLeftDiv.setClassName("top-left-corner");
+
+        Div bottomLeftDiv = new Div();
+        topLeftDiv.setText("bottom Left Text");
+        topLeftDiv.setClassName("bottom-left-corner");
+
+        // Initialize dealer points label
+        dealerPointsLabel = new Div();
+        dealerPointsLabel.setText("Dealer Points: 0");
+        dealerPointsLabel.setClassName("dealer-points-label");
 
 
-        add(hit,stand, playerContainer, cardStack);
+        // Create display panel and add the stake, dealer points and notifications labels
+        HorizontalLayout displayPanel = new HorizontalLayout();
+        displayPanel.setClassName("display-panel");
+        displayPanel.add(stake, dealerPointsLabel,balance);
 
+        // Organizing the layout
+        HorizontalLayout controlPanel = new HorizontalLayout();
+        controlPanel.addClassName("control-panel");
+        controlPanel.add(raiseStake10, hit, stand, reset);
 
+        // Adding components to the background container
+        backgroundContainer.add(gameTitle, topLeftDiv,topRightDiv, bottomLeftDiv, displayPanel, controlPanel, cardStack, playerContainer, dealerContainer, endState);
+
+        // Adding background container to the main layout
+        add(backgroundContainer);
 
         Broadcaster.broadcast();
     }
 
-    private void startDealerPlay(){
+    public void startDealerPlay(){
         Dealer dealer = gameManager.dealer;
         GameStateManager gameStateManager = GameStateManager.getInstance();
         while (!GameStateManager.isHandOverPoints(dealer, 16)){
 
             gameStateManager.giveCardToPlayer(dealer);
         }
-        Div label = new Div();
-        label.setText("The Dealer has: " + dealer.getCardValues() + "Points!");
-        label.addClassName("notifylabel");
-        dealerContainer.add(label);
+
+        dealerPointsLabel.setText("The Dealer has: " + dealer.getCardValues() + "Points!");
+
 
         if(GameStateManager.isHandOverPoints(dealer, 21)){
             dealer.isOut= true;
@@ -160,7 +197,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
             label2.addClassName("notifylabel");
             dealerContainer.add(label2);
         }
-
+        dealerContainer.setClassName("dealer-container");
         add(dealerContainer);
         Broadcaster.broadcast();
 
@@ -194,6 +231,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
 
     private void raiseStake(int amount, Player player){
         if(player.getBalance() >= amount){
+
             player.increaseStake(amount);
             stake.setText("Stake: "+ player.getStake());
             player.hasIncreasedStake = true;
@@ -224,17 +262,17 @@ public class GameView extends VerticalLayout implements GameEventListener {
                 handContainer.add(cardImage);
             }
 
-            playerContainer.add(handContainer);
-            Div balance = new Div();
+            balance = new Div();
             balance.setText("" +player.getBalance());
-            handContainer.add(balance);
+
             playerContainer.add(handContainer); // ADDED this line
         }
         Dealer dealer = gameManager.dealer;
         Div hand = new Div();
-        hand.setText(dealer.name);
+        //hand.setText(dealer.name);
         for (Card card: dealer.getHand()){
             Image cardImage = new Image(card.imagePath, "");
+            cardImage.getElement().setAttribute("class", "card-image fly-out");
             cardImage.setWidth("50px");
             hand.add(cardImage);
         }
