@@ -1,8 +1,7 @@
 /* notification */
-.loss-label {
+.notifylabel {
     position: absolute;
-    bottom: 0;
-    left: 50%;
+    left: 80%;
     transform: translateX(-50%);
     display: inline-block;
     background-color: #fff652;

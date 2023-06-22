@@ -150,16 +150,14 @@ public class GameView extends VerticalLayout implements GameEventListener {
         }
         Div label = new Div();
         label.setText("The Dealer has: " + dealer.getCardValues() + "Points!");
-        label.addClassName("loss-label");
-        dealerHand.add(label);
+        label.addClassName("notifylabel");
         dealerContainer.add(label);
 
         if(GameStateManager.isHandOverPoints(dealer, 21)){
             dealer.isOut= true;
             Div label2 = new Div();
             label2.setText("The Dealer has lost!");
-            label2.addClassName("loss-label");
-            dealerHand.add(label2);
+            label2.addClassName("notifylabel");
             dealerContainer.add(label2);
         }
 
@@ -175,6 +173,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
             if(!player.isOut && (GameStateManager.isHandOverPoints(player, dealer.getCardValues()) || dealer.isOut)){
                 Div label = new Div();
                 label.setText(player.getPlayerName() + " has Won! + " + player.getStake()*2);
+                label.addClassName("notifylabel");
                 player.increaseBalance(2*player.getStake());
                 endState.add(label);
 
@@ -182,6 +181,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
             else {
                 Div label = new Div();
                 label.setText(player.getPlayerName() + " has lost!");
+                label.addClassName("notifylabel");
                 endState.add(label);
             }
         }
@@ -213,7 +213,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
             if (GameStateManager.isHandOverPoints(player, 21)) {
                 Div pointsLabel = new Div();
                 pointsLabel.setText(player.getPlayerName() + " lost!");
-                pointsLabel.addClassName("loss-notification");
+                pointsLabel.addClassName("notifylabel");
                 handContainer.add(pointsLabel);
             }
             for (Card card : playerHand) {
