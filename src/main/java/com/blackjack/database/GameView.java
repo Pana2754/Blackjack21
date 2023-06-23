@@ -30,7 +30,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
 
     Div bottomLeftDiv;
 
-    Div eventDiv;
+    Div eventDiv = new Div();
     private Div playerContainer;
     private Div cardStack;
     private Div dealerPointsLabel;
@@ -96,10 +96,10 @@ public class GameView extends VerticalLayout implements GameEventListener {
             Broadcaster.broadcast();
             if (GameStateManager.isHandOverPoints(activePlayer, 21)) {
                 activePlayer.isOut= true;
+                playerIsStanding();
                 if(gameManager.isDealersTurn()){
-                    startDealerPlay();
+                    gameManager.dealerPlay();
                 }
-                hit.setEnabled(false);
             }
         });
 
@@ -110,11 +110,10 @@ public class GameView extends VerticalLayout implements GameEventListener {
         stand.addClickListener(event -> {
             Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
             activePlayer.setStanding(true);
-            hit.setEnabled(false);
-            stand.setEnabled(false);
+            playerIsStanding();
 
             if (gameManager.isDealersTurn()){
-                startDealerPlay();
+                gameManager.dealerPlay();
             }
 
         });
@@ -173,7 +172,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
 
         bottomLeftDiv = new Div();
         bottomLeftDiv.setClassName("bottom-left-corner");
-        eventDiv = new Div();
+
         bottomLeftDiv.add(eventDiv);
 
         // Initialize dealer points label
@@ -200,26 +199,17 @@ public class GameView extends VerticalLayout implements GameEventListener {
         Broadcaster.broadcast();
     }
 
-    public void startDealerPlay(){
+    public void onDealerEnd(){
         Dealer dealer = gameManager.dealer;
-        GameStateManager gameStateManager = GameStateManager.getInstance();
-        while (!GameStateManager.isHandOverPoints(dealer, 16)){
-
-            gameStateManager.giveCardToPlayer(dealer);
-        }
-
         dealerPointsLabel.setText("The Dealer has: " + dealer.getCardValues() + "Points!");
-
-
-        if(GameStateManager.isHandOverPoints(dealer, 21)){
-            dealer.isOut= true;
+        if(dealer.isOut){
             Div label2 = new Div();
             label2.setText("The Dealer has lost!");
             label2.addClassName("notifylabel");
             dealerContainer.add(label2);
         }
         dealerContainer.setClassName("dealer-container");
-        add(dealerContainer);
+        bottomLeftDiv.add(dealerPointsLabel, dealerContainer);
         Broadcaster.broadcast();
 
         GameEnd(dealer);
@@ -233,14 +223,14 @@ public class GameView extends VerticalLayout implements GameEventListener {
                 label.setText(player.getPlayerName() + " has Won! + " + player.getStake()*2);
                 label.addClassName("notifylabel");
                 player.increaseBalance(2*player.getStake());
-                endState.add(label);
+                bottomLeftDiv.add(label);
 
             }
             else {
                 Div label = new Div();
                 label.setText(player.getPlayerName() + " has lost!");
                 label.addClassName("notifylabel");
-                endState.add(label);
+                bottomLeftDiv.add(label);
             }
         }
         add(endState);
@@ -273,9 +263,9 @@ public class GameView extends VerticalLayout implements GameEventListener {
         for (Player player : allPlayers) {
             Div handContainer = new Div();
             List<Card> playerHand = player.getHand();
-            if (GameStateManager.isHandOverPoints(player, 21)) {
+            if (player.isOut) {
                 Div playerLost = new Div();
-                playerLost.setText(player.getPlayerName() + " lost!");
+                playerLost.setText(player.getPlayerName() + " is over 21 Points!");
                 playerLost.addClassName("notifylabel");
                 eventDiv.add(playerLost);
             }
@@ -302,6 +292,13 @@ public class GameView extends VerticalLayout implements GameEventListener {
             hand.add(cardImage);
         }
         playerContainer.add(hand);
+    }
+
+    public void playerIsStanding(){
+        hit.setEnabled(false);
+        hit.setVisible(false);
+        stand.setEnabled(false);
+        stand.setVisible(false);
     }
 
     @Override

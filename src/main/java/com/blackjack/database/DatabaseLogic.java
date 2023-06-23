@@ -44,7 +44,7 @@ public class DatabaseLogic {
 
 
 
-    public void addUser(String user_name, String user_password, boolean isAdmin, boolean isBanned, float balance) throws SQLException {
+    public void addUser(String user_name, String user_password, boolean isAdmin, boolean isBanned, int balance) throws SQLException {
         if (connection == null) {
             return;
         }

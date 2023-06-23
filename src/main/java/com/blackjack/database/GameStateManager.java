@@ -1,6 +1,7 @@
 package com.blackjack.database;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.Div;
 import org.atmosphere.config.service.Message;
 
 import java.util.ArrayList;
@@ -67,6 +68,17 @@ public class GameStateManager {
             dealer.takeCard(cards.draw());
             Broadcaster.startGame();
         }
+    }
+
+    public void dealerPlay(){
+        while (isHandOverPoints(dealer, 16)){
+
+            giveCardToPlayer(dealer);
+        }
+        if(isHandOverPoints(dealer, 21)){
+            dealer.isOut= true;
+        }
+        Broadcaster.onDealerEnd();
     }
 
     private boolean isStakeRoundOver()  {

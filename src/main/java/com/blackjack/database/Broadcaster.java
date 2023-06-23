@@ -35,6 +35,12 @@ public class Broadcaster {
         }
 
     }
+
+    public static synchronized void onDealerEnd(){
+        for(GameEventListener listener: gameEventListeners){
+            listener.onDealerEnd();
+        }
+    }
     public static void resetGame(){
         for(GameEventListener listener : gameEventListeners){
             listener.onGameReset();
