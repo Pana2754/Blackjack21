@@ -1,9 +1,8 @@
 /* Root styles */
-/* Reset default margin and padding */
-html, body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+
+.game-background {
+    background-color: #f0f0f0; /* Replace with desired background color */
+    /* Add other background styles as needed */
 }
 
 /* Reset box sizing for all elements */
@@ -34,19 +33,19 @@ html, body {
     overflow-x: hidden !important;
     overflow-y: hidden !important;
     margin: auto;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    box-shadow: 0 0 100px rgba(0, 255, 0, 0.5); /* Increased spread value */
     animation: glowing 2s infinite;
 }
 
 @keyframes glowing {
     0% {
-        box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        box-shadow: 0 0 100px rgba(0, 255, 0, 0.5); /* Increased spread value */
     }
     50% {
-        box-shadow: 0 0 20px rgba(0, 255, 0, 1);
+        box-shadow: 0 0 100px rgba(0, 255, 0, 1); /* Increased spread value */
     }
     100% {
-        box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        box-shadow: 0 0 100px rgba(0, 255, 0, 0.5); /* Increased spread value */
     }
 }
 

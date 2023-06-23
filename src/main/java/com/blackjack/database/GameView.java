@@ -1,5 +1,7 @@
 package com.blackjack.database;
 
+import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.JsModule;
@@ -9,15 +11,22 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.AfterNavigationEvent;
+import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.shared.Registration;
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
+
 import java.util.List;
 
 
 @PageTitle("BlackJack")
 @Route("GameView")
+
 public class GameView extends VerticalLayout implements GameEventListener {
+
     private Div gameTitle, backgroundContainer;
 
     private GameStateManager gameManager;
@@ -30,6 +39,8 @@ public class GameView extends VerticalLayout implements GameEventListener {
     private Div balance;
 
     private Div stake;
+
+    private Div animationContainer;
     private Button reset;
     Button stand;
     Button hit;
@@ -39,7 +50,20 @@ public class GameView extends VerticalLayout implements GameEventListener {
     Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
 
 
+
+
+
     public GameView() {
+        UI.getCurrent().getElement().getStyle().set("height", "0px");
+
+        //getStyle().set("background-color", "#161414");
+        getStyle().set("color", "#FFFFFF"); // Example: Set text color to white
+
+// Apply the background color to child components and nested elements
+       /* getStyle().set("all", "initial"); // Reset all inherited styles
+        getStyle().set("inherit", "true"); // Enable inheritance of styles*/
+
+        //getStyle().set("background-color", "#161414"); // Replace with desired background color
 
         currentUI = UI.getCurrent();
 
@@ -68,7 +92,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
         gameTitle = new Div();
         gameTitle.setText("BLACKJACK");
         gameTitle.setClassName("game-title");
-
+        dealerContainer.getStyle().set("background-color", "#161414");
         stake.setText("Stake: 0");
 
         displayAllPlayersHands();
@@ -175,6 +199,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
 
         // Adding background container to the main layout
         add(backgroundContainer);
+
 
         Broadcaster.broadcast();
     }
@@ -316,5 +341,6 @@ public class GameView extends VerticalLayout implements GameEventListener {
         });
 
     }
+
 
 }
