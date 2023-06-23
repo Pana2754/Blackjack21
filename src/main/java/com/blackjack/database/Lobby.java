@@ -3,6 +3,7 @@ package com.blackjack.database;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
@@ -21,28 +22,30 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @PageTitle("Waiting Lobby")
 @Route("waiting-lobby")
+@CssImport("./themes/mytodo/lobby.css")
 public class Lobby extends VerticalLayout {
     private static final long serialVersionUID = 503398040364625051L;
     private static final List<Player> activePlayers = new CopyOnWriteArrayList<>();
     private Grid<Player> playersGrid = new Grid<>();
 
     public Lobby() {
+        // Add the lobby-container class to this VerticalLayout
+        this.addClassName("lobby-container");
+
         if (!isLoggedIn()) {
             UI.getCurrent().navigate(LoginView.class);
             return;
         }
 
         Broadcaster.register(this::updateGrid);
-        Image logo = new Image("head.png", "Logo");
-        logo.setWidth("150px");
-        logo.setHeight("150px");
-
-        H2 title = new H2("Waiting Lobby");
-
+        H2 title = new H2("WAITING LOBBY");
+        playersGrid.setWidthFull();
+        playersGrid.getStyle().set("opacity", "0.75");
         playersGrid.addColumn(Player::getPlayerName).setHeader("Name");
-
         playersGrid.addColumn(new ComponentRenderer<>(player -> {
             Button startButton = new Button("Start");
+            // Use the correct class name for the start button
+            startButton.addClassName("start-button");
             if (!player.equals(getActivePlayer())) {
                 startButton.setEnabled(false);
             }
@@ -61,17 +64,11 @@ public class Lobby extends VerticalLayout {
 
         playersGrid.setPageSize(7);
         playersGrid.setItems(activePlayers);
-        add(logo, title, playersGrid);
+        add(title, playersGrid);
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
-        setMargin(true);
-        setSpacing(true);
-        setWidth("100%");
-        setPadding(true);
-        setSpacing(true);
     }
 
-    //test
     public static void playerLoggedIn(Player player) {
         boolean isAlreadyPresent = activePlayers.stream()
                 .anyMatch(existingPlayer -> existingPlayer.equals(player));

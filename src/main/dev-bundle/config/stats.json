@@ -261,10 +261,12 @@
   "Frontend/generated/jar-resources/vaadin-time-picker/timepickerConnector.js",
   "Frontend/generated/jar-resources/virtualListConnector.js",
   "Frontend/themes/mytodo/adminview.css",
+  "Frontend/themes/mytodo/lobby.css",
   "Frontend/themes/mytodo/loginview.css"
  ],
  "frontendHashes": {
-  "themes/mytodo/adminview.css": "707cacdc5cb1c78985f9ba913c8ce1f09c2030adcedc96b4763a509e525663ad",
+  "themes/mytodo/adminview.css": "267ab6f2f0a56e45619082cd6e3fef827f511e2cc5ade964d58ff27afa40cc5b",
+  "themes/mytodo/lobby.css": "5b5a9055f161b78eff8cae1595e9383a411df868bfb299cb231d2588536dcaa1",
   "themes/mytodo/loginview.css": "3e42032eb2747d3e7beedd2759c6d7225771892cbe67c3c011ac0f506d137606",
   "buttonFunctions.js": "c852123f9b2c44eb75e555119d3e05a7dbe78b91d0ab616feb9df1654474707d",
   "comboBoxConnector.js": "1d004c3dae9c76f8bcc68678abe1b8f7bdc8b456f5c9c4c7f190df8ed25d66cd",
@@ -292,7 +294,7 @@
   "mytodo": "{\n  \"lumoImports\" : [ \"typography\", \"color\", \"spacing\", \"badge\", \"utility\" ]\n}"
  },
  "entryScripts": [
-  "VAADIN/build/indexhtml-2471b793.js"
+  "VAADIN/build/indexhtml-0f1bf5fc.js"
  ],
  "webComponents": [],
  "cvdlModules": {
@@ -327,6 +329,6 @@
  },
  "packageJsonHash": "a83726abcdd9ff2a5f5df2646c7a3a8a632e3d10ca68f1dbb1606717c3b18d7a",
  "indexHtmlGenerated": [
-  "  <script type=\"module\" crossorigin src=\"./VAADIN/build/indexhtml-2471b793.js\"></script>"
+  "  <script type=\"module\" crossorigin src=\"./VAADIN/build/indexhtml-0f1bf5fc.js\"></script>"
  ]
 }

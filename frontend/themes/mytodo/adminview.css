@@ -25,7 +25,12 @@ body {
     text-align: center;
     padding: 20px;
     border-bottom: 1px solid #555; /* Darker border color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
+
 
 /* Player grid styles */
 .admin-panel-title .vaadin-grid {
