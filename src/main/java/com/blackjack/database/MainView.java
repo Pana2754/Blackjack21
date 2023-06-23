@@ -7,7 +7,6 @@ import com.vaadin.flow.router.Route;
 @PageTitle("BlackJack")
 @Route(value = "")
 public class MainView extends HorizontalLayout {
-
     public MainView() {
     	add(new LoginView());
     }

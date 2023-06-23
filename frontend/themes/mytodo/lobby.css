@@ -1,0 +1,70 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url("Tisch_final.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: #ddd;
+}
+
+/* Lobby container to match admin panel title */
+.lobby-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: rgba(40, 40, 40, 0.8); /* background-color from admin panel title */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3); /* box-shadow from admin panel title */
+    border-radius: 8px;
+    text-align: auto;
+}
+
+/* Lobby title to match admin panel title */
+.lobby-container h2 {
+    font-size: 36px;
+    color: #ddd; /* Text color changed to light grey */
+    margin-bottom: 30px;
+    text-align: auto;
+    padding: 20px;
+    border-bottom: 1px solid #555; /* Darker border color */
+}
+
+/* Player grid styles to match admin view */
+.lobby-container .vaadin-grid {
+    margin-top: 40px;
+    border: none;
+}
+
+/* Grid header to match admin view */
+.lobby-container .vaadin-grid .vaadin-grid-header {
+    background-color: #333;
+    color: #00aaff;
+}
+
+/* Grid cells to match admin view */
+.lobby-container .vaadin-grid-cell-content {
+    padding: 15px 20px;
+    color: #aaa;
+    font-size: 14px; /* font-size from admin view */
+}
+
+/* Start game button to match grey-button */
+.lobby-container .start-button {
+    display: inline-block;
+    margin-top: 20px;
+    background-color: #444;
+    color: #ddd;
+    border: none;
+    padding: 12px 25px;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Change background color on hover to match grey-button */
+.lobby-container .start-button:hover {
+    background-color: #555;
+    transform: translateY(-2px);
+}

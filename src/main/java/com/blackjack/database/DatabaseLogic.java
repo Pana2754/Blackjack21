@@ -42,8 +42,6 @@ public class DatabaseLogic {
         }
     }
 
-
-
     public void addUser(String user_name, String user_password, boolean isAdmin, boolean isBanned, int balance) throws SQLException {
         if (connection == null) {
             return;
@@ -59,7 +57,7 @@ public class DatabaseLogic {
         }
     }
 
-    public boolean checkLoginData(String user_name, String user_password) throws SQLException {
+    public boolean checkLoginData(String user_name, String user_password) {
         if (connection == null) {
             return false;
         }
@@ -155,11 +153,7 @@ public class DatabaseLogic {
 
             if (result.next()) {
                 String isAdmin = result.getString("is_Admin");
-                if (isAdmin.equals("1")) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return isAdmin.equals("1");
             }
         } catch (Exception ex) {
             System.out.println(ex);

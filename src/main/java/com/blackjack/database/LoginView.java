@@ -3,6 +3,7 @@ package com.blackjack.database;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -20,9 +21,11 @@ import java.time.LocalDate;
 import java.time.Period;
 
 @Route("login")
+@CssImport("./themes/mytodo/loginview.css")
 public class LoginView extends VerticalLayout {
     private static final long serialVersionUID = -4286830884968200051L;
     public LoginView() {
+        setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);
         setAlignItems(Alignment.CENTER);
 
@@ -75,7 +78,6 @@ public class LoginView extends VerticalLayout {
         add(image, usernameField, passwordField, buttonLayout);
         addClassName("login-view");
     }
-
     private boolean isAdmin(String username, String password) throws SQLException {
         if (!password.isEmpty() && authenticate(username, password)) {
             DatabaseLogic db = new DatabaseLogic();
@@ -114,7 +116,6 @@ public class LoginView extends VerticalLayout {
         }
         return true;
     }
-
     private void showRegistrationForm() {
         Dialog dialog = new Dialog();
         dialog.setWidth("400px");
@@ -131,31 +132,34 @@ public class LoginView extends VerticalLayout {
             String username = usernameField.getValue();
             String password = hashPassword(passwordField.getValue());
             String confirmPassword = hashPassword(confirmPasswordField.getValue());
-
             LocalDate userAge = datePicker.getValue();
 
-            DatabaseLogic dbLogic = new DatabaseLogic();
-            try {
-                dbLogic.connectToDb();
-
-                // Assuming there's a method called doesUserExist, if not you need to implement it or remove this block
-                if (dbLogic.doesUserExist(username)) {
-                    Notification.show("Username already exists!");
-                } else if (password.equals(confirmPassword) && verifyAge(userAge)) {
-                    dbLogic.addUser(username, password, false, false, 1000);
-                    Notification.show("Successfully registered!");
-                    dialog.close();
-                } else if (!password.equals(confirmPassword)) {
-                    Notification.show("Passwords do not match!");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                Notification.show("Registration failed!");
-            } finally {
+            if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || userAge == null) {
+                Notification.show("Please fill in all fields!");
+            } else if (!password.equals(confirmPassword)) {
+                Notification.show("Passwords do not match!");
+            } else if (!verifyAge(userAge)) {
+            } else {
+                DatabaseLogic dbLogic = new DatabaseLogic();
                 try {
-                    dbLogic.closeConnection();
+                    dbLogic.connectToDb();
+
+                    if (dbLogic.doesUserExist(username)) {
+                        Notification.show("Username already exists!");
+                    } else {
+                        dbLogic.addUser(username, password, false, false, 1000);
+                        Notification.show("Successfully registered!");
+                        dialog.close();
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
+                    Notification.show("Registration failed!");
+                } finally {
+                    try {
+                        dbLogic.closeConnection();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -165,6 +169,8 @@ public class LoginView extends VerticalLayout {
 
         dialog.open();
     }
+
+
 
 
     private String hashPassword(String password) {
