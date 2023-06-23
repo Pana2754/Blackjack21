@@ -190,7 +190,6 @@ public class AdminPanel extends VerticalLayout {
         try {
             dbLogic = new DatabaseLogic();
             dbLogic.connectToDb();
-
             Connection connection = dbLogic.getConnection();
             String sql = "UPDATE blackjack_user SET isBanned = ? WHERE user_name = ?";
             statement = connection.prepareStatement(sql);
@@ -214,7 +213,6 @@ public class AdminPanel extends VerticalLayout {
         try {
             dbLogic = new DatabaseLogic();
             dbLogic.connectToDb();
-
             Connection connection = dbLogic.getConnection();
             String sql = "DELETE FROM blackjack_user WHERE user_name = ?";
             statement = connection.prepareStatement(sql);
@@ -238,7 +236,6 @@ public class AdminPanel extends VerticalLayout {
         try {
             dbLogic = new DatabaseLogic();
             dbLogic.connectToDb();
-
             Connection connection = dbLogic.getConnection();
             String sql = "UPDATE blackjack_user SET balance = ? WHERE user_name = ?";
             statement = connection.prepareStatement(sql);

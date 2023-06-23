@@ -2,16 +2,16 @@ package com.blackjack.database;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.AfterNavigationEvent;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+
 import java.util.List;
 
 
@@ -25,6 +25,8 @@ public class GameView extends VerticalLayout implements GameEventListener {
     Div topRightDiv;
     Div balanceText;
     Div stakeText;
+
+    TextField stakeAmount;
 
     Div bottomrightDiv;
 
@@ -41,7 +43,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
     private Button reset;
     Button stand;
     Button hit;
-    Button raiseStake10;
+    Button raiseStake;
 
     private UI currentUI; // Store the UI instance
     Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
@@ -75,16 +77,34 @@ public class GameView extends VerticalLayout implements GameEventListener {
         dealerContainer = new Div();
         endState = new Div();
         stake = new Div();
+
+
+
+        stakeAmount = new TextField("Stake amount: ");
         // Initialize game title
         gameTitle = new Div();
         gameTitle.setText("BLACKJACK");
         gameTitle.setClassName("game-title");
         stake.setText("Stake: 0");
-        raiseStake10 = new Button("Put10");
-        raiseStake10.setWidth("150px");
-        raiseStake10.addClickListener(event -> {
-            raiseStake(10, activePlayer);
-            gameManager.startGame();
+        raiseStake = new Button("Raise Stake");
+        raiseStake.setWidth("150px");
+        raiseStake.addClickListener(event -> {
+            if(!(stakeAmount == null || stakeAmount.isEmpty())){
+                try{
+                    int stake = Integer.parseInt(stakeAmount.getValue());
+                    if(stake <= 0){
+                        throw new Exception();
+                    }
+                }
+                catch (Exception e){
+                    Notification.show("Please enter a valid Amount!");
+                }
+                int stake = Integer.parseInt(stakeAmount.getValue());
+                raiseStake(stake, activePlayer);
+                gameManager.startGame();
+            }
+
+
         });
         hit = new Button("Hit");
         hit.setWidth("150px");
@@ -136,7 +156,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
         setClassName("container");
         hit.setClassName("shining-button");
         reset.setClassName("shining-button");
-        raiseStake10.setClassName("shining-button");
+        raiseStake.setClassName("shining-button");
         stand.setClassName("shining-button");
         playerContainer.setClassName("card-container");
         cardStack.setClassName("card-stack show-cards");
@@ -186,7 +206,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
         // Organizing the layout
         HorizontalLayout controlPanel = new HorizontalLayout();
         controlPanel.addClassName("control-panel");
-        controlPanel.add(raiseStake10, hit, stand, reset);
+        controlPanel.add(stakeAmount, raiseStake, hit, stand, reset);
 
         // Adding components to the background container
         backgroundContainer.add(gameTitle, topRightDiv, bottomrightDiv,  cardStack,controlPanel, playerContainer, dealerContainer, endState);
@@ -235,17 +255,21 @@ public class GameView extends VerticalLayout implements GameEventListener {
     }
 
     private void raiseStake(int amount, Player player){
-        if(player.getBalance() >= amount){
+        if(activePlayer != null){
+            if(player.getBalance() >= amount){
 
-            player.increaseStake(amount);
-            balanceText.setText("Balance: "+player.getBalance());
-            stakeText.setText("Stake: "+ player.getStake());
-            player.hasIncreasedStake = true;
-        }
-        else{
-            Notification.show("You dont have enough Cash!");
-        }
+                player.increaseStake(amount);
+                balanceText.setText("Balance: "+player.getBalance());
+                if(stakeText != null){
+                    stakeText.setText("Stake: "+ player.getStake());
+                }
 
+                player.hasIncreasedStake = true;
+            }
+            else{
+                Notification.show("You dont have enough Cash!");
+            }
+        }
     }
 
     private void displayAllPlayersHands() {
@@ -303,8 +327,10 @@ public class GameView extends VerticalLayout implements GameEventListener {
                 hit.setEnabled(true);
                 stand.setEnabled(true);
                 stand.setVisible(true);
-                raiseStake10.setVisible(false);
-                raiseStake10.setEnabled(false);
+                raiseStake.setVisible(false);
+                raiseStake.setEnabled(false);
+                stakeAmount.setVisible(false);
+                stakeAmount.setEnabled(false);
                 Broadcaster.broadcast();
             });
         }
@@ -312,24 +338,31 @@ public class GameView extends VerticalLayout implements GameEventListener {
 
     @Override
     public void onGameReset() {
-        currentUI.access(()-> {
-            // Clear the game area
-            playerContainer.removeAll();
-            dealerContainer.removeAll();
-            bottomrightDiv.removeAll();
-            endState.removeAll();
-            stakeText.setText("Stake: 0");
-            balanceText.setText("Balance: " +activePlayer.getBalance());
-            // Reset buttons
-            hit.setEnabled(false);
-            stand.setEnabled(false);
-            reset.setVisible(false);
-            reset.setEnabled(false);
-            raiseStake10.setVisible(true);
-            raiseStake10.setEnabled(true);
-            Broadcaster.broadcast();
-        });
-
+        if(currentUI.isAttached()){
+            currentUI.access(()-> {
+                // Clear the game area
+                playerContainer.removeAll();
+                dealerContainer.removeAll();
+                bottomrightDiv.removeAll();
+                endState.removeAll();
+                if(stakeText != null){
+                    stakeText.setText("Stake: 0");
+                }
+                if(activePlayer != null){
+                    balanceText.setText("Balance: " +activePlayer.getBalance());
+                }
+                // Reset buttons
+                hit.setEnabled(false);
+                stand.setEnabled(false);
+                reset.setVisible(false);
+                reset.setEnabled(false);
+                raiseStake.setVisible(true);
+                raiseStake.setEnabled(true);
+                stakeAmount.setEnabled(true);
+                stakeAmount.setVisible(true);
+                Broadcaster.broadcast();
+            });
+        }
     }
 
 }

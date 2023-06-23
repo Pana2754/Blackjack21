@@ -18,6 +18,8 @@
     height: 90vh !important;
     background-image: url('Tisch_final.jpg');
     background-size: contain !important;
+    background-size: cover;
+    background-repeat: no-repeat;
     background-position: center !important;
     overflow-x: hidden !important;
     overflow-y: hidden !important;
@@ -26,17 +28,6 @@
     animation: glowing 2s infinite;
 }
 
-@keyframes glowing {
-    0% {
-        box-shadow: 0 0 100px rgba(0, 255, 0, 0.5); /* Increased spread value */
-    }
-    50% {
-        box-shadow: 0 0 100px rgba(0, 255, 0, 1); /* Increased spread value */
-    }
-    100% {
-        box-shadow: 0 0 100px rgba(0, 255, 0, 0.5); /* Increased spread value */
-    }
-}
 
 /* Game Title */
 .game-title {

@@ -265,7 +265,7 @@
   "Frontend/themes/mytodo/loginview.css"
  ],
  "frontendHashes": {
-  "themes/mytodo/adminview.css": "267ab6f2f0a56e45619082cd6e3fef827f511e2cc5ade964d58ff27afa40cc5b",
+  "themes/mytodo/adminview.css": "1aa274e679f0db4b0a469232a7f6b82d35ba67144bb9c79cd350de162cdfd74e",
   "themes/mytodo/lobby.css": "5b5a9055f161b78eff8cae1595e9383a411df868bfb299cb231d2588536dcaa1",
   "themes/mytodo/loginview.css": "3e42032eb2747d3e7beedd2759c6d7225771892cbe67c3c011ac0f506d137606",
   "buttonFunctions.js": "c852123f9b2c44eb75e555119d3e05a7dbe78b91d0ab616feb9df1654474707d",
@@ -294,7 +294,7 @@
   "mytodo": "{\n  \"lumoImports\" : [ \"typography\", \"color\", \"spacing\", \"badge\", \"utility\" ]\n}"
  },
  "entryScripts": [
-  "VAADIN/build/indexhtml-0f1bf5fc.js"
+  "VAADIN/build/indexhtml-34bd3a28.js"
  ],
  "webComponents": [],
  "cvdlModules": {
@@ -329,6 +329,6 @@
  },
  "packageJsonHash": "a83726abcdd9ff2a5f5df2646c7a3a8a632e3d10ca68f1dbb1606717c3b18d7a",
  "indexHtmlGenerated": [
-  "  <script type=\"module\" crossorigin src=\"./VAADIN/build/indexhtml-0f1bf5fc.js\"></script>"
+  "  <script type=\"module\" crossorigin src=\"./VAADIN/build/indexhtml-34bd3a28.js\"></script>"
  ]
 }
