@@ -5,7 +5,7 @@
     --secondary-color: #2c3e50;
     --highlight-color: #f39c12;
     --text-color: #ecf0f1;
-    --notification-color: #e74c3c;
+    --notification-color: #17a2e8;
 }
 
 /* Background Container */
@@ -14,17 +14,34 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100vw;
-    height: 100vh;
-    background-image: url('gamebg.webp');
-    background-size: cover;
-    background-position: center;
-    overflow: hidden;
+    width:80vw !important;
+    height: 90vh !important;
+    background-image: url('Tisch_final.jpg');
+    background-size: contain !important;
+    background-position: center !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+    margin: auto;
+    box-shadow: 0 0 100px rgba(0, 255, 0, 0.5);
+    animation: glowing 2s infinite;
+}
+
+@keyframes glowing {
+    0% {
+        box-shadow: 0 0 100px rgba(0, 255, 0, 0.5); /* Increased spread value */
+    }
+    50% {
+        box-shadow: 0 0 100px rgba(0, 255, 0, 1); /* Increased spread value */
+    }
+    100% {
+        box-shadow: 0 0 100px rgba(0, 255, 0, 0.5); /* Increased spread value */
+    }
 }
 
 /* Game Title */
 .game-title {
-    font-size: 2.5rem;
+    font-family: 'Bangers', cursive;
+    font-size: 3rem;
     font-weight: bold;
     margin-bottom: 20px;
     color: var(--primary-color);
@@ -117,7 +134,8 @@
 }
 
 /* Divs at top corners */
-.top-right-corner, .top-left-corner, .bottom-left-corner {
+
+.top-right-corner, .bottom-right-corner {
     position: absolute;
     padding: 10px;
     background-color: rgba(0, 0, 0, 0.6);
@@ -127,16 +145,15 @@
 }
 
 .top-right-corner {
+    font-family: 'Bangers', cursive;
     top: 10px;
+    font-size: 50px;
     right: 10px;
 }
-.bottom-left-corner {
+.bottom-right-corner {
     bottom: 10px;
-    left: 10px;
-}
-.top-left-corner {
-    top: 10px;
-    left: 10px;
+    font-size: 32px;
+    right: 10px;
 }
 
 

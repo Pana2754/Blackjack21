@@ -26,9 +26,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
     Div balanceText;
     Div stakeText;
 
-    Div topLeftDiv;
-
-    Div bottomLeftDiv;
+    Div bottomrightDiv;
 
     Div eventDiv = new Div();
     private Div playerContainer;
@@ -50,8 +48,11 @@ public class GameView extends VerticalLayout implements GameEventListener {
 
 
     public GameView() {
-
         currentUI = UI.getCurrent();
+        UI.getCurrent().getElement().getStyle().set("width", "0px");
+
+        //getStyle().set("background-color", "#161414");
+        getStyle().set("color", "#FFFFFF");
 
         Broadcaster.register(() -> {
             getUI().ifPresent(ui -> ui.access(() -> {
@@ -165,13 +166,12 @@ public class GameView extends VerticalLayout implements GameEventListener {
         }
         topRightDiv.setClassName("top-right-corner");
 
-        topLeftDiv = new Div();
-        topLeftDiv.setClassName("top-left-corner");
 
-        bottomLeftDiv = new Div();
-        bottomLeftDiv.setClassName("bottom-left-corner");
 
-        bottomLeftDiv.add(eventDiv);
+        bottomrightDiv = new Div();
+        bottomrightDiv.setClassName("bottom-right-corner");
+
+        bottomrightDiv.add(eventDiv);
 
         // Initialize dealer points label
         dealerPointsLabel = new Div();
@@ -189,7 +189,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
         controlPanel.add(raiseStake10, hit, stand, reset);
 
         // Adding components to the background container
-        backgroundContainer.add(gameTitle, topLeftDiv,topRightDiv, bottomLeftDiv, displayPanel, controlPanel, cardStack, playerContainer, dealerContainer, endState);
+        backgroundContainer.add(gameTitle, topRightDiv, bottomrightDiv,  cardStack,controlPanel, playerContainer, dealerContainer, endState);
 
         // Adding background container to the main layout
         add(backgroundContainer);
@@ -208,7 +208,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
                 dealerContainer.add(label2);
             }
             dealerContainer.setClassName("dealer-container");
-            bottomLeftDiv.add(dealerPointsLabel, dealerContainer);
+            bottomrightDiv.add(dealerPointsLabel, dealerContainer);
             Broadcaster.broadcast();
 
             for(Player player : gameManager.getPlayerList()){
@@ -217,14 +217,14 @@ public class GameView extends VerticalLayout implements GameEventListener {
                     label.setText(player.getPlayerName() + " has Won! + " + player.getStake()*2);
                     label.addClassName("notifylabel");
                     player.increaseBalance(2*player.getStake());
-                    bottomLeftDiv.add(label);
+                    bottomrightDiv.add(label);
 
                 }
                 else {
                     Div label = new Div();
                     label.setText(player.getPlayerName() + " has lost!");
                     label.addClassName("notifylabel");
-                    bottomLeftDiv.add(label);
+                    bottomrightDiv.add(label);
                 }
             }
             add(endState);
@@ -316,7 +316,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
             // Clear the game area
             playerContainer.removeAll();
             dealerContainer.removeAll();
-            bottomLeftDiv.removeAll();
+            bottomrightDiv.removeAll();
             endState.removeAll();
             stakeText.setText("Stake: 0");
             balanceText.setText("Balance: " +activePlayer.getBalance());
