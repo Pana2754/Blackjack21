@@ -78,9 +78,10 @@ public class GameView extends VerticalLayout implements GameEventListener {
         endState = new Div();
         stake = new Div();
 
+        HorizontalLayout stakeLayout = new HorizontalLayout();
 
 
-        stakeAmount = new TextField("Stake amount: ");
+        stakeAmount = new TextField();
         // Initialize game title
         gameTitle = new Div();
         gameTitle.setText("BLACKJACK");
@@ -109,6 +110,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
         hit = new Button("Hit");
         hit.setWidth("150px");
         hit.setEnabled(false);
+        hit.setVisible(false);
         hit.addClickListener(event -> {
             gameManager.giveCardToPlayer(activePlayer);
             Broadcaster.broadcast();
@@ -124,7 +126,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
         stand = new Button("Stand");
         stand.setWidth("150px");
         stand.setEnabled(false);
-        //stand.setVisible(false);
+        stand.setVisible(false);
         stand.addClickListener(event -> {
             Player activePlayer = (Player) VaadinSession.getCurrent().getAttribute("activePlayer");
             activePlayer.setStanding(true);
@@ -160,6 +162,8 @@ public class GameView extends VerticalLayout implements GameEventListener {
         stand.setClassName("shining-button");
         playerContainer.setClassName("card-container");
         cardStack.setClassName("card-stack show-cards");
+
+        stakeLayout.add(stakeAmount, raiseStake);
 
 // Initialize background container
         backgroundContainer = new Div();
@@ -206,10 +210,10 @@ public class GameView extends VerticalLayout implements GameEventListener {
         // Organizing the layout
         HorizontalLayout controlPanel = new HorizontalLayout();
         controlPanel.addClassName("control-panel");
-        controlPanel.add(stakeAmount, raiseStake, hit, stand, reset);
+        controlPanel.add( hit, stand, reset);
 
         // Adding components to the background container
-        backgroundContainer.add(gameTitle, topRightDiv, bottomrightDiv,  cardStack,controlPanel, playerContainer, dealerContainer, endState);
+        backgroundContainer.add(gameTitle, stakeLayout,topRightDiv, bottomrightDiv,  cardStack, controlPanel, playerContainer, dealerContainer, endState);
 
         // Adding background container to the main layout
         add(backgroundContainer);
@@ -220,7 +224,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
     public void onDealerEnd(){
         currentUI.access(() ->{
             Dealer dealer = gameManager.dealer;
-            dealerPointsLabel.setText("The Dealer has: " + dealer.getCardValues() + "Points!");
+            dealerPointsLabel.setText("The Dealer has: " + dealer.getCardValues() + " Points!");
             if(dealer.isOut){
                 Div label2 = new Div();
                 label2.setText("The Dealer has lost!");
