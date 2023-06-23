@@ -71,7 +71,7 @@ public class GameStateManager {
     }
 
     public void dealerPlay(){
-        while (isHandOverPoints(dealer, 16)){
+        while (!isHandOverPoints(dealer, 16)){
 
             giveCardToPlayer(dealer);
         }
