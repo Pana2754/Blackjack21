@@ -1,4 +1,7 @@
 package com.blackjack.database;
+import com.vaadin.flow.component.UI;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -11,13 +14,37 @@ public class Broadcaster {
 
     static final LinkedList<Runnable> gameListeners = new LinkedList<>();
     static List<Consumer<List<Player>>> listeners = new CopyOnWriteArrayList<>();
+    private static List<GameEventListener> gameEventListeners = new ArrayList<>();
+
+    public static void addGameEventListener(GameEventListener listener) {
+        gameEventListeners.add(listener);
+    }
+    public static void startGame() {
+        for (GameEventListener listener : gameEventListeners) {
+            listener.onGameStart();
+        }
+    }
 
     public static synchronized void register(Consumer<List<Player>> listener) {
         listeners.add(listener);
     }
 
     public static synchronized void register(Runnable listener){
-        gameListeners.add(listener);
+        if(!gameListeners.contains(listener)){
+            gameListeners.add(listener);
+        }
+
+    }
+
+    public static synchronized void onDealerEnd(){
+        for(GameEventListener listener: gameEventListeners){
+            listener.onDealerEnd();
+        }
+    }
+    public static void resetGame(){
+        for(GameEventListener listener : gameEventListeners){
+            listener.onGameReset();
+        }
     }
     public static synchronized void unregister(Runnable listener){gameListeners.remove(listener);}
 

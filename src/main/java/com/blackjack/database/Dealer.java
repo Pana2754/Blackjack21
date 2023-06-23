@@ -18,6 +18,11 @@ public class Dealer implements IPlayer{
         cards.add(card);
     }
 
+    public void resetHand(){
+        cards= new ArrayList<>();
+        isOut = false;
+    }
+
     public int getCardValues(){
         int result = 0;
         if(cards == null){

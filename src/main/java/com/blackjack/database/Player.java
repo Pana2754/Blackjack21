@@ -8,11 +8,13 @@ public class Player implements IPlayer {
 
     private String playerName;
 
-    private double CoinBalance;
-    private Integer stake;
+    private int CoinBalance;
+    private int stake;
+
+    public boolean hasIncreasedStake;
     private int CardValue;
     private boolean ready;
-    private boolean banned;;
+    private boolean banned;
 
     private boolean isStanding;
 
@@ -20,19 +22,27 @@ public class Player implements IPlayer {
 
     private List<Card> cardList = new ArrayList<>();
 
-    public Player(String playerName, boolean ready, double balance, Boolean isBanned){
+    public Player(String playerName, boolean ready, int balance, Boolean isBanned){
         this.playerName = playerName;
         this.CoinBalance = balance;
         this.ready = ready;
         this.banned = isBanned;
         this.isStanding = false;
+        hasIncreasedStake = false;
     }
     public void takeCard(Card card){
         cardList.add(card);
     }
 
-    private void increaseStake(int value){
-
+    public void increaseStake(int value){
+        stake+= value;
+        CoinBalance -= value;
+    }
+    public void resetStake(){
+        stake = 0;
+    }
+    public int getStake(){
+        return stake;
     }
     public void setStanding(boolean standing){
         this.isStanding = standing;
@@ -102,12 +112,16 @@ public class Player implements IPlayer {
     }
 
 
-    public double getBalance() {
+    public int getBalance() {
         return CoinBalance;
     }
 //
-    public void setBalance(float newBalance) {
+    public void setBalance(int newBalance) {
         this.CoinBalance = newBalance;
+    }
+
+    public void increaseBalance(int amount){
+        this.CoinBalance+= amount;
     }
     @Override
     public boolean equals(Object obj) {
