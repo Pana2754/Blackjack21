@@ -47,7 +47,7 @@ public class Lobby extends VerticalLayout {
             // Use the correct class name for the start button
             startButton.addClassName("start-button");
             if (!player.equals(getActivePlayer())) {
-                startButton.setEnabled(false);
+                startButton.setVisible(false);
             }
             startButton.addClickListener(event -> {
                 GameStateManager gameStateManager = GameStateManager.getInstance();
