@@ -134,7 +134,7 @@ public class GameView extends VerticalLayout implements GameEventListener {
         playerContainer.setClassName("card-container");
         cardStack.setClassName("card-stack show-cards");
 
-// Initialize background container
+        // Initialize background container
         backgroundContainer = new Div();
         backgroundContainer.setClassName("background-container");
 
@@ -151,8 +151,8 @@ public class GameView extends VerticalLayout implements GameEventListener {
         topLeftDiv.setClassName("top-left-corner");
 
         Div bottomLeftDiv = new Div();
-        topLeftDiv.setText("bottom Left Text");
-        topLeftDiv.setClassName("bottom-left-corner");
+        bottomLeftDiv.setText("bottom Left Text");
+        bottomLeftDiv.setClassName("bottom-left-corner");
 
         // Initialize dealer points label
         dealerPointsLabel = new Div();
