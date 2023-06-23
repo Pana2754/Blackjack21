@@ -23,11 +23,14 @@ public class GameView extends VerticalLayout implements GameEventListener {
     private GameStateManager gameManager;
 
     Div topRightDiv;
-    Div topLeftDiv;
     Div balanceText;
     Div stakeText;
 
+    Div topLeftDiv;
+
     Div bottomLeftDiv;
+
+    Div eventDiv;
     private Div playerContainer;
     private Div cardStack;
     private Div dealerPointsLabel;
@@ -170,6 +173,8 @@ public class GameView extends VerticalLayout implements GameEventListener {
 
         bottomLeftDiv = new Div();
         bottomLeftDiv.setClassName("bottom-left-corner");
+        eventDiv = new Div();
+        bottomLeftDiv.add(eventDiv);
 
         // Initialize dealer points label
         dealerPointsLabel = new Div();
@@ -261,15 +266,18 @@ public class GameView extends VerticalLayout implements GameEventListener {
 
     private void displayAllPlayersHands() {
         playerContainer.removeAll();
+        if(eventDiv != null){
+            eventDiv.removeAll();
+        }
         List<Player> allPlayers = gameManager.getPlayerList();
         for (Player player : allPlayers) {
             Div handContainer = new Div();
             List<Card> playerHand = player.getHand();
             if (GameStateManager.isHandOverPoints(player, 21)) {
-                Div pointsLabel = new Div();
-                pointsLabel.setText(player.getPlayerName() + " lost!");
-                pointsLabel.addClassName("notifylabel");
-                handContainer.add(pointsLabel);
+                Div playerLost = new Div();
+                playerLost.setText(player.getPlayerName() + " lost!");
+                playerLost.addClassName("notifylabel");
+                eventDiv.add(playerLost);
             }
             for (Card card : playerHand) {
                 Image cardImage = new Image(card.imagePath, "");
